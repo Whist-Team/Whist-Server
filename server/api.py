@@ -1,7 +1,9 @@
-from server import app
+from fastapi import APIRouter
+
+router = APIRouter()
 
 
-@app.get('/')
+@router.get('/')
 def read_root():
     """
     Index route of the server.

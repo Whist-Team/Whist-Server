@@ -1,6 +1,7 @@
 pip~=21.0.1
-fastapi~=0.63.0
+setuptools~=56.0.0
+wheel~=0.36.2
+fastapi[all]~=0.63.0
+# whist-core~=0.0.2
 pytest~=6.2.3
 pytest-cov~=2.11.1
-requests~=2.25.1
-whist-core~=0.0.2

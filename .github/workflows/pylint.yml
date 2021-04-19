@@ -22,4 +22,4 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint server tests --jobs=0
+        pylint server tests --rcfile=.pylintrc

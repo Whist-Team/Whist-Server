@@ -1,2 +1,2 @@
-[![codecov](https://codecov.io/gh/Whist-Team/Whist-Core/branch/main/graph/badge.svg?token=E3W1KJMGDG)](https://codecov.io/gh/Whist-Team/Whist-Core)
+[![codecov](https://codecov.io/gh/Whist-Team/Whist-Server/branch/main/graph/badge.svg)](https://codecov.io/gh/Whist-Team/Whist-Server)
 # Whist-Server

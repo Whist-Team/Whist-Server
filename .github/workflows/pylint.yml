@@ -31,4 +31,4 @@ jobs:
           flake8 . --count --show-source --statistics
       - name: Lint sources with pylint
         run: |
-          pylint server
+          pylint whist

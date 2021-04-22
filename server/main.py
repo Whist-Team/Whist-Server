@@ -1,3 +1,5 @@
+"""Main entrypoint"""
+
 import uvicorn
 
 from server import app

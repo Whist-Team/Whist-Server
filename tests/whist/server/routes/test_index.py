@@ -2,7 +2,7 @@ import unittest
 
 from fastapi.testclient import TestClient
 
-from server import app
+from whist.server import app
 
 
 class IndexTestCase(unittest.TestCase):

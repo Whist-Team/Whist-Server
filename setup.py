@@ -20,7 +20,9 @@ setup(
         'Operating System :: OS Independent',
     ],
     keywords='game server whist',
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests*',)),
     python_requires='>=3.9',
-    install_requires=[]
+    install_requires=[
+        'whist-core~=0.0.1'
+    ]
 )

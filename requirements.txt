@@ -2,7 +2,7 @@ pip==21.1.1
 setuptools==56.2.0
 wheel==0.36.2
 twine==3.4.1
-fastapi[all]==0.65.0
+fastapi[all]==0.65.1
 whist-core==0.0.1
 flake8==3.9.2
 pylint==2.8.2

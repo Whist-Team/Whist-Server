@@ -38,7 +38,7 @@ jobs:
         run: |
           python -m pytest --cov=whist --cov-report=xml
       - name: Upload to codecoverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v1.5.0
         with:
           file: ./coverage.xml
           fail_ci_if_error: true

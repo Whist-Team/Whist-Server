@@ -7,4 +7,4 @@ whist-core==0.0.1
 flake8==3.9.2
 pylint==2.8.3
 pytest==6.2.4
-pytest-cov==2.12.0
+pytest-cov==2.12.1

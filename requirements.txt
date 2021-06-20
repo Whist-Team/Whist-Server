@@ -3,7 +3,7 @@ setuptools==57.0.0
 wheel==0.36.2
 twine==3.4.1
 fastapi[all]==0.65.2
-whist-core==0.0.1
+whist-core==0.1.0rc1
 flake8==3.9.2
 pylint==2.8.3
 pytest==6.2.4

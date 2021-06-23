@@ -21,9 +21,10 @@ setup(
     ],
     keywords='game server whist',
     packages=find_packages(exclude=('tests*',)),
+    namespace_pacakge=['whist'],
     entry_points={'console_scripts': ['whist-server=whist.server.cli:main']},
     python_requires='>=3.9',
     install_requires=[
-        'whist-core~=0.0.1'
+        'whist-core~=0.1.0rc2'
     ]
 )

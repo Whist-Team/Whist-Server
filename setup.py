@@ -26,5 +26,5 @@ setup(
     python_requires='>=3.9',
     install_requires=[
         'whist-core~=0.1.0rc2'
-    ],
+    ]
 )

@@ -11,7 +11,7 @@ class UserTestCase(unittest.TestCase):
 
     def test_post_user(self):
         """
-        Test the index route returns the game whist.
+        Tests the creation of a new user.
         """
         data = {'username': 'test'}
         response = self.client.post(url='/user/create/', json=data)

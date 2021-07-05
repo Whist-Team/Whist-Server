@@ -2,6 +2,8 @@
 
 from fastapi import APIRouter
 
+from whist.server.database import db
+
 router = APIRouter()
 
 
@@ -11,4 +13,5 @@ def read_root():
     Index route of the server.
     :return: The game the server can host.
     """
-    return {'game': 'whist'}
+    info = db.info.find_one()
+    return {'info': info}

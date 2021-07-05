@@ -14,4 +14,5 @@ def read_root():
     :return: The game the server can host.
     """
     info = db.info.find_one()
+    info.pop('_id')
     return {'info': info}

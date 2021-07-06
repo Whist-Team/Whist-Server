@@ -19,7 +19,7 @@ class PyObjectId(ObjectId):
         :return: a object id wrapped around the value
         """
         if not ObjectId.is_valid(value):
-            raise ValueError('Invalud object id')
+            raise ValueError('Invalid object id')
         return ObjectId(value)
 
     @classmethod

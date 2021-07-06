@@ -1,3 +1,4 @@
+"""Constants at runtime"""
 import os
 
 TEST_DATABASE = 'test_database'

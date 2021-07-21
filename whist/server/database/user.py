@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from whist.server.models.py_object_id import PyObjectId
+from whist.server.database.id_wrapper import PyObjectId
 
 
 class User(BaseModel):

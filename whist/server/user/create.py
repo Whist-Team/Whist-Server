@@ -3,8 +3,8 @@ from typing import Dict
 
 from fastapi import APIRouter
 
-from whist.server.db import db
-from whist.server.models.user import User
+from whist.server.database import db
+from whist.server.database.user import User
 
 router = APIRouter(prefix='/user/create')
 

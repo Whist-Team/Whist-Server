@@ -16,5 +16,5 @@ def create_user(request: Dict[str, str]):
     :return: the ID of the user or an error message.
     """
     user = User(username=request['username'])
-    db.insert_one(user)
+    db.user.insert_one(user.dict(by_alias=True))
     return {'user_id': '1'}

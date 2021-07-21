@@ -1,5 +1,6 @@
 import unittest
 
+import pkg_resources
 from fastapi.testclient import TestClient
 
 from whist.server import app
@@ -13,6 +14,8 @@ class IndexTestCase(unittest.TestCase):
         """
         Test the index route returns the game whist.
         """
+        whist_core_version = pkg_resources.get_distribution('whist-core').version
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertDictEqual(response.json(), {'info': {'game': 'whist', 'version': '0.1.0rc2'}})
+        self.assertDictEqual(response.json(),
+                             {'info': {'game': 'whist', 'version': whist_core_version}})

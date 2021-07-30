@@ -20,5 +20,7 @@ def create_user(request: Dict[str, str]):
     pwd_hash = pwd_service.hash(request['password'])
     user = UserInDb(username=request['username'],
                     hashed_password=pwd_hash)
-    db.user.insert_one(user.dict(by_alias=True))
-    return {'user_id': '1'}
+    user_dict = user.dict()
+    user_dict.pop('id')
+    user_id = db.user.insert_one(user_dict)
+    return {'user_id': str(user_id.inserted_id)}

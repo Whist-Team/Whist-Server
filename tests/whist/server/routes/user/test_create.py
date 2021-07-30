@@ -20,7 +20,7 @@ class UserTestCase(unittest.TestCase):
         data = {'username': 'test', 'password': 'abc'}
         response = self.client.post(url='/user/create/', json=data)
         self.assertEqual(response.status_code, 200, msg=response.content)
-        self.assertDictEqual(response.json(), {'user_id': '1'})
+        self.assertTrue('user_id' in response.json())
         self.assertEqual(1, db.user.count())
 
     def test_post_user_no_pwd(self):

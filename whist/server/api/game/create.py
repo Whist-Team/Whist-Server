@@ -10,7 +10,7 @@ from whist.server.services.password import PasswordService
 router = APIRouter(prefix='/game')
 
 
-@router.post('/create', status_code=201)
+@router.post('/create', status_code=200)
 def create_game(request: Dict[str, str]):
     """
     Creates a new game of whist.

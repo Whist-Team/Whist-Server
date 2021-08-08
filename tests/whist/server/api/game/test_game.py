@@ -16,14 +16,14 @@ class GameTestCase(unittest.TestCase):
     def test_post_game(self):
         data = {'game_name': 'test', 'password': 'abc'}
         response = self.client.post(url='/game/create', json=data)
-        self.assertEqual(response.status_code, 201, msg=response.content)
+        self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertTrue('game_id' in response.json())
         self.assertEqual(1, db.game.count())
 
     def test_post_game_without_pwd(self):
         data = {'game_name': 'test'}
         response = self.client.post(url='/game/create', json=data)
-        self.assertEqual(response.status_code, 201, msg=response.content)
+        self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertTrue('game_id' in response.json())
         self.assertEqual(1, db.game.count())
 

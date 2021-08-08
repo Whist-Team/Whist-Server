@@ -1,5 +1,6 @@
 """Game Info database connector"""
 from whist.server.database import db, GameInfo
+from whist.server.services.error import GameInfoNotSet
 
 
 class GameInfoDatabaseService:
@@ -25,5 +26,7 @@ class GameInfoDatabaseService:
     @classmethod
     def get(cls):
         info: dict = cls._info.find_one()
+        if info is None:
+            raise GameInfoNotSet()
         info.pop('_id')
         return GameInfo(**info)

@@ -2,8 +2,8 @@
 
 from fastapi import FastAPI
 
-from whist.server import api
-from whist.server.user import create
+from whist.server.api import api
+from whist.server.api.user import create
 
 app = FastAPI()
 app.include_router(api.router)

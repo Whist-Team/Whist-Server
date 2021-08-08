@@ -32,8 +32,8 @@ def create_game(request: Dict[str, str]):
 def _get_game_name(request):
     try:
         game_name = request['game_name']
-    except KeyError:
-        raise HTTPException(status_code=400, detail='"game_name" is required.')
+    except KeyError as key_error:
+        raise HTTPException(status_code=400, detail='"game_name" is required.') from key_error
     return game_name
 
 

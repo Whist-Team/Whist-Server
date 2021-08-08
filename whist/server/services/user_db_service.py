@@ -1,4 +1,6 @@
 """User database connector."""
+from bson import ObjectId
+
 from whist.server.database import db
 from whist.server.database.user import UserInDb
 
@@ -26,13 +28,14 @@ class UserDatabaseService:
         user_dict: dict = user.dict()
         user_dict.pop('id')
         user_id = cls._users.insert_one(user_dict)
-        return user_id.inserted_id
+        return str(user_id.inserted_id)
 
     @classmethod
-    def get(cls, user_id) -> UserInDb:
+    def get(cls, user_id: str) -> UserInDb:
         """
         Retrieves an user from the database.
         :param user_id: of the user
         :return: the user database object
         """
-        return UserInDb(**cls._users.find_one(user_id))
+        user = cls._users.find_one(ObjectId(user_id))
+        return UserInDb(**user)

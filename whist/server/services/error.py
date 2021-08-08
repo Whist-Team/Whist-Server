@@ -17,5 +17,5 @@ class GameInfoNotSetError(Exception):
     """
 
     def __init__(self):
-        message = f'Game info is not set.'
+        message = 'Game info is not set.'
         super().__init__(message)

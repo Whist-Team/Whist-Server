@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from whist.server.api.game.create import router as game_creation
 from whist.server.api.user.create import router as user_creation
-from .api import api, user
+from .api import api
 
 app = FastAPI()
 app.include_router(api.router)

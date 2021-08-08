@@ -1,6 +1,6 @@
 """Game Info database connector"""
 from whist.server.database import db, GameInfo
-from whist.server.services.error import GameInfoNotSet
+from whist.server.services.error import GameInfoNotSetError
 
 
 class GameInfoDatabaseService:
@@ -19,14 +19,23 @@ class GameInfoDatabaseService:
 
     @classmethod
     def add(cls, info: GameInfo) -> None:
+        """
+        Adds game info to the database. It can only contains one at a time.
+        :param info: to be added
+        :return: None
+        """
         if cls._info.find().count() > 0:
             cls._info.delete_many({})
         cls._info.insert_one(info.dict())
 
     @classmethod
     def get(cls):
+        """
+        Retrieves the game info object. There is only one.
+        :return: Game info object if it is exists. Else raises GameInfoNotSetError.
+        """
         info: dict = cls._info.find_one()
         if info is None:
-            raise GameInfoNotSet()
+            raise GameInfoNotSetError()
         info.pop('_id')
         return GameInfo(**info)

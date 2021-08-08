@@ -11,7 +11,7 @@ class UserNotFoundError(Exception):
         super().__init__(message)
 
 
-class GameInfoNotSet(Exception):
+class GameInfoNotSetError(Exception):
     """
     Is raised when the game info is not set.
     """

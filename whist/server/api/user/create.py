@@ -1,16 +1,13 @@
 """'/user/create api"""
 from typing import Dict
 
-from fastapi import APIRouter
-
+from whist.server.api.user import router
 from whist.server.database import db
 from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
 
-router = APIRouter(prefix='/user/create')
 
-
-@router.post('/')
+@router.post('/create')
 def create_user(request: Dict[str, str]):
     """
     Creates a new user.

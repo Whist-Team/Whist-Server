@@ -18,5 +18,7 @@ class UserDbTestCase(unittest.TestCase):
         self.assertEqual(self.user, self.user_database_service.get(user_id))
 
     def test_user_not_existing(self):
-        with self.assertRaises(UserNotFoundError):
-            self.user_database_service.get('1' * 24)
+        user_id = '1' * 24
+        error_msg = f'User with id "{user_id}" not found.'
+        with self.assertRaisesRegex(UserNotFoundError, error_msg):
+            self.user_database_service.get(user_id)

@@ -3,6 +3,7 @@ from bson import ObjectId
 
 from whist.server.database import db
 from whist.server.database.user import UserInDb
+from whist.server.services.error import UserNotFoundError
 
 
 class UserDatabaseService:
@@ -38,4 +39,6 @@ class UserDatabaseService:
         :return: the user database object
         """
         user = cls._users.find_one(ObjectId(user_id))
+        if user is None:
+            raise UserNotFoundError(f'User with id "{user_id}" not found.')
         return UserInDb(**user)

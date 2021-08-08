@@ -1,5 +1,6 @@
 """Game Info database connector"""
-from whist.server.database import db, GameInfo
+from whist.server.database import db
+from whist.server.database.game_info import GameInfo
 from whist.server.services.error import GameInfoNotSetError
 
 

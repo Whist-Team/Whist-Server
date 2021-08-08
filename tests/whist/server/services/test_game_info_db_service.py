@@ -1,6 +1,7 @@
 import unittest
 
-from whist.server.database import GameInfo, db
+from whist.server.database import db
+from whist.server.database.game_info import GameInfo
 from whist.server.services.error import GameInfoNotSetError
 from whist.server.services.game_info_db_service import GameInfoDatabaseService
 

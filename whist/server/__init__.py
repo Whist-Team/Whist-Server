@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from whist.server.api import api
 from whist.server.api.user import create
-from whist.server.database import GameInfo
+from whist.server.database.game_info import GameInfo
 from whist.server.services.game_info_db_service import GameInfoDatabaseService
 
 app = FastAPI()

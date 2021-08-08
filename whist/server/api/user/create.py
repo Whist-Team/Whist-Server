@@ -1,4 +1,4 @@
-"""'/user/create routes"""
+"""'/user/create api"""
 from typing import Dict
 
 from fastapi import APIRouter

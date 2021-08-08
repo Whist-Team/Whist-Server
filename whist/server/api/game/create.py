@@ -1,8 +1,11 @@
 from typing import Dict
 
-from whist.server.api.game import router
+from fastapi import APIRouter
+
 from whist.server.database import db
 from whist.server.database.game import GameInDb
+
+router = APIRouter(prefix='/game')
 
 
 @router.post('/create', status_code=201)

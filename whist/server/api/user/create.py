@@ -1,10 +1,13 @@
 """'/user/create api"""
 from typing import Dict
 
-from whist.server.api.user import router
+from fastapi import APIRouter
+
 from whist.server.database import db
 from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
+
+router = APIRouter(prefix='/user')
 
 
 @router.post('/create')

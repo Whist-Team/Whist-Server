@@ -28,8 +28,8 @@ class GameTestCase(unittest.TestCase):
         self.assertEqual(1, db.game.count())
 
     def test_post_game_without_name(self):
-        data = {'game_name': None, 'passowrd': 'abc'}
+        data = {'password': 'abc'}
         response = self.client.post(url='/game/create', json=data)
         self.assertEqual(response.status_code, 400, msg=response.content)
-        self.assertEqual('"game_name" is a required argument', response.json()['game_name'])
+        self.assertEqual('"game_name" is required.', response.json()['detail'])
         self.assertEqual(0, db.game.count())

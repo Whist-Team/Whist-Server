@@ -26,9 +26,7 @@ class UserDatabaseService:
         :param user: to be added
         :return: The id of the successful added user.
         """
-        user_dict: dict = user.dict()
-        user_dict.pop('id')
-        user_id = cls._users.insert_one(user_dict)
+        user_id = cls._users.insert_one(user.dict(exclude={'id'}))
         return str(user_id.inserted_id)
 
     @classmethod

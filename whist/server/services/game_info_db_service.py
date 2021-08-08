@@ -26,7 +26,7 @@ class GameInfoDatabaseService:
         """
         if cls._info.find().count() > 0:
             cls._info.delete_many({})
-        cls._info.insert_one(info.dict())
+        cls._info.insert_one(info.dict(exclude={'_id', 'id'}))
 
     @classmethod
     def get(cls):
@@ -34,8 +34,7 @@ class GameInfoDatabaseService:
         Retrieves the game info object. There is only one.
         :return: Game info object if it is exists. Else raises GameInfoNotSetError.
         """
-        info: dict = cls._info.find_one()
+        info: dict = cls._info.find_one(projection={'_id': False})
         if info is None:
             raise GameInfoNotSetError()
-        info.pop('_id')
-        return GameInfo(**info)
+        return GameInfo(**info).copy(exclude={'id'})

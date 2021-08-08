@@ -1,3 +1,4 @@
+"""Route of /game/creation"""
 from typing import Dict
 
 from fastapi import APIRouter, HTTPException

@@ -7,6 +7,7 @@ whist-core==0.1.0rc2
 pydantic==1.8.2
 pymongo==3.12.0
 pytest==6.2.4
+pytest-asyncio==0.15.1
 pytest-cov==2.12.1
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4

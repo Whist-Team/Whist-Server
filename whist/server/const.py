@@ -1,6 +1,10 @@
 """Constants at runtime"""
 import os
 
+HEX_32_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+
 TEST_DATABASE = 'test_database'
 
+ALGORITHM = os.getenv('ALGORITHM', 'HS256')
 DATABASE_NAME = os.getenv('DATABASE_NAME', TEST_DATABASE)
+SECRET_KEY = os.getenv('SECRET_KEY', HEX_32_KEY)

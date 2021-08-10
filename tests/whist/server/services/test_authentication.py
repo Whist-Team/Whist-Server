@@ -13,5 +13,4 @@ async def test_get_current_user():
     user.id = ObjectId(user_db_service.add(user))
     token = create_access_token(data={'sub': user.username})
     result_user = await get_current_user(token)
-    print(user)
-    assert user == result_user
+    assert user.to_user() == result_user

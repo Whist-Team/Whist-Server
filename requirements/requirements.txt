@@ -1,6 +1,6 @@
-pip==21.2.2
+pip==21.2.3
 setuptools==57.4.0
-wheel==0.36.2
+wheel==0.37.0
 twine==3.4.2
 fastapi[all]==0.68.0
 whist-core==0.1.0rc2

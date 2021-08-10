@@ -40,3 +40,15 @@ class UserDatabaseService:
         if user is None:
             raise UserNotFoundError(user_id)
         return UserInDb(**user)
+
+    @classmethod
+    def get_by_name(cls, username: str) -> UserInDb:
+        """
+        Similar to 'get(user_id)', but queries by username instead of user id.
+        :param username: of the user
+        :return: the user database object
+        """
+        user = cls._users.find_one({'username': username})
+        if user is None:
+            raise UserNotFoundError(username)
+        return UserInDb(**user)

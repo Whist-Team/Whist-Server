@@ -1,6 +1,6 @@
 import unittest
 
-from whist.server.database.user import UserInDb
+from whist.server.database.user import UserInDb, User
 from whist.server.services.password import PasswordService
 
 
@@ -14,3 +14,7 @@ class UserInDbTestCase(unittest.TestCase):
 
     def test_verify_fail(self):
         self.assertFalse(self.user.verify_password('bac'))
+
+    def test_user(self):
+        user = User(id=self.user.id, username=self.user.username)
+        self.assertEqual(user, self.user.to_user())

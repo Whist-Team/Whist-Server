@@ -28,4 +28,10 @@ setup(
     entry_points={'console_scripts': ['whist-server=whist.server.cli:main']},
     python_requires='>=3.9',
     install_requires=requirements,
+    extras_require={
+        "testing": [
+            "pytest==6.2.4",
+            "pytest-cov==2.12.1"
+        ]
+    },
 )

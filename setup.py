@@ -4,7 +4,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 with open('requirements/requirements.txt') as f:
-    requirements = f.readlines() + ['whist-core~=0.1.0rc2']
+    requirements = f.readlines()
 
 setup(
     name='whist-server',

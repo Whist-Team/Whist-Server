@@ -31,3 +31,9 @@ class UserDbTestCase(unittest.TestCase):
         user_id = self.user_database_service.add(self.user)
         self.user.id = ObjectId(user_id)
         self.assertEqual(self.user, self.user_database_service.get_by_name(self.user.username))
+
+    def test_user_by_name_not_existing(self):
+        username = '1'
+        error_msg = f'User with name "{username}" not found.'
+        with self.assertRaisesRegex(UserNotFoundError, error_msg):
+            self.user_database_service.get_by_name(username)

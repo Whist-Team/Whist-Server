@@ -50,5 +50,5 @@ class UserDatabaseService:
         """
         user = cls._users.find_one({'username': username})
         if user is None:
-            raise UserNotFoundError(username)
+            raise UserNotFoundError(username=username)
         return UserInDb(**user)

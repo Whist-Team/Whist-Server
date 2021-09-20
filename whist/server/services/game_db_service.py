@@ -1,9 +1,9 @@
 """Game database connector"""
 from bson import ObjectId
 
-from server.database import db
-from server.database.game import GameInDb
-from server.services.error import GameNotFoundError
+from whist.server.database import db
+from whist.server.database.game import GameInDb
+from whist.server.services.error import GameNotFoundError
 
 
 class GameDatabaseService:

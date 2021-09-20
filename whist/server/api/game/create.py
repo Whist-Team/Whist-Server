@@ -3,9 +3,9 @@ from typing import Dict
 
 from fastapi import APIRouter, HTTPException
 
-from server.database.game import GameInDb
-from server.services.game_db_service import GameDatabaseService
-from server.services.password import PasswordService
+from whist.server.database.game import GameInDb
+from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.password import PasswordService
 
 router = APIRouter(prefix='/game')
 

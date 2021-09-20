@@ -26,7 +26,7 @@ class GameDatabaseService:
         :param game: to be added
         :return: The id of the successful added game.
         """
-        game_id = cls._games.insert_once(game.dict(exclude={'id'}))
+        game_id = cls._games.insert_one(game.dict(exclude={'id'}))
         return str(game_id.inserted_id)
 
     @classmethod

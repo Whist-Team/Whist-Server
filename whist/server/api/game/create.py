@@ -3,9 +3,9 @@ from typing import Dict
 
 from fastapi import APIRouter, HTTPException
 
-from whist.server.database import db
-from whist.server.database.game import GameInDb
-from whist.server.services.password import PasswordService
+from server.database.game import GameInDb
+from server.services.game_db_service import GameDatabaseService
+from server.services.password import PasswordService
 
 router = APIRouter(prefix='/game')
 
@@ -23,10 +23,9 @@ def create_game(request: Dict[str, str]):
 
     game = GameInDb(game_name=game_name,
                     password=pwd_hash)
-    game_dict: dict = game.dict()
-    game_dict.pop('id')
-    game_id = db.game.insert_one(game_dict)
-    return {'game_id': str(game_id.inserted_id)}
+    game_db_service = GameDatabaseService()
+    game_id = game_db_service.add(game)
+    return {'game_id': game_id}
 
 
 def _get_game_name(request):

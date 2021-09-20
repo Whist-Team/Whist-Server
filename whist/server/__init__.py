@@ -1,12 +1,12 @@
 """A Whist game server using FastAPI"""
 import pkg_resources
 from fastapi import FastAPI
-
 from whist.server.api.game.create import router as game_creation
 from whist.server.api.user.create import router as user_creation
-from .api import api
 from whist.server.database.game_info import GameInfo
 from whist.server.services.game_info_db_service import GameInfoDatabaseService
+
+from .api import api
 
 app = FastAPI()
 app.include_router(api.router)

@@ -25,3 +25,13 @@ class GameInfoNotSetError(Exception):
     def __init__(self):
         message = 'Game info is not set.'
         super().__init__(message)
+
+
+class GameNotFoundError(Exception):
+    """
+    Is raised when the game is not found in db.
+    """
+
+    def __init__(self, game_id: str):
+        message = f'Game with id "{game_id}" not found.'
+        super().__init__(message)

@@ -31,7 +31,7 @@ setup(
     extras_require={
         "testing": [
             "pytest==6.2.5",
-            "pytest-cov==2.12.1"
+            "pytest-cov==3.0.0"
         ]
     },
 )

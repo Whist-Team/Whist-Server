@@ -19,6 +19,8 @@ setup(
     },
     classifiers=[
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
@@ -31,7 +33,7 @@ setup(
     extras_require={
         "testing": [
             "pytest==6.2.5",
-            "pytest-cov==2.12.1"
+            "pytest-cov==3.0.0"
         ]
     },
 )

@@ -32,6 +32,11 @@ class GameNotFoundError(Exception):
     Is raised when the game is not found in db.
     """
 
-    def __init__(self, game_id: str):
-        message = f'Game with id "{game_id}" not found.'
+    def __init__(self, game_id: Optional[str] = None, game_name: Optional[str] = None):
+        if game_id:
+            message = f'Game with id "{game_id}" not found.'
+        elif game_name:
+            message = f'Game with name "{game_id}" not found.'
+        else:
+            message = 'Game not found'
         super().__init__(message)

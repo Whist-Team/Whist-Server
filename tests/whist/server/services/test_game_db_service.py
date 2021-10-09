@@ -27,3 +27,8 @@ class GameDdServiceTestCase(TestCase):
         error_msg = f'Game with id "{game_id}" not found.'
         with self.assertRaisesRegex(GameNotFoundError, error_msg):
             self.service.get(game_id)
+
+    def test_get_by_name(self):
+        game_id = self.service.add(self.game)
+        self.game.id = ObjectId(game_id)
+        self.assertEqual(self.game, self.service.get_by_name('test'))

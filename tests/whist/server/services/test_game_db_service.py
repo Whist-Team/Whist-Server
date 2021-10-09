@@ -17,6 +17,11 @@ class GameDdServiceTestCase(TestCase):
         self.game.id = ObjectId(game_id)
         self.assertEqual(self.game, self.service.get(game_id))
 
+    def test_add_duplicate(self):
+        game_id_first = self.service.add(self.game)
+        game_id_second = self.service.add(self.game)
+        self.assertEqual(game_id_first, game_id_second)
+
     def test_not_existing(self):
         game_id = '1' * 24
         error_msg = f'Game with id "{game_id}" not found.'

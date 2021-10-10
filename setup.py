@@ -3,6 +3,9 @@ from setuptools import setup, find_packages
 with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
+with open('requirements/requirements.txt') as f:
+    requirements = f.readlines()
+
 setup(
     name='whist-server',
     version='0.0.1',
@@ -16,6 +19,8 @@ setup(
     },
     classifiers=[
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
@@ -24,7 +29,11 @@ setup(
     namespace_pacakge=['whist'],
     entry_points={'console_scripts': ['whist-server=whist.server.cli:main']},
     python_requires='>=3.9',
-    install_requires=[
-        'whist-core~=0.1.0rc2'
-    ]
+    install_requires=requirements,
+    extras_require={
+        "testing": [
+            "pytest==6.2.5",
+            "pytest-cov==3.0.0"
+        ]
+    },
 )

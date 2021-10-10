@@ -1,4 +1,6 @@
 """Errors occurring in a service class."""
+from typing import Optional
+
 from fastapi import HTTPException
 from starlette import status
 
@@ -8,8 +10,13 @@ class UserNotFoundError(Exception):
     Is raised when an user is not found in the database.
     """
 
-    def __init__(self, user_id: str):
-        message = f'User with id "{user_id}" not found.'
+    def __init__(self, user_id: Optional[str] = None, username: Optional[str] = None):
+        if user_id:
+            message = f'User with id "{user_id}" not found.'
+        elif username:
+            message = f'User with name "{username}" not found.'
+        else:
+            message = 'User not found.'
         super().__init__(message)
 
 

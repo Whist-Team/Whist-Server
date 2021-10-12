@@ -3,13 +3,14 @@ import pkg_resources
 from fastapi import FastAPI
 
 from whist.server.api import api
-from whist.server.api.user import create
+from whist.server.api.user import create, auth
 from whist.server.database.game_info import GameInfo
 from whist.server.services.game_info_db_service import GameInfoDatabaseService
 
 app = FastAPI()
 app.include_router(api.router)
 app.include_router(create.router)
+app.include_router(auth.router)
 
 whist_core_version = pkg_resources.get_distribution('whist-core').version
 game_info = GameInfo(game='whist', version=whist_core_version)

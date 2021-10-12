@@ -1,3 +1,4 @@
+"""Token authentication"""
 from datetime import timedelta, datetime
 from typing import Optional
 
@@ -52,6 +53,6 @@ async def _get_token_data(token):
         if username is None:
             raise CredentialsException
         token_data = TokenData(username=username)
-    except JWTError:
-        raise CredentialsException()
+    except JWTError as je:
+        raise CredentialsException() from je
     return token_data

@@ -11,7 +11,7 @@ from whist.server.database.user import User
 from whist.server.services.error import CredentialsException
 from whist.server.services.user_db_service import UserDatabaseService
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth')
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

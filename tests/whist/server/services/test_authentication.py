@@ -44,4 +44,4 @@ async def test_check_no_user():
     _ = _create_user()
 
     with pytest.raises(UserNotFoundError):
-        is_valid = await check_credentials('marcel', 'abc')
+        _ = await check_credentials('marcel', 'abc')

@@ -4,6 +4,7 @@ from bson import ObjectId
 from whist.server.database.user import UserInDb
 from whist.server.services.authentication import get_current_user, create_access_token, \
     check_credentials
+from whist.server.services.error import UserNotFoundError
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
 
@@ -36,3 +37,11 @@ async def test_check_wrong_credentials():
     _ = _create_user()
     is_valid = await check_credentials('test', 'abcd')
     assert not is_valid
+
+
+@pytest.mark.asyncio
+async def test_check_no_user():
+    _ = _create_user()
+
+    with pytest.raises(UserNotFoundError):
+        is_valid = await check_credentials('marcel', 'abc')

@@ -10,6 +10,7 @@ from whist.server.const import SECRET_KEY, ALGORITHM
 from whist.server.database.token import TokenData
 from whist.server.database.user import User
 from whist.server.services.error import CredentialsException
+from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth')
@@ -44,6 +45,22 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     if user is None:
         raise CredentialsException()
     return user.to_user()
+
+
+async def check_credentials(username: str, password: str) -> bool:
+    """
+    Verifies the password for a given username.
+    :param username: the name of the user as string
+    :param password: the plain password to be checked as string.
+    :return: True if credentials are valid else False. If user not found raises
+    CredentialsException.
+    """
+    user_db_service = UserDatabaseService()
+    user = user_db_service.get_by_name(username)
+    if user is None:
+        raise CredentialsException()
+    password_db_service = PasswordService()
+    return password_db_service.verify(password, user.hashed_password)
 
 
 async def _get_token_data(token):

@@ -29,3 +29,10 @@ async def test_check_credentials():
     _ = _create_user()
     is_valid = await check_credentials('test', 'abc')
     assert is_valid
+
+
+@pytest.mark.asyncio
+async def test_check_wrong_credentials():
+    _ = _create_user()
+    is_valid = await check_credentials('test', 'abcd')
+    assert not is_valid

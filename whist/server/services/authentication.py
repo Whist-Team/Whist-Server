@@ -70,6 +70,6 @@ async def _get_token_data(token):
         if username is None:
             raise CredentialsException
         token_data = TokenData(username=username)
-    except JWTError as je:
-        raise CredentialsException() from je
+    except JWTError as token_error:
+        raise CredentialsException() from token_error
     return token_data

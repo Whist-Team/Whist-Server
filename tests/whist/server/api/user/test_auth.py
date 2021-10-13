@@ -9,7 +9,7 @@ from whist.server.database import db
 class AuthTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.client = TestClient(app)
-        self.login_creds = {'username': 'test', 'password': 'abc'}
+        self.login_creds = {'username': 'marcel', 'password': 'abc'}
         _ = self.client.post(url='/user/create/', json=self.login_creds)
 
     def tearDown(self) -> None:

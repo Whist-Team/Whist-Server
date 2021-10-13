@@ -6,7 +6,7 @@ from bson import ObjectId
 from whist.server.database.user import UserInDb
 from whist.server.services.authentication import get_current_user, create_access_token, \
     check_credentials
-from whist.server.services.error import UserNotFoundError
+from whist.server.services.error import UserNotFoundError, CredentialsException
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
 
@@ -28,12 +28,18 @@ async def test_get_current_user():
 
 
 @pytest.mark.asyncio
-async def test_get_current_user_with_delta():
+async def test_get_current_user_no_user():
     user = _create_user()
-    expires_delta = timedelta(days=1)
-    token = create_access_token(data={'sub': user.username}, expires_delta=expires_delta)
+    token = create_access_token(data={'sub': user.username})
     result_user = await get_current_user(token)
     assert user.to_user() == result_user
+
+
+@pytest.mark.asyncio
+async def test_get_current_user_with_delta():
+    token = create_access_token(data={'sub': 'test'})
+    with pytest.raises(UserNotFoundError):
+        _ = await get_current_user(token)
 
 
 @pytest.mark.asyncio

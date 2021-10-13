@@ -42,8 +42,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     token_data = await _get_token_data(token)
     user_db_service = UserDatabaseService()
     user = user_db_service.get_by_name(token_data.username)
-    if user is None:
-        raise CredentialsException()
     return user.to_user()
 
 

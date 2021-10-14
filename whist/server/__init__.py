@@ -15,6 +15,7 @@ app.include_router(api.router)
 app.include_router(game_creation)
 app.include_router(user_creation)
 app.include_router(auth.router)
+app.include_router(auth.router)
 
 whist_core_version = pkg_resources.get_distribution('whist-core').version
 game_info = GameInfo(game='whist', version=whist_core_version)

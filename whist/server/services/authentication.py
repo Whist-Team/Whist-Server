@@ -42,8 +42,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     token_data = await _get_token_data(token)
     user_db_service = UserDatabaseService()
     user = user_db_service.get_by_name(token_data.username)
-    if user is None:
-        raise CredentialsException()
     return user.to_user()
 
 
@@ -53,12 +51,10 @@ async def check_credentials(username: str, password: str) -> bool:
     :param username: the name of the user as string
     :param password: the plain password to be checked as string.
     :return: True if credentials are valid else False. If user not found raises
-    CredentialsException.
+    UserNotFoundError.
     """
     user_db_service = UserDatabaseService()
     user = user_db_service.get_by_name(username)
-    if user is None:
-        raise CredentialsException()
     password_db_service = PasswordService()
     return password_db_service.verify(password, user.hashed_password)
 

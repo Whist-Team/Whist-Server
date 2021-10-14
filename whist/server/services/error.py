@@ -1,6 +1,9 @@
 """Errors occurring in a service class."""
 from typing import Optional
 
+from fastapi import HTTPException
+from starlette import status
+
 
 class UserNotFoundError(Exception):
     """
@@ -25,3 +28,14 @@ class GameInfoNotSetError(Exception):
     def __init__(self):
         message = 'Game info is not set.'
         super().__init__(message)
+
+
+class CredentialsException(HTTPException):
+    """
+    Is raised when the credentials are incorrect.
+    """
+
+    def __init__(self):
+        super().__init__(status_code=status.HTTP_401_UNAUTHORIZED,
+                         detail="Could not validate credentials",
+                         headers={"WWW-Authenticate": "Bearer"})

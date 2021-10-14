@@ -23,7 +23,6 @@ class PasswordService:
         :param hashed_password: The saved password hash
         :return: True if verified else False.
         """
-
         try:
             return cls._password_context.verify(plain_password, hashed_password)
         except UnknownHashError:

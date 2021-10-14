@@ -8,7 +8,6 @@ from whist.server.api.user import create, auth
 from whist.server.api.user.create import router as user_creation
 from whist.server.database.game_info import GameInfo
 from whist.server.services.game_info_db_service import GameInfoDatabaseService
-from .api import api
 
 app = FastAPI()
 app.include_router(api.router)

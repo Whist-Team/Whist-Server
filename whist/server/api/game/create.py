@@ -23,7 +23,7 @@ def create_game(request: Dict[str, str], user: UserInDb=Security(get_current_use
     game_name = _get_game_name(request)
 
     game = GameInDb(game_name=game_name,
-                    password=pwd_hash
+                    password=pwd_hash,
                     creator=str(user.id))
     game_db_service = GameDatabaseService()
     game_id = game_db_service.add(game)

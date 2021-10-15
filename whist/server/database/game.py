@@ -13,6 +13,7 @@ class Game(BaseModel):
     """
     id: Optional[PyObjectId] = Field(alias='_id')
     game_name: str
+    creator: str
 
 
 class GameInDb(Game):

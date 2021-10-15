@@ -1,7 +1,7 @@
 """Route of /game/creation"""
 from typing import Dict
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 
 from whist.server.database.game import GameInDb
 from whist.server.database.user import User

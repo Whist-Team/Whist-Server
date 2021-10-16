@@ -33,7 +33,8 @@ setup(
     extras_require={
         "testing": [
             "pytest==6.2.5",
-            "pytest-cov==3.0.0"
+            "pytest-cov==3.0.0",
+            "pytest-asyncio==0.15.1"
         ]
     },
 )

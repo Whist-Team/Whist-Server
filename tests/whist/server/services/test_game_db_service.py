@@ -10,7 +10,7 @@ from whist.server.services.game_db_service import GameDatabaseService
 class GameDdServiceTestCase(TestCase):
     def setUp(self) -> None:
         self.service = GameDatabaseService()
-        self.game = GameInDb(game_name='test', hashed_password='abc')
+        self.game = GameInDb(game_name='test', hashed_password='abc', creator='1')
 
     def test_add(self):
         game_id = self.service.add(self.game)

@@ -8,7 +8,8 @@ class GameInDbTestCase(unittest.TestCase):
     def setUp(self) -> None:
         password_service = PasswordService()
         self.game: GameInDb = GameInDb(game_name='test',
-                                       hashed_password=password_service.hash('abc'))
+                                       hashed_password=password_service.hash('abc'),
+                                       creator='1')
 
     def test_verify_pwd(self):
         self.assertTrue(self.game.verify_password('abc'))
@@ -17,5 +18,5 @@ class GameInDbTestCase(unittest.TestCase):
         self.assertFalse(self.game.verify_password('bac'))
 
     def test_verify_without_password(self):
-        game: GameInDb = GameInDb(game_name='test')
+        game: GameInDb = GameInDb(game_name='test', creator='1')
         self.assertTrue(game.verify_password(None))

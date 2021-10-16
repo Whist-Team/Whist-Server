@@ -10,6 +10,9 @@ from whist.server.services.password import PasswordService
 class Game(BaseModel):
     """
     Game DAO
+    id: unique identifier for a game.
+    game_name: user friendly identifier
+    creator: user id as string of the player how created that session.
     """
     id: Optional[PyObjectId] = Field(alias='_id')
     game_name: str

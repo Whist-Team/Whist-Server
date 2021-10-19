@@ -18,7 +18,7 @@ class UserTestCase(unittest.TestCase):
         Tests the creation of a new user.
         """
         data = {'username': 'test', 'password': 'abc'}
-        response = self.client.post(url='/user/create/', json=data)
+        response = self.client.post(url='/user/create', json=data)
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertTrue('user_id' in response.json())
         self.assertEqual(1, db.user.count())
@@ -29,5 +29,5 @@ class UserTestCase(unittest.TestCase):
         """
         data = {'username': 'test'}
         with self.assertRaisesRegex(KeyError, 'password'):
-            _ = self.client.post(url='/user/create/', json=data)
+            _ = self.client.post(url='/user/create', json=data)
         self.assertEqual(0, db.user.count())

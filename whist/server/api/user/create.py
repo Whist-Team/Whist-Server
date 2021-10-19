@@ -7,10 +7,10 @@ from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
 
-router = APIRouter(prefix='/user/create')
+router = APIRouter(prefix='/user')
 
 
-@router.post('/')
+@router.post('/create')
 def create_user(request: Dict[str, str]):
     """
     Creates a new user.

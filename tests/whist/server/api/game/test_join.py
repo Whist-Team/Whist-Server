@@ -12,5 +12,11 @@ class JoinGameTestCase(TestCaseWithToken):
         response = self.client.post(url=f'/game/join/{self.game_id}',
                                     json={'password': 'abc'},
                                     headers=self.headers)
-        self.assertEqual(response.status_code, 200, msg=response.content)
+        self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('joined', response.json()['status'])
+
+    def test_join_wrong_pwd_game(self):
+        response = self.client.post(url=f'/game/join/{self.game_id}',
+                                    json={'password': 'abcd'},
+                                    headers=self.headers)
+        self.assertEqual(401, response.status_code, msg=response.content)

@@ -6,7 +6,7 @@ from whist.server import app
 from whist.server.database import db
 
 
-class GameTestCase(unittest.TestCase):
+class CreateGameTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.client = TestClient(app)
         self.login_creds = {'username': 'marcel', 'password': 'abc'}

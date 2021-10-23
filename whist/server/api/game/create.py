@@ -17,7 +17,7 @@ def create_game(request: Dict[str, str], user: User = Security(get_current_user)
     """
     Creates a new game of whist.
     :param request: Must contain a 'game_name'. 'password' is optional.
-    _:param user: that created the game session.
+    :param user: that created the game session.
     :return: the ID of the game instance.
     """
     pwd_service = PasswordService()

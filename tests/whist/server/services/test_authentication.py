@@ -6,7 +6,7 @@ from bson import ObjectId
 from whist.server.database.user import UserInDb
 from whist.server.services.authentication import get_current_user, create_access_token, \
     check_credentials
-from whist.server.services.error import UserNotFoundError, CredentialsException
+from whist.server.services.error import UserNotFoundError, CredentialsException, UserExistsError
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
 
@@ -15,7 +15,10 @@ def _create_user():
     hashed_password = PasswordService().hash('abc')
     user = UserInDb(username='test', hashed_password=hashed_password)
     user_db_service = UserDatabaseService()
-    user.id = ObjectId(user_db_service.add(user))
+    try:
+        user.id = ObjectId(user_db_service.add(user))
+    except UserExistsError:
+        return user_db_service.get_by_name(user.username)
     return user
 
 

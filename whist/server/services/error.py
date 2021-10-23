@@ -5,6 +5,13 @@ from fastapi import HTTPException
 from starlette import status
 
 
+class UserExistsError(Exception):
+    """
+    Is raised when an user already exists.
+    """
+    pass
+
+
 class UserNotFoundError(Exception):
     """
     Is raised when an user is not found in the database.

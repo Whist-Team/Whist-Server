@@ -4,7 +4,7 @@ from bson import ObjectId
 
 from whist.server.database import db
 from whist.server.database.user import UserInDb
-from whist.server.services.error import UserNotFoundError
+from whist.server.services.error import UserNotFoundError, UserExistsError
 from whist.server.services.user_db_service import UserDatabaseService
 
 
@@ -37,3 +37,9 @@ class UserDbTestCase(unittest.TestCase):
         error_msg = f'User with name "{username}" not found.'
         with self.assertRaisesRegex(UserNotFoundError, error_msg):
             self.user_database_service.get_by_name(username)
+
+    def test_unique_user(self):
+        user_id = self.user_database_service.add(self.user)
+        with(self.assertRaises(UserExistsError)):
+            user_id = self.user_database_service.add(self.user)
+        self.assertEqual(1, db.user.count())

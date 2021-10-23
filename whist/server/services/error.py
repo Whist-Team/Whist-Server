@@ -9,7 +9,6 @@ class UserExistsError(Exception):
     """
     Is raised when an user already exists.
     """
-    pass
 
 
 class UserNotFoundError(Exception):

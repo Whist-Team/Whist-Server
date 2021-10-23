@@ -32,4 +32,4 @@ class UserInDb(User):
         Converts the DO to DAO.
         :return: User with no password saved in object.
         """
-        return User(**self.dict())
+        return User(_id=self.id, **self.dict())

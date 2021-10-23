@@ -3,7 +3,7 @@ from bson import ObjectId
 
 from whist.server.database import db
 from whist.server.database.user import UserInDb
-from whist.server.services.error import UserNotFoundError
+from whist.server.services.error import UserNotFoundError, UserExistsError
 
 
 class UserDatabaseService:
@@ -26,8 +26,13 @@ class UserDatabaseService:
         :param user: to be added
         :return: The id of the successful added user.
         """
-        user_id = cls._users.insert_one(user.dict(exclude={'id'}))
-        return str(user_id.inserted_id)
+        try:
+            _ = cls.get_by_name(user.username)
+        except UserNotFoundError:
+            user_id = cls._users.insert_one(user.dict(exclude={'id'}))
+            return str(user_id.inserted_id)
+        else:
+            raise UserExistsError(f'User with username: "{user.username}" already exists.')
 
     @classmethod
     def get(cls, user_id: str) -> UserInDb:

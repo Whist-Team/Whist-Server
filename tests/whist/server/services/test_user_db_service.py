@@ -12,6 +12,7 @@ class UserDbTestCase(unittest.TestCase):
     def setUp(self):
         self.user_database_service = UserDatabaseService()
         self.user: UserInDb = UserInDb(username='test', hashed_password='abc')
+        db.user.drop()
 
     def tearDown(self) -> None:
         db.user.drop()
@@ -39,7 +40,7 @@ class UserDbTestCase(unittest.TestCase):
             self.user_database_service.get_by_name(username)
 
     def test_unique_user(self):
-        user_id = self.user_database_service.add(self.user)
+        _ = self.user_database_service.add(self.user)
         with(self.assertRaises(UserExistsError)):
-            user_id = self.user_database_service.add(self.user)
+            _ = self.user_database_service.add(self.user)
         self.assertEqual(1, db.user.count())

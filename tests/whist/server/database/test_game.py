@@ -20,3 +20,7 @@ class GameInDbTestCase(unittest.TestCase):
     def test_verify_without_password(self):
         game: GameInDb = GameInDb(game_name='test', creator='1')
         self.assertTrue(game.verify_password(None))
+
+    def test_join(self):
+        self.assertTrue(self.game.join('2'))
+        self.assertEqual(['1', '2'], self.game.players)

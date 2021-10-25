@@ -1,6 +1,7 @@
 import unittest
 
 from whist.server.database.game import GameInDb
+from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
 
 
@@ -24,4 +25,10 @@ class GameInDbTestCase(unittest.TestCase):
 
     def test_join(self):
         self.assertTrue(self.game.join('2'))
+        self.assertEqual(['1', '2'], self.game.players)
+
+    def test_join_twice(self):
+        self.assertTrue(self.game.join('2'))
+        with self.assertRaises(PlayerAlreadyJoinedWarning):
+            self.assertTrue(self.game.join('2'))
         self.assertEqual(['1', '2'], self.game.players)

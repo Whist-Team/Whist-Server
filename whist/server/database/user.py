@@ -1,15 +1,12 @@
 """User models"""
-from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-from whist.server.database.id_wrapper import PyObjectId
 from whist.server.services.password import PasswordService
 
 
 class User(BaseModel):
     """User DAO"""
-    id: Optional[PyObjectId] = Field(alias='_id')
     username: str
 
 
@@ -32,4 +29,4 @@ class UserInDb(User):
         Converts the DO to DAO.
         :return: User with no password saved in object.
         """
-        return User(_id=self.id, **self.dict())
+        return User(**self.dict())

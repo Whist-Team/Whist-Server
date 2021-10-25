@@ -1,8 +1,8 @@
 from typing import Dict
 
 from fastapi import APIRouter, HTTPException, Security, status
+from whist.core.user.player import Player
 
-from whist.server.database.user import User
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
@@ -11,7 +11,7 @@ router = APIRouter(prefix='/game')
 
 
 @router.post('/join/{game_id}', status_code=200)
-def join_game(game_id: str, request: Dict[str, str], user: User = Security(get_current_user)):
+def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get_current_user)):
     """
     User requests to join a game.
     :param game_id: unique identifier for a game
@@ -32,5 +32,5 @@ def join_game(game_id: str, request: Dict[str, str], user: User = Security(get_c
             detail="Wrong game password.",
             headers={"WWW-Authenticate": "Basic"},
         )
-    game.join(user.player)
+    game.join(user)
     return {'status': 'joined'}

@@ -32,4 +32,5 @@ def join_game(game_id: str, request: Dict[str, str], user: User = Security(get_c
             detail="Wrong game password.",
             headers={"WWW-Authenticate": "Basic"},
         )
+    game.join(user.player)
     return {'status': 'joined'}

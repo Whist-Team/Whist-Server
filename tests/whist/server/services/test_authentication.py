@@ -17,7 +17,7 @@ def _create_user():
     try:
         user_db_service.add(user)
     except UserExistsError:
-        return user_db_service.get_by_name(user.username)
+        return user_db_service.get(user.username)
     return user
 
 

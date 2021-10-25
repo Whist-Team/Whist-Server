@@ -41,7 +41,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     """
     token_data = await _get_token_data(token)
     user_db_service = UserDatabaseService()
-    user = user_db_service.get_by_name(token_data.username)
+    user = user_db_service.get(token_data.username)
     return user.to_user()
 
 
@@ -54,7 +54,7 @@ async def check_credentials(username: str, password: str) -> bool:
     UserNotFoundError.
     """
     user_db_service = UserDatabaseService()
-    user = user_db_service.get_by_name(username)
+    user = user_db_service.get(username)
     password_db_service = PasswordService()
     return password_db_service.verify(password, user.hashed_password)
 

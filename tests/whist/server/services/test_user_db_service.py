@@ -17,13 +17,13 @@ class UserDbTestCase(unittest.TestCase):
 
     def test_add_user(self):
         self.assertTrue(self.user_database_service.add(self.user))
-        self.assertEqual(self.user, self.user_database_service.get_by_name(self.user.username))
+        self.assertEqual(self.user, self.user_database_service.get(self.user.username))
 
     def test_user_not_existing(self):
         username = '1'
         error_msg = f'User with name "{username}" not found.'
         with self.assertRaisesRegex(UserNotFoundError, error_msg):
-            self.user_database_service.get_by_name(username)
+            self.user_database_service.get(username)
 
     def test_unique_user(self):
         _ = self.user_database_service.add(self.user)

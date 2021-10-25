@@ -26,3 +26,9 @@ class GameInDbTestCase(BasePlayerTestCase):
     def test_join(self):
         self.assertTrue(self.game.join('2'))
         self.assertEqual(['1', '2'], self.game.players)
+
+    def test_join_twice(self):
+        self.assertTrue(self.game.join('2'))
+        with self.assertRaises(PlayerAlreadyJoinedWarning):
+            self.assertTrue(self.game.join('2'))
+        self.assertEqual(['1', '2'], self.game.players)

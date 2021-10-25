@@ -10,6 +10,7 @@ class GameInDbTestCase(unittest.TestCase):
         self.game: GameInDb = GameInDb(game_name='test',
                                        hashed_password=password_service.hash('abc'),
                                        creator='1')
+        self.assertEqual(['1'], self.game.players)
 
     def test_verify_pwd(self):
         self.assertTrue(self.game.verify_password('abc'))

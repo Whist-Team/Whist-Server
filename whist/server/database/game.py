@@ -1,8 +1,9 @@
 """Game models"""
-from typing import Optional, Any
+from typing import Optional
 
 from pydantic import BaseModel, Field
 from whist.core.session.table import Table
+from whist.core.session.userlist import UserList
 from whist.core.user.player import Player
 
 from whist.server.database.id_wrapper import PyObjectId
@@ -44,22 +45,23 @@ class Game(BaseModel):
         return self.table.name
 
     @property
-    def players(self) -> list[str]:
+    def players(self) -> UserList:
         """
         :return: list of user ids that joined the game.
         """
-        return self.user_list
+        return self.table.users
 
-    def join(self, user_id: str) -> bool:
+    def join(self, user: Player) -> bool:
         """
         Adds the user to this game.
-        :param user_id: unique identifier of the user
+        :param user: user that wants to join.
         :return: True if successful else an error or warning is raised.
         :raise: PlayerAlreadyJoinedWarning when a player tries to join again.
         """
-        if user_id in self.user_list:
-            raise PlayerAlreadyJoinedWarning(f'User with id "{user_id}" has already joined.')
-        self.user_list.append(user_id)
+        if user in self.table:
+            raise PlayerAlreadyJoinedWarning(
+                f'User with name "{user.username}" has already joined.')
+        self.table.join(user)
         return True
 
 

@@ -12,7 +12,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         super().setUp()
         self.service = GameDatabaseService()
         self.game = GameInDb.create_with_pwd(game_name='test', hashed_password='abc',
-                                             creator=self.player)
+                             creator=self.player)
 
     def test_add(self):
         game_id = self.service.add(self.game)

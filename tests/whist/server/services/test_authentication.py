@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 import pytest
-from bson import ObjectId
 
 from whist.server.database.user import UserInDb
 from whist.server.services.authentication import get_current_user, create_access_token, \
@@ -16,9 +15,9 @@ def _create_user():
     user = UserInDb(username='test', hashed_password=hashed_password)
     user_db_service = UserDatabaseService()
     try:
-        user.id = ObjectId(user_db_service.add(user))
+        user_db_service.add(user)
     except UserExistsError:
-        return user_db_service.get_by_name(user.username)
+        return user_db_service.get(user.username)
     return user
 
 

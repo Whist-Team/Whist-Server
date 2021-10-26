@@ -2,6 +2,7 @@ import unittest
 
 from whist.core.user.player import Player
 
+from whist.server.const import INITIAL_RATING
 from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
 
@@ -20,5 +21,5 @@ class UserInDbTestCase(unittest.TestCase):
         self.assertFalse(self.user.verify_password('bac'))
 
     def test_user(self):
-        user = Player(username=self.user.username)
+        user = Player(username=self.user.username, rating=INITIAL_RATING)
         self.assertEqual(user, self.user.to_user())

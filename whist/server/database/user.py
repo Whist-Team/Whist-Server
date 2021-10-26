@@ -1,7 +1,9 @@
 """User models"""
+from typing import Any
 
 from whist.core.user.player import Player
 
+from whist.server.const import INITIAL_RATING
 from whist.server.services.password import PasswordService
 
 
@@ -10,6 +12,9 @@ class UserInDb(Player):
     User DO
     """
     hashed_password: str
+
+    def __init__(self, rating=INITIAL_RATING, **data: Any):
+        super().__init__(rating=rating, **data)
 
     def verify_password(self, password) -> bool:
         """

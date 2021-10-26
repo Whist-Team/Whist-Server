@@ -1,3 +1,6 @@
+"""
+Route to join a game.
+"""
 from typing import Dict
 
 from fastapi import APIRouter, HTTPException, Security, status

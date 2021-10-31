@@ -6,6 +6,7 @@ from typing import Dict
 from fastapi import APIRouter, HTTPException, Security, status
 from whist.core.user.player import Player
 
+from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
@@ -35,5 +36,8 @@ def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get
             detail="Wrong game password.",
             headers={"WWW-Authenticate": "Basic"},
         )
-    game.join(user)
+    try:
+        game.join(user)
+    except PlayerAlreadyJoinedWarning:
+        return {'status': 'already joined'}
     return {'status': 'joined'}

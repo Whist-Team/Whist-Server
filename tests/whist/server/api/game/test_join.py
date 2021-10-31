@@ -21,3 +21,10 @@ class JoinGameTestCase(TestCaseWithToken):
                                     json={'password': 'abcd'},
                                     headers=self.headers)
         self.assertEqual(401, response.status_code, msg=response.content)
+
+    def test_host_join(self):
+        response = self.client.post(url=f'/game/join/{self.game_id}',
+                                    json={'password': 'abc'},
+                                    headers=self.headers)
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('already joined', response.json()['status'])

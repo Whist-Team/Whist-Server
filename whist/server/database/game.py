@@ -50,7 +50,7 @@ class GameInDb(Game):
 
     # pylint: disable=too-many-arguments
     @classmethod
-    def create_with_pwd(cls, game_name: str, creator: Player, hashed_password: str,
+    def create_with_pwd(cls, game_name: str, creator: Player, hashed_password: Optional[str] = None,
                         min_player: int = 4, max_player: int = 4) -> 'GameInDb':
         """
         Factory method to create a Game in database object.

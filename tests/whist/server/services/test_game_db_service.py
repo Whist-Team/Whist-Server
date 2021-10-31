@@ -1,21 +1,24 @@
-from unittest import TestCase
-
 from bson import ObjectId
 
+from tests.whist.server.base_player_test_case import BasePlayerTestCase
+from whist.server.database import db
 from whist.server.database.game import GameInDb
 from whist.server.services.error import GameNotFoundError
 from whist.server.services.game_db_service import GameDatabaseService
 
 
-class GameDdServiceTestCase(TestCase):
+class GameDdServiceTestCase(BasePlayerTestCase):
     def setUp(self) -> None:
+        super().setUp()
         self.service = GameDatabaseService()
-        self.game = GameInDb(game_name='test', hashed_password='abc', creator='1')
+        self.game = GameInDb.create_with_pwd(game_name='test', hashed_password='abc',
+                                             creator=self.player)
 
     def test_add(self):
         game_id = self.service.add(self.game)
         self.game.id = ObjectId(game_id)
         self.assertEqual(self.game, self.service.get(game_id))
+        self.assertEqual(1, db.game.count())
 
     def test_add_duplicate(self):
         game_id_first = self.service.add(self.game)

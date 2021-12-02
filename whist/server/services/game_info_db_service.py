@@ -25,7 +25,7 @@ class GameInfoDatabaseService:
         :param info: to be added
         :return: None
         """
-        if cls._info.find().count() > 0:
+        if cls._info.estimated_document_count() > 0:
             cls._info.delete_many({})
         cls._info.insert_one(info.dict(exclude={'_id', 'id'}))
 

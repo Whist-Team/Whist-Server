@@ -21,7 +21,7 @@ class UserTestCase(unittest.TestCase):
         response = self.client.post(url='/user/create', json=data)
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertTrue('user_id' in response.json())
-        self.assertEqual(1, db.user.count())
+        self.assertEqual(1, db.user.estimated_document_count())
 
     def test_post_user_no_pwd(self):
         """
@@ -30,4 +30,4 @@ class UserTestCase(unittest.TestCase):
         data = {'username': 'test'}
         with self.assertRaisesRegex(KeyError, 'password'):
             _ = self.client.post(url='/user/create', json=data)
-        self.assertEqual(0, db.user.count())
+        self.assertEqual(0, db.user.estimated_document_count())

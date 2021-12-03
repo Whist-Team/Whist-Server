@@ -3,7 +3,7 @@ import uvicorn
 
 from whist.server import app
 
-
+from whist.server.const import HOST_ADDR, HOST_PORT
 
 
 def main():

@@ -30,7 +30,8 @@ jobs:
       - name: Run bandit
         uses: tj-actions/bandit@v5
         with:
-          targets:  "."
+          targets: |
+            whist
           options: "-r"
 
       - name: Security check report artifacts

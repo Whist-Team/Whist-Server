@@ -35,9 +35,3 @@ jobs:
             whist
           options: "-r"
 
-      - name: Security check report artifacts
-        uses: actions/upload-artifact@v1
-        # if: failure()
-        with:
-          name: Security report
-          path: output/security_report.txt

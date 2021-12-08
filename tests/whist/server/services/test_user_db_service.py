@@ -29,4 +29,4 @@ class UserDbTestCase(unittest.TestCase):
         _ = self.user_database_service.add(self.user)
         with(self.assertRaises(UserExistsError)):
             _ = self.user_database_service.add(self.user)
-        self.assertEqual(1, db.user.count())
+        self.assertEqual(1, db.user.estimated_document_count())

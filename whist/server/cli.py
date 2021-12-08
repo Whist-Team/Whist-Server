@@ -14,3 +14,4 @@ def main(host=HOST_ADDR, port=HOST_PORT, admin_name=None, admin_pwd=None):
         user_service = UserDatabaseService()
         password_service = PasswordService()
         admin = UserInDb(username=admin_name, hashed_password=password_service.hash(admin_pwd))
+        user_service.add(admin)

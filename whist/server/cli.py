@@ -13,4 +13,4 @@ def main(host=HOST_ADDR, port=HOST_PORT, admin_name=None, admin_pwd=None):
     if admin_name and admin_pwd:
         user_service = UserDatabaseService()
         password_service = PasswordService()
-        admin = UserInDb(username=admin_name, password=password_service.hash(admin_pwd))
+        admin = UserInDb(username=admin_name, hashed_password=password_service.hash(admin_pwd))

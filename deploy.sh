@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Start mongo server."
-#systemctl start mongod
+systemctl start mongod
 echo "Mongo server started"
 
 echo "Enter host address for whist server (127.0.0.1):"

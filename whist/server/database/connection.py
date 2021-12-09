@@ -8,7 +8,7 @@ def get_database(database):
     """
     Returns the mongo database.
     """
-    client = pymongo.MongoClient()
+    client = pymongo.MongoClient(host=database)
     if database == TEST_DATABASE:
         client.drop_database(database)
     return client[database]

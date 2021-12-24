@@ -1,13 +1,11 @@
-from whist.core.user.player import Player
-
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
+from whist.core.user.player import Player
 from whist.server.database.game import GameInDb
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
 
 
 class GameInDbTestCase(BasePlayerTestCase):
-
     def setUp(self) -> None:
         super().setUp()
         password_service = PasswordService()

@@ -18,7 +18,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         game_id = self.service.add(self.game)
         self.game.id = ObjectId(game_id)
         self.assertEqual(self.game, self.service.get(game_id))
-        self.assertEqual(1, db.game.count())
+        self.assertEqual(1, db.game.count_documents({}))
 
     def test_add_duplicate(self):
         game_id_first = self.service.add(self.game)

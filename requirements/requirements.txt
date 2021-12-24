@@ -1,7 +1,7 @@
-fastapi[all]==0.70.0
-whist-core==0.1.0rc4
+fastapi[all]==0.70.1
+whist-core==0.1.0rc5
 pydantic==1.8.2
-pymongo==3.12.1
+pymongo==4.0.1
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 typing-extensions>=3.10.0.2

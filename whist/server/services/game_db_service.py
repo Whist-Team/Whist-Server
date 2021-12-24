@@ -52,7 +52,7 @@ class GameDatabaseService:
         :param game_name: of the game
         :return: the game database object
         """
-        game = cls._games.find_one({'game_name': game_name})
+        game = cls._games.find_one({'table.name': game_name})
         if game is None:
             raise GameNotFoundError(game_name=game_name)
         return GameInDb(**game)

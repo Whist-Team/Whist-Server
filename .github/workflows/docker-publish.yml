@@ -35,13 +35,8 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       - name: Get Version
-        id: version
-        run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          echo ::set-output name=docker_tags::${VERSION}
+          id: get_version
+          uses: battila7/get-version-action@v2
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2

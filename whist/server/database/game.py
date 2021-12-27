@@ -4,8 +4,8 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from whist.core.session.table import Table
 from whist.core.user.player import Player
-
 from whist.server.database.id_wrapper import PyObjectId
+from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
 
 
@@ -13,8 +13,8 @@ class Game(BaseModel):
     """
     Game DAO
     id: unique identifier for a game.
-    game_name: user friendly identifier
     creator: user id as string of the player how created that session.
+    players: list of user ids of player that joined the game.
     """
     id: Optional[PyObjectId] = Field(alias='_id')
     creator: Player
@@ -41,6 +41,26 @@ class Game(BaseModel):
         :return: name of the game.
         """
         return self.table.name
+
+    @property
+    def players(self) -> list[Player]:
+        """
+        :return: list of user ids that joined the game.
+        """
+        return self.table.users.players
+
+    def join(self, user: Player) -> bool:
+        """
+        Adds the user to this game.
+        :param user: user that wants to join.
+        :return: True if successful else an error or warning is raised.
+        :raise: PlayerAlreadyJoinedWarning when a player tries to join again.
+        """
+        if user in self.players:
+            raise PlayerAlreadyJoinedWarning(
+                f'User with name "{user.username}" has already joined.')
+        self.table.join(user)
+        return True
 
 
 class GameInDb(Game):

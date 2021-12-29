@@ -64,6 +64,9 @@ class Game(BaseModel):
         self.table.join(user)
         return True
 
+    def ready_player(self, player: Player) -> None:
+        self.table.player_ready(player)
+
     def start(self, player: Player) -> bool:
         """
         Starts the current table, if the player is the creator.

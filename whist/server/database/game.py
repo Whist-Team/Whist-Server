@@ -73,7 +73,7 @@ class Game(BaseModel):
         :param player: who tries to start the table.
         :return: True if successful else False.
         """
-        if player is not self.creator:
+        if player != self.creator:
             raise PlayerNotCreatorError()
         if not self.table.started:
             self.table.start()

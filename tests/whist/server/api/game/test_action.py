@@ -15,4 +15,3 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
                                     headers=self.headers)
         self.assertEqual(403, response.status_code, msg=response.content)
-        self.assertEqual('not started', response.json()['status'])

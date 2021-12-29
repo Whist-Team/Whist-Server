@@ -1,5 +1,6 @@
-"""Route to administrate a table."""
+"""Route to interaction with a table."""
 from fastapi import APIRouter, Security, HTTPException, status
+from whist.core.error.table_error import PlayerNotJoinedError
 from whist.core.user.player import Player
 
 from whist.server.database.error import PlayerNotCreatorError
@@ -16,7 +17,7 @@ def start_game(game_id: str, user: Player = Security(get_current_user)) -> dict:
     :param game_id: unique identifier of the game
     :param user: Required to identify if the user is the creator.
     :return: dictionary containing the status of whether the table has been started or not.
-    Raises 403 exeception if the user has not the appropiate privileges.
+    Raises 403 exception if the user has not the appropriate privileges.
     """
     game_service = GameDatabaseService()
     game = game_service.get(game_id)
@@ -32,3 +33,27 @@ def start_game(game_id: str, user: Player = Security(get_current_user)) -> dict:
             headers={"WWW-Authenticate": "Basic"},
         ) from start_exception
     return {'status': 'not started'}
+
+
+@router.post('/action/ready/{game_id}', status_code=200)
+def ready_player(game_id: str, user: Player = Security(get_current_user)) -> dict:
+    """
+    A player can mark theyself to be ready.
+    :param game_id: unique identifier of the game
+    :param user: Required to identify the user.
+    :return: dictionary containing the status of whether the action was successful.
+    Raises 403 exception if the user has not be joined yet.
+    """
+    game_service = GameDatabaseService()
+    game = game_service.get(game_id)
+
+    try:
+        game.ready_player(user)
+    except PlayerNotJoinedError as ready_error:
+        message = 'Player has not joined the table yet.'
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=message,
+            headers={"WWW-Authenticate": "Basic"},
+        ) from ready_error
+    return {'status': f'{user.username} is ready'}

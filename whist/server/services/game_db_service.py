@@ -3,7 +3,7 @@ from bson import ObjectId
 
 from whist.server.database import db
 from whist.server.database.game import GameInDb
-from whist.server.services.error import GameNotFoundError
+from whist.server.services.error import GameNotFoundError, GameNotUpdatedError
 
 
 class GameDatabaseService:
@@ -56,3 +56,19 @@ class GameDatabaseService:
         if game is None:
             raise GameNotFoundError(game_name=game_name)
         return GameInDb(**game)
+
+    @classmethod
+    def save(cls, game: GameInDb) -> None:
+        """
+        Saves an updated game object to the database.
+        :param game: updated game object
+        :return: None. Raises GameNotFoundError if it could not find a game with that ID. Raises
+        a general GameNotUpdatedError if the game could not be saved.
+        """
+        query = {'_id': ObjectId(game.id)}
+        values = {'$set': game.dict()}
+        result = cls._games.update_one(query, values)
+        if result.matched_count != 1:
+            raise GameNotFoundError(game.id)
+        if result.modified_count != 1:
+            raise GameNotUpdatedError(game.id)

@@ -49,6 +49,16 @@ class GameNotFoundError(Exception):
         super().__init__(message)
 
 
+class GameNotUpdatedError(Exception):
+    """
+    Is raised when a game could not be updated to the database.
+    """
+
+    def __init__(self, game_id: str):
+        message = f'Game with id "{game_id}" could not be updated.'
+        super().__init__(message)
+
+
 class CredentialsException(HTTPException):
     """
     Is raised when the credentials are incorrect.

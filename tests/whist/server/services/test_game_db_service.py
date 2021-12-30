@@ -35,3 +35,11 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         game_id = self.service.add(self.game)
         self.game.id = ObjectId(game_id)
         self.assertEqual(self.game, self.service.get_by_name('test'))
+
+    def test_save(self):
+        game_id = self.service.add(self.game)
+        self.game.id = game_id
+        self.game.table.min_player = 3
+        self.service.save(self.game)
+        game = self.service.get(game_id)
+        self.assertEqual(3, game.table.min_player)

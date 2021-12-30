@@ -32,7 +32,7 @@ class ActionGameTestCase(BaseCreateGameTestCase):
                              headers=headers)
 
         # New user tries to start table.
-        response = self.client.post(url=f'/game/action/ready/{self.game_id}',
+        response = self.client.post(url=f'/game/action/start/{self.game_id}',
                                     headers=headers)
         self.assertEqual(403, response.status_code, msg=response.content)
 

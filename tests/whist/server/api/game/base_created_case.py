@@ -1,5 +1,6 @@
 from tests.whist.server.api.game.base_token_case import TestCaseWithToken
 
+
 class BaseCreateGameTestCase(TestCaseWithToken):
     def setUp(self) -> None:
         super().setUp()

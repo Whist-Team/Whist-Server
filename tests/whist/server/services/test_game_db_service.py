@@ -1,9 +1,11 @@
+from unittest.mock import patch
+
 from bson import ObjectId
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database import db
 from whist.server.database.game import GameInDb
-from whist.server.services.error import GameNotFoundError
+from whist.server.services.error import GameNotFoundError, GameNotUpdatedError
 from whist.server.services.game_db_service import GameDatabaseService
 
 
@@ -49,4 +51,12 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         self.game.id = '1' * 24
         self.game.table.min_player = 3
         with self.assertRaises(GameNotFoundError):
+            self.service.save(self.game)
+
+    @patch('pymongo.results.UpdateResult.modified_count', return_value=1)
+    def test_save_update_error(self, result_mock):
+        game_id = self.service.add(self.game)
+        self.game.id = game_id
+        self.game.table.min_player = 3
+        with self.assertRaises(GameNotUpdatedError):
             self.service.save(self.game)

@@ -54,13 +54,8 @@ class GameNotUpdatedError(Exception):
     Is raised when a game could not be updated to the database.
     """
 
-    def __init__(self, game_id: Optional[str] = None, game_name: Optional[str] = None):
-        if game_id:
-            message = f'Game with id "{game_id}" could not be updated.'
-        elif game_name:
-            message = f'Game with name "{game_id}" could not be updated.'
-        else:
-            message = 'Game not found'
+    def __init__(self, game_id: str):
+        message = f'Game with id "{game_id}" could not be updated.'
         super().__init__(message)
 
 

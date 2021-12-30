@@ -23,8 +23,7 @@ def start_game(game_id: str, user: Player = Security(get_current_user)) -> dict:
     game = game_service.get(game_id)
 
     try:
-        if game.start(user):
-            return {'status': 'started'}
+        game.start(user)
     except PlayerNotCreatorError as start_exception:
         message = 'Player has not administrator rights at this table.'
         raise HTTPException(
@@ -39,7 +38,8 @@ def start_game(game_id: str, user: Player = Security(get_current_user)) -> dict:
             detail=message,
             headers={"WWW-Authenticate": "Basic"},
         ) from ready_error
-    return {'status': 'not started'}
+    else:
+        return {'status': 'started'}
 
 
 @router.post('/action/ready/{game_id}', status_code=200)

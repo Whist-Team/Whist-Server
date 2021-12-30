@@ -1,6 +1,6 @@
 """Route to interaction with a table."""
 from fastapi import APIRouter, Security, HTTPException, status
-from whist.core.error.table_error import PlayerNotJoinedError
+from whist.core.error.table_error import PlayerNotJoinedError, TableNotReadyError
 from whist.core.user.player import Player
 
 from whist.server.database.error import PlayerNotCreatorError
@@ -32,6 +32,13 @@ def start_game(game_id: str, user: Player = Security(get_current_user)) -> dict:
             detail=message,
             headers={"WWW-Authenticate": "Basic"},
         ) from start_exception
+    except TableNotReadyError as ready_error:
+        message = 'At least one player is not ready and therefore the table cannot be started'
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=message,
+            headers={"WWW-Authenticate": "Basic"},
+        ) from ready_error
     return {'status': 'not started'}
 
 

@@ -56,6 +56,7 @@ def ready_player(game_id: str, user: Player = Security(get_current_user)) -> dic
 
     try:
         game.ready_player(user)
+        game_service.save(game)
     except PlayerNotJoinedError as ready_error:
         message = 'Player has not joined the table yet.'
         raise HTTPException(

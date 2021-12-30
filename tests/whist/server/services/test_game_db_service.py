@@ -43,3 +43,10 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         self.service.save(self.game)
         game = self.service.get(game_id)
         self.assertEqual(3, game.table.min_player)
+
+    def test_save_wrong_id(self):
+        _ = self.service.add(self.game)
+        self.game.id = '1' * 24
+        self.game.table.min_player = 3
+        with self.assertRaises(GameNotFoundError):
+            self.service.save(self.game)

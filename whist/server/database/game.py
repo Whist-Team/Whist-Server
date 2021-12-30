@@ -65,6 +65,12 @@ class Game(BaseModel):
         return True
 
     def ready_player(self, player: Player) -> None:
+        """
+        Marks a player ready to play.
+        :param player: The player who wants to mark themself ready.
+        :return: None. Raises PlayerNotJoined if a player tries to get ready without joining a
+        table.
+        """
         self.table.player_ready(player)
 
     def start(self, player: Player) -> bool:

@@ -92,7 +92,7 @@ class GameInDb(Game):
                         min_player: int = 4, max_player: int = 4) -> 'GameInDb':
         """
         Factory method to create a Game in database object.
-        :param game_name: name of the this session
+        :param game_name: name of this session
         :param creator: player object of the host
         :param hashed_password: the hash value of the password required to join
         :param min_player: the minimum amount of player to start a game

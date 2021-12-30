@@ -1,4 +1,6 @@
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
+from whist.server.database import db
+from whist.server.database.game import GameInDb
 
 
 class ActionGameTestCase(BaseCreateGameTestCase):
@@ -37,7 +39,9 @@ class ActionGameTestCase(BaseCreateGameTestCase):
                              headers=self.headers)
         response = self.client.post(url=f'/game/action/ready/{self.game_id}',
                                     headers=self.headers)
+        game = GameInDb(**db.game.find()[0])
         self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertTrue(game.table.ready)
 
     def test_ready_not_joined(self):
         headers = self.create_and_auth_user('miles', 'abc')

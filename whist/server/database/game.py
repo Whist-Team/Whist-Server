@@ -4,6 +4,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from whist.core.session.table import Table
 from whist.core.user.player import Player
+
 from whist.server.database.id_wrapper import PyObjectId
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
@@ -75,7 +76,7 @@ class GameInDb(Game):
                         min_player: int = 4, max_player: int = 4) -> 'GameInDb':
         """
         Factory method to create a Game in database object.
-        :param game_name: name of the this session
+        :param game_name: name of this session
         :param creator: player object of the host
         :param hashed_password: the hash value of the password required to join
         :param min_player: the minimum amount of player to start a game

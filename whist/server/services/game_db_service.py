@@ -59,6 +59,12 @@ class GameDatabaseService:
 
     @classmethod
     def save(cls, game: GameInDb) -> None:
+        """
+        Saves an updated game object to the database.
+        :param game: updated game object
+        :return: None. Raises GameNotFoundError if it could not find a game with that ID. Raises
+        a general GameNotUpdatedError if the game could not be saved.
+        """
         query = {'_id': ObjectId(game.id)}
         values = {'$set': game.dict()}
         result = cls._games.update_one(query, values)
@@ -66,4 +72,3 @@ class GameDatabaseService:
             raise GameNotFoundError(game.id)
         if result.modified_count != 1:
             raise GameNotUpdatedError(game.id)
-        print(result)

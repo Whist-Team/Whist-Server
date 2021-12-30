@@ -21,6 +21,16 @@ class ActionGameTestCase(BaseCreateGameTestCase):
                                     headers=self.headers)
         self.assertEqual(403, response.status_code, msg=response.content)
 
+    def test_start_table_not_ready(self):
+        # Join the player
+        _ = self.client.post(url=f'/game/join/{self.game_id}',
+                             json={'password': 'abcd'},
+                             headers=self.headers)
+        # Request to start table.
+        response = self.client.post(url=f'/game/action/start/{self.game_id}',
+                                    headers=self.headers)
+        self.assertEqual(400, response.status_code, msg=response.content)
+
     def test_ready(self):
         _ = self.client.post(url=f'/game/join/{self.game_id}',
                              json={'password': 'abcd'},

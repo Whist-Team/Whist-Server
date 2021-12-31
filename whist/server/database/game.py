@@ -99,9 +99,9 @@ class Game(BaseModel):
         :return: None
         """
         hand = self.current_rubber.next_game().next_hand()
-        hand.deal()
+        trick = hand.deal()
         player_at_table = hand.get_player(player)
-        hand.next_trick().play_card(player_at_table, card)
+        trick.play_card(player_at_table, card)
 
 
 class GameInDb(Game):

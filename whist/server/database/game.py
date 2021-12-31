@@ -10,6 +10,7 @@ from whist.core.user.player import Player
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.id_wrapper import PyObjectId
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
+from whist.server.services.password import PasswordService
 
 
 class Game(BaseModel):

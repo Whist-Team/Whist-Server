@@ -2,13 +2,14 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
+from whist.core.cards.card import Card
+from whist.core.game.rubber import Rubber
 from whist.core.session.table import Table
 from whist.core.user.player import Player
 
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.id_wrapper import PyObjectId
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
-from whist.server.services.password import PasswordService
 
 
 class Game(BaseModel):
@@ -51,6 +52,10 @@ class Game(BaseModel):
         """
         return self.table.users.players
 
+    @property
+    def current_rubber(self) -> Rubber:
+        return self.table.current_rubber
+
     def join(self, user: Player) -> bool:
         """
         Adds the user to this game.
@@ -84,6 +89,18 @@ class Game(BaseModel):
         if not self.table.started:
             self.table.start()
         return self.table.started
+
+    def play_card(self, player: Player, card: Card) -> None:
+        """
+        A player can request to play a card.
+        :param player: who is requesting to play a card
+        :param card: card object which is requested to play
+        :return: None
+        """
+        hand = self.current_rubber.next_game().next_hand()
+        hand.deal()
+        player_at_table = hand.get_player(player)
+        hand.next_trick().play_card(player_at_table, card)
 
 
 class GameInDb(Game):

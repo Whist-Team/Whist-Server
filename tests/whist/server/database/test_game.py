@@ -1,5 +1,8 @@
-from tests.whist.server.base_player_test_case import BasePlayerTestCase
+from whist.core.cards.card import Card, Suit, Rank
+from whist.core.cards.stack import Stack
 from whist.core.user.player import Player
+
+from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database.game import GameInDb
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
@@ -11,7 +14,9 @@ class GameInDbTestCase(BasePlayerTestCase):
         password_service = PasswordService()
         self.game: GameInDb = GameInDb.create_with_pwd(game_name='test',
                                                        hashed_password=password_service.hash('abc'),
-                                                       creator=self.player)
+                                                       creator=self.player,
+                                                       max_player=2,
+                                                       min_player=2)
         self.second_player = Player(username='2', rating=1200)
         self.expected_players = [self.player, self.second_player]
 
@@ -34,3 +39,16 @@ class GameInDbTestCase(BasePlayerTestCase):
         with self.assertRaises(PlayerAlreadyJoinedWarning):
             self.assertTrue(self.game.join(self.second_player))
         self.assertEqual(self.expected_players, self.game.players)
+
+    def test_play_card(self):
+        self.game.ready_player(self.player)
+        self.game.join(self.second_player)
+        self.game.ready_player(self.second_player)
+        self.game.start(self.player)
+        card = Card(Suit.CLUBS, Rank.A)
+        player = self.game.current_rubber.next_game().next_hand()._current_play_order._play_order[
+            0].player
+        self.game.play_card(player, card)
+        expected_stack = Stack()
+        expected_stack.add(card)
+        self.assertEqual(expected_stack, self.game.current_stack)

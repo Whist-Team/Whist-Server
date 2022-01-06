@@ -3,7 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 from whist.core.cards.card import Card
+from whist.core.cards.stack import Stack
 from whist.core.game.rubber import Rubber
+from whist.core.game.trick import Trick
 from whist.core.session.table import Table
 from whist.core.user.player import Player
 
@@ -57,6 +59,15 @@ class Game(BaseModel):
     def current_rubber(self) -> Rubber:
         return self.table.current_rubber
 
+    @property
+    def current_stack(self) -> Stack:
+        """
+        Retrieves the current stack.
+        """
+        trick = self._current_trick()
+        if trick is not None:
+            return trick.stack
+
     def join(self, user: Player) -> bool:
         """
         Adds the user to this game.
@@ -98,10 +109,16 @@ class Game(BaseModel):
         :param card: card object which is requested to play
         :return: None
         """
-        hand = self.current_rubber.next_game().next_hand()
+        hand = self._current_hand()
         trick = hand.deal()
         player_at_table = hand.get_player(player)
         trick.play_card(player_at_table, card)
+
+    def _current_hand(self):
+        return self.current_rubber.next_game().next_hand()
+
+    def _current_trick(self) -> Trick:
+        return self._current_hand().current_trick
 
 
 class GameInDb(Game):

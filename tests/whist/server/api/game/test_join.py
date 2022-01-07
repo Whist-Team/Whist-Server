@@ -1,5 +1,6 @@
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 
+
 class JoinGameTestCase(BaseCreateGameTestCase):
 
     def test_join(self):

@@ -61,7 +61,8 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.start(self.player)
         first_card = Card(Suit.CLUBS, Rank.A)
         second_card = Card(Suit.CLUBS, Rank.K)
-        play_order = self.game.current_rubber.next_game().next_hand()._current_play_order._play_order
+        hand = self.game.current_rubber.next_game().next_hand()
+        play_order = hand._current_play_order._play_order
         first_player = play_order[0].player
         second_player = play_order[1].player
         self.game.play_card(first_player, first_card)

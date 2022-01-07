@@ -57,6 +57,9 @@ class Game(BaseModel):
 
     @property
     def current_rubber(self) -> Rubber:
+        """
+        Retrieves the current rubber of the game.
+        """
         return self.table.current_rubber
 
     @property

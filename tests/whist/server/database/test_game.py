@@ -46,7 +46,8 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.ready_player(self.second_player)
         self.game.start(self.player)
         card = Card(Suit.CLUBS, Rank.A)
-        player = self.game.current_rubber.next_game().next_hand()._current_play_order._play_order[
+        hand = self.game.current_rubber.next_game().next_hand()
+        player = hand._current_play_order._play_order[
             0].player
         self.game.play_card(player, card)
         expected_stack = Stack()

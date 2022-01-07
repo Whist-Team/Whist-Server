@@ -68,8 +68,7 @@ class Game(BaseModel):
         Retrieves the current stack.
         """
         trick = self._current_trick()
-        if trick is not None:
-            return trick.stack
+        return trick.stack
 
     def join(self, user: Player) -> bool:
         """

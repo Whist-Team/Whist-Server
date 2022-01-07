@@ -110,7 +110,7 @@ class Game(BaseModel):
         :return: None
         """
         hand = self._current_hand()
-        trick = hand.deal()
+        trick = self._current_trick()
         player_at_table = hand.get_player(player)
         trick.play_card(player_at_table, card)
 

@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from whist.core.session.table import Table
 from whist.core.user.player import Player
 
+from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.id_wrapper import PyObjectId
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
@@ -62,6 +63,27 @@ class Game(BaseModel):
                 f'User with name "{user.username}" has already joined.')
         self.table.join(user)
         return True
+
+    def ready_player(self, player: Player) -> None:
+        """
+        Marks a player ready to play.
+        :param player: The player who wants to mark themself ready.
+        :return: None. Raises PlayerNotJoined if a player tries to get ready without joining a
+        table.
+        """
+        self.table.player_ready(player)
+
+    def start(self, player: Player) -> bool:
+        """
+        Starts the current table, if the player is the creator.
+        :param player: who tries to start the table.
+        :return: True if successful else False.
+        """
+        if player != self.creator:
+            raise PlayerNotCreatorError()
+        if not self.table.started:
+            self.table.start()
+        return self.table.started
 
 
 class GameInDb(Game):

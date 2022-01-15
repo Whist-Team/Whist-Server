@@ -60,3 +60,14 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         self.game.table.min_player = 3
         with self.assertRaises(GameNotUpdatedError):
             self.service.save(self.game)
+
+    def test_save_started_table(self):
+        game_id = self.service.add(self.game)
+        self.game.id = game_id
+        self.game.table.min_player = 1
+        self.game.ready_player(self.player)
+        self.game.start(self.player)
+        self.service.save(self.game)
+        db_game = self.service.get(game_id)
+        self.assertTrue(self.game.table.started)
+        self.assertTrue(db_game.table.started)

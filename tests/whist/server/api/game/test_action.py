@@ -10,10 +10,6 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.second_player = self.create_and_auth_user('miles', 'abc')
 
     def test_start(self):
-        # Join the player
-        _ = self.client.post(url=f'/game/join/{self.game_id}',
-                             json={'password': 'abcd'},
-                             headers=self.headers)
         # Mark the player ready
         _ = self.client.post(url=f'/game/action/ready/{self.game_id}',
                              headers=self.headers)
@@ -27,11 +23,6 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         # Create another user
         headers = self.create_and_auth_user('miles', 'abc')
 
-        # Join new user
-        _ = self.client.post(url=f'/game/join/{self.game_id}',
-                             json={'password': 'abcd'},
-                             headers=headers)
-
         # New user mark theyself ready
         _ = self.client.post(url=f'/game/action/ready/{self.game_id}',
                              headers=headers)
@@ -42,19 +33,12 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_start_table_not_ready(self):
-        # Join the player
-        _ = self.client.post(url=f'/game/join/{self.game_id}',
-                             json={'password': 'abcd'},
-                             headers=self.headers)
         # Request to start table.
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
                                     headers=self.headers)
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_ready(self):
-        _ = self.client.post(url=f'/game/join/{self.game_id}',
-                             json={'password': 'abcd'},
-                             headers=self.headers)
         response = self.client.post(url=f'/game/action/ready/{self.game_id}',
                                     headers=self.headers)
         game = GameInDb(**db.game.find()[0])

@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 from whist.core.cards.card import Card
-from whist.core.cards.stack import Stack
+from whist.core.cards.card_container import OrderedCardContainer
 from whist.core.game.rubber import Rubber
 from whist.core.game.trick import Trick
 from whist.core.session.table import Table
@@ -63,7 +63,7 @@ class Game(BaseModel):
         return self.table.current_rubber
 
     @property
-    def current_stack(self) -> Stack:
+    def current_stack(self) -> OrderedCardContainer:
         """
         Retrieves the current stack.
         """

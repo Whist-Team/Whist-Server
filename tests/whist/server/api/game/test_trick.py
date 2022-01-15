@@ -1,5 +1,5 @@
 from whist.core.cards.card import Card, Suit, Rank
-from whist.core.cards.stack import Stack
+from whist.core.cards.card_container import OrderedCardContainer
 
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 
@@ -16,12 +16,13 @@ class TrickTestCase(BaseCreateGameTestCase):
         # Request to start table.
         _ = self.client.post(url=f'/game/action/start/{self.game_id}',
                              headers=self.headers)
-        first_card = Card(Suit.CLUBS, Rank.A)
+        first_card = Card(suit=Suit.CLUBS, rank=Rank.A)
         # Play Ace of Clubs
         response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                                    headers=self.headers, json={'card': Card(Suit.CLUBS, Rank.A)})
+                                    headers=self.headers, json={'suit': 'clubs',
+                                                                'rank': 'ace'})
         self.assertEqual(200, response.status_code, msg=response.content)
 
-        expected_stack = Stack()
+        expected_stack = OrderedCardContainer.empty()
         expected_stack.add(first_card)
         self.assertEqual(expected_stack, response['stack'])

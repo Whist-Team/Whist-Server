@@ -1,9 +1,14 @@
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 from whist.server.database import db
 from whist.server.database.game import GameInDb
+from whist.server.services.game_db_service import GameDatabaseService
 
 
 class ActionGameTestCase(BaseCreateGameTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        self.game_service = GameDatabaseService()
+
     def test_start(self):
         # Join the player
         _ = self.client.post(url=f'/game/join/{self.game_id}',
@@ -15,6 +20,9 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         # Request to start table.
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
                                     headers=self.headers)
+        db_game = self.game_service.get(self.game_id)
+
+        self.assertTrue(db_game.table.started)
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('started', response.json()['status'])
 

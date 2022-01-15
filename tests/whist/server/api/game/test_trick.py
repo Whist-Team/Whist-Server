@@ -5,7 +5,8 @@ from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 
 
 class TrickTestCase(BaseCreateGameTestCase):
-    def test_play_card(self):
+    def setUp(self):
+        super().setUp()
         # Join the player
         _ = self.client.post(url=f'/game/join/{self.game_id}',
                              json={'password': 'abcd'},
@@ -16,6 +17,8 @@ class TrickTestCase(BaseCreateGameTestCase):
         # Request to start table.
         _ = self.client.post(url=f'/game/action/start/{self.game_id}',
                              headers=self.headers)
+
+    def test_play_card(self):
         first_card = Card(suit=Suit.CLUBS, rank=Rank.A)
         # Play Ace of Clubs
         response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',

@@ -1,4 +1,5 @@
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
+from whist.server.services.game_db_service import GameDatabaseService
 
 
 class JoinGameTestCase(BaseCreateGameTestCase):
@@ -8,8 +9,11 @@ class JoinGameTestCase(BaseCreateGameTestCase):
         response = self.client.post(url=f'/game/join/{self.game_id}',
                                     json={'password': 'abc'},
                                     headers=headers)
+        game_service = GameDatabaseService()
+        db_game = game_service.get(self.game_id)
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('joined', response.json()['status'])
+        self.assertEqual(len(db_game.players), 2)
 
     def test_join_wrong_pwd_game(self):
         response = self.client.post(url=f'/game/join/{self.game_id}',

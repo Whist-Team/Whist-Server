@@ -25,4 +25,5 @@ class TrickTestCase(BaseCreateGameTestCase):
 
         expected_stack = OrderedCardContainer.empty()
         expected_stack.add(first_card)
-        self.assertEqual(expected_stack, response['stack'])
+        response_stack = OrderedCardContainer(**response.json())
+        self.assertEqual(expected_stack, response_stack)

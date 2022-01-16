@@ -8,6 +8,7 @@ class ActionGameTestCase(BaseCreateGameTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.second_player = self.create_and_auth_user('miles', 'abc')
+        self.game_service = GameDatabaseService()
 
     def test_start(self):
         # Mark the player ready
@@ -16,6 +17,9 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         # Request to start table.
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
                                     headers=self.headers)
+        db_game = self.game_service.get(self.game_id)
+
+        self.assertTrue(db_game.table.started)
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('started', response.json()['status'])
 

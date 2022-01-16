@@ -11,13 +11,9 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.second_card = Card(suit=Suit.CLUBS, rank=Rank.K)
         self.second_player = self.create_and_auth_user('miles', 'abc')
 
-        # Join the first player
-        _ = self.client.post(url=f'/game/join/{self.game_id}',
-                             json={'password': 'abcd'},
-                             headers=self.headers)
         # Join the second player
         _ = self.client.post(url=f'/game/join/{self.game_id}',
-                             json={'password': 'abcd'},
+                             json={'password': 'abc'},
                              headers=self.second_player)
         # Mark the first player ready
         _ = self.client.post(url=f'/game/action/ready/{self.game_id}',

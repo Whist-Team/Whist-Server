@@ -38,6 +38,7 @@ def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get
         )
     try:
         game.join(user)
+        game_service.save(game)
     except PlayerAlreadyJoinedWarning:
         return {'status': 'already joined'}
     return {'status': 'joined'}

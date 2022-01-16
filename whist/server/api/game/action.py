@@ -24,6 +24,7 @@ def start_game(game_id: str, user: Player = Security(get_current_user)) -> dict:
 
     try:
         game.start(user)
+        game_service.save(game)
     except PlayerNotCreatorError as start_exception:
         message = 'Player has not administrator rights at this table.'
         raise HTTPException(

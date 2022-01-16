@@ -21,15 +21,14 @@ class ActionGameTestCase(BaseCreateGameTestCase):
 
     def test_start_not_creator(self):
         # Create another user
-        headers = self.create_and_auth_user('miles', 'abc')
 
         # New user mark theyself ready
         _ = self.client.post(url=f'/game/action/ready/{self.game_id}',
-                             headers=headers)
+                             headers=self.second_player)
 
         # New user tries to start table.
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
-                                    headers=headers)
+                                    headers=self.second_player)
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_start_table_not_ready(self):
@@ -46,9 +45,8 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.assertTrue(game.table.ready)
 
     def test_ready_not_joined(self):
-        headers = self.create_and_auth_user('miles', 'abc')
         response = self.client.post(url=f'/game/action/ready/{self.game_id}',
-                                    headers=headers)
+                                    headers=self.second_player)
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_ready_second_player(self):

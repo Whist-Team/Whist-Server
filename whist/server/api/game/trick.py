@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Security
+from fastapi import APIRouter, Security, HTTPException, status
 from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
+from whist.core.game.errors import NotPlayersTurnError
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
@@ -15,5 +16,9 @@ def play_card(game_id: str, card: Card,
     game_service = GameDatabaseService()
     room = game_service.get(game_id)
 
-    room.play_card(player=user, card=card)
+    try:
+        room.play_card(player=user, card=card)
+    except NotPlayersTurnError as turn_error:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            headers={"WWW-Authenticate": "Basic"}) from turn_error
     return room.current_stack

@@ -16,7 +16,8 @@ class ActionGameTestCase(BaseCreateGameTestCase):
                              headers=self.headers)
         # Request to start table.
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
-                                    headers=self.headers)
+                                    headers=self.headers,
+                                    json={'matcher_type': 'robin'})
         db_game = self.game_service.get(self.game_id)
 
         self.assertTrue(db_game.table.started)

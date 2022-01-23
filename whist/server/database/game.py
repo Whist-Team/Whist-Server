@@ -115,14 +115,17 @@ class Game(BaseModel):
         """
         hand = self._current_hand()
         trick = self._current_trick()
-        player_at_table = hand.get_player(player)
+        player_at_table = self.current_rubber.games[-1].get_player(player)
         trick.play_card(player_at_table, card)
 
     def _current_hand(self):
         return self.current_rubber.next_game().next_hand()
 
     def _current_trick(self) -> Trick:
-        return self._current_hand().current_trick
+        try:
+            return self._current_hand().current_trick
+        except IndexError:
+            return self.current_rubber.next_game().current_trick
 
 
 class GameInDb(Game):

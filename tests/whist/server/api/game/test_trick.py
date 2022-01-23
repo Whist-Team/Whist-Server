@@ -25,7 +25,6 @@ class TrickTestCase(BaseCreateGameTestCase):
         _ = self.client.post(url=f'/game/action/start/{self.game_id}',
                              headers=self.headers,
                              json={'matcher_typer': 'robin'})
-        print(_)
 
     def test_play_card(self):
         # Play Ace of Clubs

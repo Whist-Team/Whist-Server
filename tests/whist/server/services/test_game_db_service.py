@@ -1,6 +1,8 @@
 from unittest.mock import patch
 
 from bson import ObjectId
+from whist.core.session.matcher import RandomMatcher
+from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database import db
@@ -64,9 +66,12 @@ class GameDdServiceTestCase(BasePlayerTestCase):
     def test_save_started_table(self):
         game_id = self.service.add(self.game)
         self.game.id = game_id
-        self.game.table.min_player = 1
+        self.game.table.min_player = 2
         self.game.ready_player(self.player)
-        self.game.start(self.player)
+        second_player = Player(username='miles', rating=3000)
+        self.game.join(second_player)
+        self.game.ready_player(second_player)
+        self.game.start(self.player, RandomMatcher)
         self.service.save(self.game)
         db_game = self.service.get(game_id)
         self.assertTrue(self.game.table.started)

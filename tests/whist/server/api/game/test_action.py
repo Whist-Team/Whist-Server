@@ -14,9 +14,17 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         # Mark the player ready
         _ = self.client.post(url=f'/game/action/ready/{self.game_id}',
                              headers=self.headers)
+        # Join second player
+        _ = self.client.post(url=f'/game/join/{self.game_id}',
+                             json={'password': 'abc'},
+                             headers=self.second_player)
+        # Ready second player
+        _ = self.client.post(url=f'/game/action/ready/{self.game_id}',
+                             headers=self.second_player)
         # Request to start table.
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
-                                    headers=self.headers)
+                                    headers=self.headers,
+                                    json={'matcher_type': 'robin'})
         db_game = self.game_service.get(self.game_id)
 
         self.assertTrue(db_game.table.started)
@@ -24,7 +32,10 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.assertEqual('started', response.json()['status'])
 
     def test_start_not_creator(self):
-        # Create another user
+        # Join second player
+        _ = self.client.post(url=f'/game/join/{self.game_id}',
+                             json={'password': 'abc'},
+                             headers=self.second_player)
 
         # New user mark theyself ready
         _ = self.client.post(url=f'/game/action/ready/{self.game_id}',
@@ -32,13 +43,15 @@ class ActionGameTestCase(BaseCreateGameTestCase):
 
         # New user tries to start table.
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
-                                    headers=self.second_player)
+                                    headers=self.second_player,
+                                    json={'matcher_type': 'robin'})
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_start_table_not_ready(self):
         # Request to start table.
         response = self.client.post(url=f'/game/action/start/{self.game_id}',
-                                    headers=self.headers)
+                                    headers=self.headers,
+                                    json={'matcher_type': 'robin'})
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_ready(self):

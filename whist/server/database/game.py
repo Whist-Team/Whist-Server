@@ -6,6 +6,7 @@ from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
 from whist.core.game.rubber import Rubber
 from whist.core.game.trick import Trick
+from whist.core.session.matcher import Matcher
 from whist.core.session.table import Table
 from whist.core.user.player import Player
 
@@ -92,16 +93,17 @@ class Game(BaseModel):
         """
         self.table.player_ready(player)
 
-    def start(self, player: Player) -> bool:
+    def start(self, player: Player, matcher: Matcher) -> bool:
         """
         Starts the current table, if the player is the creator.
-        :param player: who tries to start the table.
+        :param player: who tries to start the table
+        :param matcher: distributor of players to teams.
         :return: True if successful else False.
         """
         if player != self.creator:
             raise PlayerNotCreatorError()
         if not self.table.started:
-            self.table.start()
+            self.table.start(matcher)
         return self.table.started
 
     def play_card(self, player: Player, card: Card) -> None:

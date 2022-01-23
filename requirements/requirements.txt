@@ -1,5 +1,5 @@
-fastapi[all]==0.71.0
-whist-core==0.1.0rc10
+fastapi[all]==0.72.0
+whist-core==0.1.0rc11
 pydantic==1.9.0
 pymongo==4.0.1
 python-jose[cryptography]==3.3.0

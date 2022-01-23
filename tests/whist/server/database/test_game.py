@@ -1,6 +1,7 @@
 from whist.core.cards.card import Card, Suit, Rank
 from whist.core.cards.card_container import OrderedCardContainer
 from whist.core.game.warnings import ServSuitFirstWarning
+from whist.core.session.matcher import RoundRobinMatcher
 from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
@@ -45,7 +46,7 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.ready_player(self.player)
         self.game.join(self.second_player)
         self.game.ready_player(self.second_player)
-        self.game.start(self.player)
+        self.game.start(self.player, RoundRobinMatcher)
         card = Card(suit=Suit.CLUBS, rank=Rank.A)
         hand = self.game.current_rubber.next_game().next_hand()
         player = hand._current_play_order._play_order[

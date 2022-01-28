@@ -1,8 +1,11 @@
+from typing import Union
+
 from fastapi import APIRouter, Security, HTTPException, status
 from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
 from whist.core.game.errors import NotPlayersTurnError
 from whist.core.game.player_at_table import PlayerAtTable
+from whist.core.game.warnings import TrickNotDoneWarning
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
@@ -28,8 +31,10 @@ def play_card(game_id: str, card: Card,
     return trick.stack
 
 
-@router.get('/winner/{game_id}', status_code=200, response_model=PlayerAtTable)
-def winner(game_id: str, user: Player = Security(get_current_user)) -> PlayerAtTable:
+@router.get('/winner/{game_id}', status_code=200,
+            response_model=Union[PlayerAtTable, dict[str, str]])
+def winner(game_id: str, user: Player = Security(get_current_user)) -> Union[PlayerAtTable,
+                                                                             dict[str, str]]:
     game_service = GameDatabaseService()
     room = game_service.get(game_id)
     if not user in room.players:
@@ -38,5 +43,8 @@ def winner(game_id: str, user: Player = Security(get_current_user)) -> PlayerAtT
                             detail='You have not joined the table.')
 
     trick = room.current_trick
-
-    return trick.winner
+    try:
+        winner = trick.winner
+    except TrickNotDoneWarning:
+        return {'status': 'The trick is not yet done, so there is no winner.'}
+    return winner

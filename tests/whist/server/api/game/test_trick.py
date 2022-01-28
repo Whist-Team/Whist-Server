@@ -68,3 +68,13 @@ class TrickTestCase(BaseCreateGameTestCase):
         response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
                                    headers=self.headers)
         self.assertEqual('marcel', PlayerAtTable(**response.json()).player.username)
+
+    def test_no_winner_yet(self):
+        # Play Ace of Clubs
+        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                             headers=self.headers, json={'suit': 'clubs',
+                                                         'rank': 'ace'})
+        response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
+                                   headers=self.headers)
+        expected_message = 'The trick is not yet done, so there is no winner.'
+        self.assertEqual(expected_message, response.json()['status'])

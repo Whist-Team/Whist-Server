@@ -113,7 +113,6 @@ class Game(BaseModel):
         :param card: card object which is requested to play
         :return: None
         """
-        hand = self._current_hand()
         trick = self._current_trick()
         player_at_table = self.current_rubber.games[-1].get_player(player)
         trick.play_card(player_at_table, card)

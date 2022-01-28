@@ -68,8 +68,14 @@ class Game(BaseModel):
         """
         Retrieves the current stack.
         """
-        trick = self._current_trick()
+        trick = self.current_trick()
         return trick.stack
+
+    def current_trick(self) -> Trick:
+        try:
+            return self._current_hand().current_trick
+        except IndexError:
+            return self.current_rubber.next_game().current_trick
 
     def join(self, user: Player) -> bool:
         """
@@ -113,18 +119,12 @@ class Game(BaseModel):
         :param card: card object which is requested to play
         :return: None
         """
-        trick = self._current_trick()
+        trick = self.current_trick()
         player_at_table = self.current_rubber.games[-1].get_player(player)
         trick.play_card(player_at_table, card)
 
     def _current_hand(self):
         return self.current_rubber.next_game().next_hand()
-
-    def _current_trick(self) -> Trick:
-        try:
-            return self._current_hand().current_trick
-        except IndexError:
-            return self.current_rubber.next_game().current_trick
 
 
 class GameInDb(Game):

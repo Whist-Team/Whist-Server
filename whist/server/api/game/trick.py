@@ -2,6 +2,7 @@ from fastapi import APIRouter, Security, HTTPException, status
 from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
 from whist.core.game.errors import NotPlayersTurnError
+from whist.core.game.player_at_table import PlayerAtTable
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
@@ -25,3 +26,17 @@ def play_card(game_id: str, card: Card,
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             headers={"WWW-Authenticate": "Basic"}) from turn_error
     return trick.stack
+
+
+@router.get('/winner/{game_id}', status_code=200, response_model=PlayerAtTable)
+def winner(game_id: str, user: Player = Security(get_current_user)) -> PlayerAtTable:
+    game_service = GameDatabaseService()
+    room = game_service.get(game_id)
+    if not user in room.players:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            headers={'WWW-Authenticate': 'Basic'},
+                            detail='You have not joined the table.')
+
+    trick = room.current_trick
+
+    return trick.winner

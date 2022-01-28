@@ -33,8 +33,8 @@ def play_card(game_id: str, card: Card,
 
 @router.get('/winner/{game_id}', status_code=200,
             response_model=Union[PlayerAtTable, dict[str, str]])
-def winner(game_id: str, user: Player = Security(get_current_user)) -> Union[PlayerAtTable,
-                                                                             dict[str, str]]:
+def get_winner(game_id: str, user: Player = Security(get_current_user)) -> Union[PlayerAtTable,
+                                                                                 dict[str, str]]:
     game_service = GameDatabaseService()
     room = game_service.get(game_id)
     if not user in room.players:

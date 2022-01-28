@@ -48,7 +48,6 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.ready_player(self.second_player)
         self.game.start(self.player, RoundRobinMatcher)
         card = Card(suit=Suit.CLUBS, rank=Rank.A)
-        hand = self.game.current_rubber.next_game().next_hand()
         player = self.game.current_rubber.next_game().play_order.play_order[0].player
         self.game.play_card(player, card)
         expected_stack = OrderedCardContainer.empty()
@@ -62,7 +61,6 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.start(self.player, RoundRobinMatcher)
         first_card = Card(suit=Suit.CLUBS, rank=Rank.A)
         second_card = Card(suit=Suit.CLUBS, rank=Rank.K)
-        hand = self.game.current_rubber.next_game().next_hand()
         play_order = self.game.current_rubber.next_game().play_order.play_order
         first_player = play_order[0].player
         second_player = play_order[1].player
@@ -80,7 +78,6 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.start(self.player, RoundRobinMatcher)
         first_card = Card(suit=Suit.CLUBS, rank=Rank.A)
         second_card = Card(suit=Suit.HEARTS, rank=Rank.K)
-        hand = self.game.current_rubber.next_game().next_hand()
         play_order = self.game.current_rubber.next_game().play_order.play_order
         first_player = play_order[0].player
         second_player = play_order[1].player

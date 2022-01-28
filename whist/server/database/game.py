@@ -2,7 +2,6 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
-from whist.core.cards.card_container import OrderedCardContainer
 from whist.core.game.rubber import Rubber
 from whist.core.game.trick import Trick
 from whist.core.session.matcher import Matcher
@@ -61,14 +60,6 @@ class Game(BaseModel):
         Retrieves the current rubber of the game.
         """
         return self.table.current_rubber
-
-    @property
-    def current_stack(self) -> OrderedCardContainer:
-        """
-        Retrieves the current stack.
-        """
-        trick = self.current_trick()
-        return trick.stack
 
     def current_trick(self) -> Trick:
         """

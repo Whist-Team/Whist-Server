@@ -3,7 +3,7 @@
 # Whist-Server
 
 This is the REST API server of a Whist game. It provides user management, session organization and
-convenient interface to the rules' implementation of
+a convenient interface for the rules' implementation of
 [Whist-Core](https://github.com/Whist-Team/Whist-Core).
 
 ## Run tests

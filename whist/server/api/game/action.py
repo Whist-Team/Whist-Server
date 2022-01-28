@@ -15,10 +15,16 @@ router = APIRouter(prefix='/game')
 
 
 class StartModel(BaseModel):
+    """
+    A model to ease data posting to start a game.
+    """
     matcher_type: Optional[str] = None
 
     @property
     def matcher(self) -> Matcher:
+        """
+        Gets the matcher posted to start the route.
+        """
         return RoundRobinMatcher if self.matcher_type == 'robin' else RandomMatcher
 
 

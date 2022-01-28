@@ -72,6 +72,9 @@ class Game(BaseModel):
         return trick.stack
 
     def current_trick(self) -> Trick:
+        """
+        Returns the current trick if it exists. Else throws an IndexError.
+        """
         try:
             return self._current_hand().current_trick
         except IndexError:
@@ -120,8 +123,16 @@ class Game(BaseModel):
         :return: None
         """
         trick = self.current_trick()
-        player_at_table = self.current_rubber.games[-1].get_player(player)
+        player_at_table = self.get_player(player)
         trick.play_card(player_at_table, card)
+
+    def get_player(self, player):
+        """
+        Gets the player at table for player instance.
+        :param player: for which the player at table is requested.
+        :return: PlayerAtTable
+        """
+        return self.current_rubber.games[-1].get_player(player)
 
     def _current_hand(self):
         return self.current_rubber.next_game().next_hand()

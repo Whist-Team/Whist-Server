@@ -2,6 +2,7 @@ from fastapi import APIRouter, Security, HTTPException, status
 from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
 from whist.core.game.errors import NotPlayersTurnError
+from whist.core.game.player_at_table import PlayerAtTable
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
@@ -17,7 +18,9 @@ def play_card(game_id: str, card: Card,
     room = game_service.get(game_id)
 
     try:
-        room.play_card(player=user, card=card)
+        trick = room.current_trick()
+        player = room.get_player(user)
+        trick.play_card(player=player, card=card)
         game_service.save(room)
     except NotPlayersTurnError as turn_error:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,

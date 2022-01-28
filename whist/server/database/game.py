@@ -2,7 +2,6 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
-from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
 from whist.core.game.rubber import Rubber
 from whist.core.game.trick import Trick
@@ -114,17 +113,6 @@ class Game(BaseModel):
         if not self.table.started:
             self.table.start(matcher)
         return self.table.started
-
-    def play_card(self, player: Player, card: Card) -> None:
-        """
-        A player can request to play a card.
-        :param player: who is requesting to play a card
-        :param card: card object which is requested to play
-        :return: None
-        """
-        trick = self.current_trick()
-        player_at_table = self.get_player(player)
-        trick.play_card(player_at_table, card)
 
     def get_player(self, player):
         """

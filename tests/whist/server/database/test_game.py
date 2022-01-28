@@ -48,8 +48,9 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.ready_player(self.second_player)
         self.game.start(self.player, RoundRobinMatcher)
         card = Card(suit=Suit.CLUBS, rank=Rank.A)
-        player = self.game.current_rubber.next_game().play_order.play_order[0].player
-        self.game.play_card(player, card)
+        trick = self.game.current_trick()
+        player = self.game.get_player(self.player)
+        trick.play_card(player=player, card=card)
         expected_stack = OrderedCardContainer.empty()
         expected_stack.add(card)
         self.assertEqual(expected_stack, self.game.current_stack)
@@ -61,11 +62,11 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.start(self.player, RoundRobinMatcher)
         first_card = Card(suit=Suit.CLUBS, rank=Rank.A)
         second_card = Card(suit=Suit.CLUBS, rank=Rank.K)
-        play_order = self.game.current_rubber.next_game().play_order.play_order
-        first_player = play_order[0].player
-        second_player = play_order[1].player
-        self.game.play_card(first_player, first_card)
-        self.game.play_card(second_player, second_card)
+        trick = self.game.current_trick()
+        first_player = self.game.get_player(self.player)
+        second_player = self.game.get_player(self.second_player)
+        trick.play_card(player=first_player, card=first_card)
+        trick.play_card(player=second_player, card=second_card)
         expected_stack = OrderedCardContainer.empty()
         expected_stack.add(first_card)
         expected_stack.add(second_card)
@@ -78,12 +79,12 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.game.start(self.player, RoundRobinMatcher)
         first_card = Card(suit=Suit.CLUBS, rank=Rank.A)
         second_card = Card(suit=Suit.HEARTS, rank=Rank.K)
-        play_order = self.game.current_rubber.next_game().play_order.play_order
-        first_player = play_order[0].player
-        second_player = play_order[1].player
-        self.game.play_card(first_player, first_card)
+        trick = self.game.current_trick()
+        first_player = self.game.get_player(self.player)
+        second_player = self.game.get_player(self.second_player)
+        trick.play_card(player=first_player, card=first_card)
         expected_stack = OrderedCardContainer.empty()
         expected_stack.add(first_card)
         with self.assertRaises(ServSuitFirstWarning):
-            self.game.play_card(second_player, second_card)
+            trick.play_card(player=second_player, card=second_card)
         self.assertEqual(expected_stack, self.game.current_stack)

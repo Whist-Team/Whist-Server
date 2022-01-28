@@ -28,6 +28,7 @@ def start_game(game_id: str, model: StartModel,
     """
     Allows the creator of the table to start it.
     :param game_id: unique identifier of the game
+    :param model: model containing configuration of the game.
     :param user: Required to identify if the user is the creator.
     :return: dictionary containing the status of whether the table has been started or not.
     Raises 403 exception if the user has not the appropriate privileges.

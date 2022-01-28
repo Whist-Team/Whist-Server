@@ -1,5 +1,6 @@
 from whist.core.cards.card import Card, Suit, Rank
 from whist.core.cards.card_container import OrderedCardContainer
+from whist.core.game.player_at_table import PlayerAtTable
 
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 
@@ -54,3 +55,16 @@ class TrickTestCase(BaseCreateGameTestCase):
         expected_stack.add(self.second_card)
         response_stack = OrderedCardContainer(**response.json())
         self.assertEqual(expected_stack, response_stack)
+
+    def test_winner(self):
+        # Play Ace of Clubs
+        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                             headers=self.headers, json={'suit': 'clubs',
+                                                         'rank': 'ace'})
+        # Play King of Clubs
+        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                             headers=self.second_player, json={'suit': 'clubs',
+                                                               'rank': 'king'})
+        response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
+                                   headers=self.headers)
+        self.assertEqual('marcel', PlayerAtTable(**response.json()).player.username)

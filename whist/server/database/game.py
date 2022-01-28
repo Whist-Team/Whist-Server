@@ -61,6 +61,7 @@ class Game(BaseModel):
         """
         return self.table.current_rubber
 
+    @property
     def current_trick(self) -> Trick:
         """
         Returns the current trick if it exists. Else throws an IndexError.

@@ -1,7 +1,3 @@
-from whist.core.cards.card import Card, Suit, Rank
-from whist.core.cards.card_container import OrderedCardContainer
-from whist.core.game.warnings import ServSuitFirstWarning
-from whist.core.session.matcher import RoundRobinMatcher
 from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
@@ -41,50 +37,3 @@ class GameInDbTestCase(BasePlayerTestCase):
         with self.assertRaises(PlayerAlreadyJoinedWarning):
             self.assertTrue(self.game.join(self.second_player))
         self.assertEqual(self.expected_players, self.game.players)
-
-    def test_play_card(self):
-        self.game.ready_player(self.player)
-        self.game.join(self.second_player)
-        self.game.ready_player(self.second_player)
-        self.game.start(self.player, RoundRobinMatcher)
-        card = Card(suit=Suit.CLUBS, rank=Rank.A)
-        trick = self.game.current_trick()
-        player = self.game.get_player(self.player)
-        trick.play_card(player=player, card=card)
-        expected_stack = OrderedCardContainer.empty()
-        expected_stack.add(card)
-        self.assertEqual(expected_stack, self.game.current_stack)
-
-    def test_play_second_card(self):
-        self.game.ready_player(self.player)
-        self.game.join(self.second_player)
-        self.game.ready_player(self.second_player)
-        self.game.start(self.player, RoundRobinMatcher)
-        first_card = Card(suit=Suit.CLUBS, rank=Rank.A)
-        second_card = Card(suit=Suit.CLUBS, rank=Rank.K)
-        trick = self.game.current_trick()
-        first_player = self.game.get_player(self.player)
-        second_player = self.game.get_player(self.second_player)
-        trick.play_card(player=first_player, card=first_card)
-        trick.play_card(player=second_player, card=second_card)
-        expected_stack = OrderedCardContainer.empty()
-        expected_stack.add(first_card)
-        expected_stack.add(second_card)
-        self.assertEqual(expected_stack, self.game.current_stack)
-
-    def test_play_illegal_card(self):
-        self.game.ready_player(self.player)
-        self.game.join(self.second_player)
-        self.game.ready_player(self.second_player)
-        self.game.start(self.player, RoundRobinMatcher)
-        first_card = Card(suit=Suit.CLUBS, rank=Rank.A)
-        second_card = Card(suit=Suit.HEARTS, rank=Rank.K)
-        trick = self.game.current_trick()
-        first_player = self.game.get_player(self.player)
-        second_player = self.game.get_player(self.second_player)
-        trick.play_card(player=first_player, card=first_card)
-        expected_stack = OrderedCardContainer.empty()
-        expected_stack.add(first_card)
-        with self.assertRaises(ServSuitFirstWarning):
-            trick.play_card(player=second_player, card=second_card)
-        self.assertEqual(expected_stack, self.game.current_stack)

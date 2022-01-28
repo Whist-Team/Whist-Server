@@ -1,3 +1,4 @@
+"""Interaction with the current trick of a room."""
 from typing import Union
 
 from fastapi import APIRouter, Security, HTTPException, status
@@ -17,6 +18,13 @@ router = APIRouter(prefix='/game/trick')
 @router.post('/play_card/{game_id}', status_code=200, response_model=OrderedCardContainer)
 def play_card(game_id: str, card: Card,
               user: Player = Security(get_current_user)) -> OrderedCardContainer:
+    """
+    Request to play a card for a given game.
+    :param game_id: at which table the card is requested to be played
+    :param card: which is requested to be played
+    :param user: who to played a card
+    :return: the stack after card being played if successful. If not the players turn raises error.
+    """
     game_service = GameDatabaseService()
     room = game_service.get(game_id)
 
@@ -35,6 +43,13 @@ def play_card(game_id: str, card: Card,
             response_model=Union[PlayerAtTable, dict[str, str]])
 def get_winner(game_id: str, user: Player = Security(get_current_user)) -> Union[PlayerAtTable,
                                                                                  dict[str, str]]:
+    """
+    Requests the winner of the current stack.
+    :param game_id: for which the stack is requested
+    :param user: who requested the winner
+    :return: The PlayerAtTable object of the winner. Raises Exception if the user has not joined
+    the game yet. Replies with a warning if the trick has not be done.
+    """
     game_service = GameDatabaseService()
     room = game_service.get(game_id)
     if not user in room.players:

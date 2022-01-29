@@ -52,7 +52,7 @@ def get_winner(game_id: str, user: Player = Security(get_current_user)) -> Union
     """
     game_service = GameDatabaseService()
     room = game_service.get(game_id)
-    if not user in room.players:
+    if user not in room.players:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             headers={'WWW-Authenticate': 'Basic'},
                             detail='You have not joined the table.')

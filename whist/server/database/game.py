@@ -61,16 +61,17 @@ class Game(BaseModel):
         """
         return self.table.current_rubber
 
-    @property
-    def current_trick(self) -> Trick:
+    def current_trick(self, auto_next: bool = False) -> Trick:
         """
         Returns the current trick if it exists. Else throws an IndexError.
+        :param auto_next: If set True, gets the next trick automatically if current one is done.
+        Else gets the current one regardless of being done.
         """
         try:
             trick = self._current_hand().current_trick
         except IndexError:
             return self._current_game().current_trick
-        if trick.done:
+        if trick.done and auto_next:
             trick = self._current_hand().next_trick(self._current_game().play_order)
         return trick
 

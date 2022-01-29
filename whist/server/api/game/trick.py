@@ -29,7 +29,7 @@ def play_card(game_id: str, card: Card,
     room = game_service.get(game_id)
 
     try:
-        trick = room.current_trick
+        trick = room.current_trick(auto_next=True)
         player = room.get_player(user)
         trick.play_card(player=player, card=card)
         game_service.save(room)
@@ -57,7 +57,7 @@ def get_winner(game_id: str, user: Player = Security(get_current_user)) -> Union
                             headers={'WWW-Authenticate': 'Basic'},
                             detail='You have not joined the table.')
 
-    trick = room.current_trick
+    trick = room.current_trick()
     try:
         winner = trick.winner
     except TrickNotDoneWarning:

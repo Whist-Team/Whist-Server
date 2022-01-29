@@ -67,9 +67,12 @@ class Game(BaseModel):
         Returns the current trick if it exists. Else throws an IndexError.
         """
         try:
-            return self._current_hand().current_trick
+            trick = self._current_hand().current_trick
         except IndexError:
-            return self.current_rubber.next_game().current_trick
+            return self._current_game().current_trick
+        if trick.done:
+            trick = self._current_hand().next_trick(self._current_game().play_order)
+        return trick
 
     def join(self, user: Player) -> bool:
         """
@@ -115,7 +118,10 @@ class Game(BaseModel):
         return self.current_rubber.games[-1].get_player(player)
 
     def _current_hand(self):
-        return self.current_rubber.next_game().next_hand()
+        return self._current_game().next_hand()
+
+    def _current_game(self):
+        return self.current_rubber.next_game()
 
 
 class GameInDb(Game):

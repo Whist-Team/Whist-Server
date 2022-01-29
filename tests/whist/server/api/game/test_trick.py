@@ -84,3 +84,17 @@ class TrickTestCase(BaseCreateGameTestCase):
                                    headers=self.headers)
         expected_message = 'The trick is not yet done, so there is no winner.'
         self.assertEqual(expected_message, response.json()['status'])
+
+    def test_not_joined_winner(self):
+        third_player = self.create_and_auth_user('third', 'third')
+        # Play Ace of Clubs
+        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                             headers=self.headers, json={'suit': 'clubs',
+                                                         'rank': 'ace'})
+        # Play King of Clubs
+        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                             headers=self.second_player, json={'suit': 'clubs',
+                                                               'rank': 'king'})
+        response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
+                                   headers=third_player)
+        self.assertEqual(403, response.status_code, msg=response.content)

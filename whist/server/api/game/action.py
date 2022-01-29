@@ -1,6 +1,10 @@
 """Route to interaction with a table."""
+from typing import Optional
+
 from fastapi import APIRouter, Security, HTTPException, status
+from pydantic import BaseModel
 from whist.core.error.table_error import PlayerNotJoinedError, TableNotReadyError
+from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher, Matcher
 from whist.core.user.player import Player
 
 from whist.server.database.error import PlayerNotCreatorError
@@ -10,8 +14,23 @@ from whist.server.services.game_db_service import GameDatabaseService
 router = APIRouter(prefix='/game')
 
 
+class StartModel(BaseModel):
+    """
+    A model to ease data posting to start a game.
+    """
+    matcher_type: Optional[str] = None
+
+    @property
+    def matcher(self) -> Matcher:
+        """
+        Gets the matcher posted to start the route.
+        """
+        return RoundRobinMatcher if self.matcher_type == 'robin' else RandomMatcher
+
+
 @router.post('/action/start/{game_id}', status_code=200)
-def start_game(game_id: str, user: Player = Security(get_current_user)) -> dict:
+def start_game(game_id: str, model: StartModel,
+               user: Player = Security(get_current_user)) -> dict:
     """
     Allows the creator of the table to start it.
     :param game_id: unique identifier of the game
@@ -23,7 +42,7 @@ def start_game(game_id: str, user: Player = Security(get_current_user)) -> dict:
     game = game_service.get(game_id)
 
     try:
-        game.start(user)
+        game.start(user, model.matcher)
         game_service.save(game)
     except PlayerNotCreatorError as start_exception:
         message = 'Player has not administrator rights at this table.'

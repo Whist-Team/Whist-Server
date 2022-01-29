@@ -56,6 +56,12 @@ class TrickTestCase(BaseCreateGameTestCase):
         response_stack = OrderedCardContainer(**response.json())
         self.assertEqual(expected_stack, response_stack)
 
+    def test_not_players_turn(self):
+        response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                                    headers=self.second_player, json={'suit': 'clubs',
+                                                                      'rank': 'ace'})
+        self.assertEqual(400, response.status_code, msg=response.content)
+
     def test_winner(self):
         # Play Ace of Clubs
         _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',

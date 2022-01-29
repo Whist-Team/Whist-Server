@@ -98,3 +98,23 @@ class TrickTestCase(BaseCreateGameTestCase):
         response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
                                    headers=third_player)
         self.assertEqual(403, response.status_code, msg=response.content)
+
+    def test_next_trick(self):
+        # Play Ace of Clubs
+        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                             headers=self.headers, json={'suit': 'clubs',
+                                                         'rank': 'ace'})
+        # Play King of Clubs
+        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                             headers=self.second_player, json={'suit': 'clubs',
+                                                               'rank': 'king'})
+        # Play Ace of Hearts in next trick
+        response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                                    headers=self.headers, json={'suit': 'hearts',
+                                                                'rank': 'ace'})
+        self.assertEqual(200, response.status_code, msg=response.content)
+
+        expected_stack = OrderedCardContainer.empty()
+        expected_stack.add(Card(suit=Suit.HEARTS, rank=Rank.A))
+        response_stack = OrderedCardContainer(**response.json())
+        self.assertEqual(expected_stack, response_stack)

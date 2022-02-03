@@ -108,6 +108,7 @@ class Game(BaseModel):
             raise PlayerNotCreatorError()
         if not self.table.started:
             self.table.start(matcher)
+        self.current_trick(auto_next=True)
         return self.table.started
 
     def get_player(self, player):

@@ -13,7 +13,8 @@ router = APIRouter(prefix='/user')
 @router.post('/create')
 def create_user(request: Dict[str, str]):
     """
-    Creates a new user. Must contain a username and a password field. If one is missing it raises
+    Creates a new user.
+    :param request: Must contain a 'username' and a 'password' field. If one is missing it raises
     HTTP 400 error.
     :return: the ID of the user or an error message.
     """

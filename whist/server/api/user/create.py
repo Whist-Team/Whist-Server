@@ -23,7 +23,12 @@ def create_user(request: Dict[str, str]):
     except KeyError as key_error:
         raise HTTPException(status_code=400,
                             detail='A password is required to create a user.') from key_error
-    user = UserInDb(username=request['username'],
+    try:
+        username = request['username']
+    except KeyError as key_error:
+        raise HTTPException(status_code=400,
+                            detail='A username is required to create a user.') from key_error
+    user = UserInDb(username=username,
                     hashed_password=pwd_hash)
     user_db_service = UserDatabaseService()
     user_id = user_db_service.add(user)

@@ -2,6 +2,8 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
+from whist.core.game.rubber import Rubber
+from whist.core.game.trick import Trick
 from whist.core.session.matcher import Matcher
 from whist.core.session.table import Table
 from whist.core.user.player import Player
@@ -52,6 +54,27 @@ class Game(BaseModel):
         """
         return self.table.users.players
 
+    @property
+    def current_rubber(self) -> Rubber:
+        """
+        Retrieves the current rubber of the game.
+        """
+        return self.table.current_rubber
+
+    def current_trick(self, auto_next: bool = False) -> Trick:
+        """
+        Returns the current trick if it exists. Else throws an IndexError.
+        :param auto_next: If set True, gets the next trick automatically if current one is done.
+        Else gets the current one regardless of being done.
+        """
+        try:
+            trick = self._current_hand().current_trick
+        except IndexError:
+            return self._current_game().current_trick
+        if trick.done and auto_next:
+            trick = self._current_hand().next_trick(self._current_game().play_order)
+        return trick
+
     def join(self, user: Player) -> bool:
         """
         Adds the user to this game.
@@ -86,6 +109,20 @@ class Game(BaseModel):
         if not self.table.started:
             self.table.start(matcher)
         return self.table.started
+
+    def get_player(self, player):
+        """
+        Gets the player at table for player instance.
+        :param player: for which the player at table is requested.
+        :return: PlayerAtTable
+        """
+        return self.current_rubber.games[-1].get_player(player)
+
+    def _current_hand(self):
+        return self._current_game().next_hand()
+
+    def _current_game(self):
+        return self.current_rubber.next_game()
 
 
 class GameInDb(Game):

@@ -44,3 +44,20 @@ class TrickTestCase(BaseCreateGameTestCase):
                                    headers=self.headers)
         player_hand = UnorderedCardContainer(**response.json())
         self.assertEqual(13, len(player_hand.cards))
+
+    def test_hand_different(self):
+        response = self.client.get(url=f'/game/trick/hand/{self.game_id}',
+                                   headers=self.headers)
+        first_hand = UnorderedCardContainer(**response.json())
+        response = self.client.get(url=f'/game/trick/hand/{self.game_id}',
+                                   headers=self.second_player)
+        second_hand = UnorderedCardContainer(**response.json())
+        response = self.client.get(url=f'/game/trick/hand/{self.game_id}',
+                                   headers=self.third_player)
+        third_hand = UnorderedCardContainer(**response.json())
+        response = self.client.get(url=f'/game/trick/hand/{self.game_id}',
+                                   headers=self.forth_player)
+        forth_hand = UnorderedCardContainer(**response.json())
+        self.assertNotEqual(first_hand, second_hand)
+        self.assertNotEqual(first_hand, third_hand)
+        self.assertNotEqual(first_hand, forth_hand)

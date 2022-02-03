@@ -28,6 +28,6 @@ class UserTestCase(unittest.TestCase):
         Tests the creation of a new user.
         """
         data = {'username': 'test'}
-        with self.assertRaisesRegex(KeyError, 'password'):
-            _ = self.client.post(url='/user/create', json=data)
+        response = self.client.post(url='/user/create', json=data)
+        self.assertEqual(400, response.status_code)
         self.assertEqual(0, db.user.estimated_document_count())

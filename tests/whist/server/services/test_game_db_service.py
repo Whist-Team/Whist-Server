@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 from bson import ObjectId
-from whist.core.cards.card import Card, Suit, Rank
 from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher
 from whist.core.user.player import Player
 
@@ -91,5 +90,5 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         game = self.game.table.current_rubber.next_game()
         player = game.get_player(self.player)
         trick = game.current_trick
-        trick.play_card(player, Card(suit=Suit.CLUBS, rank=Rank.A))
+        trick.play_card(player, player.hand.cards[0])
         self.service.save(self.game)

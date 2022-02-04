@@ -51,7 +51,8 @@ def play_card(game_id: str, card: Card,
         trick.play_card(player=player, card=card)
         game_service.save(room)
     except NotPlayersTurnError as turn_error:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(detail=f'It is not {player.player.username} turn',
+                            status_code=status.HTTP_400_BAD_REQUEST,
                             headers={"WWW-Authenticate": "Basic"}) from turn_error
     return trick.stack
 

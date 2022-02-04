@@ -111,14 +111,10 @@ class TrickTestCase(BaseCreateGameTestCase):
 
     def test_not_joined_winner(self):
         third_player = self.create_and_auth_user('third', 'third')
-        # Play Ace of Clubs
-        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                             headers=self.headers, json={'suit': 'clubs',
-                                                         'rank': 'ace'})
-        # Play King of Clubs
-        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                             headers=self.second_player, json={'suit': 'clubs',
-                                                               'rank': 'king'})
+        _ = self._play_first_card(self.headers)
+        _ = self._play_first_card(self.second_player)
+        _ = self._play_first_card(self.third_player)
+        _ = self._play_first_card(self.forth_player)
         response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
                                    headers=third_player)
         self.assertEqual(403, response.status_code, msg=response.content)

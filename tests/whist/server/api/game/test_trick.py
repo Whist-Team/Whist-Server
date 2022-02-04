@@ -42,7 +42,7 @@ class TrickTestCase(BaseCreateGameTestCase):
         # Request to start table.
         _ = self.client.post(url=f'/game/action/start/{self.game_id}',
                              headers=self.headers,
-                             json={'matcher_typer': 'robin'})
+                             json={'matcher_type': 'robin'})
 
     def test_player_hand(self):
         response = self.client.get(url=f'/game/trick/hand/{self.game_id}',

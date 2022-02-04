@@ -15,6 +15,8 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.third_player = self.create_and_auth_user('nico', 'abc')
         self.forth_player = self.create_and_auth_user('bot', 'abc')
 
+        self.players = {'marcel': self.headers, 'miles': self.second_player,
+                        'nico': self.third_player, 'bot': self.forth_player}
         # Join the second player
         _ = self.client.post(url=f'/game/join/{self.game_id}',
                              json={'password': 'abc'},
@@ -68,58 +70,40 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.assertNotEqual(first_hand, forth_hand)
 
     def test_play_card(self):
-        # Play Ace of Clubs
-        response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                                    headers=self.headers, json={'suit': 'clubs',
-                                                                'rank': 'ace'})
+        card_dict, response = self._play_first_card(self.headers)
         self.assertEqual(200, response.status_code, msg=response.content)
 
         expected_stack = OrderedCardContainer.empty()
-        expected_stack.add(self.first_card)
+        expected_stack.add(Card(**card_dict))
         response_stack = OrderedCardContainer(**response.json())
         self.assertEqual(expected_stack, response_stack)
 
     def test_play_second_card(self):
-        # Play Ace of Clubs
-        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                             headers=self.headers, json={'suit': 'clubs',
-                                                         'rank': 'ace'})
-        # Play King of Clubs
-        response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                                    headers=self.second_player, json={'suit': 'clubs',
-                                                                      'rank': 'king'})
+        first_card_dict, _ = self._play_first_card(self.headers)
+        second_card_dict, response = self._play_first_card(self.second_player)
         self.assertEqual(200, response.status_code, msg=response.content)
 
         expected_stack = OrderedCardContainer.empty()
-        expected_stack.add(self.first_card)
-        expected_stack.add(self.second_card)
+        expected_stack.add(Card(**first_card_dict))
+        expected_stack.add(Card(**second_card_dict))
         response_stack = OrderedCardContainer(**response.json())
         self.assertEqual(expected_stack, response_stack)
 
     def test_not_players_turn(self):
-        response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                                    headers=self.second_player, json={'suit': 'clubs',
-                                                                      'rank': 'ace'})
+        _, response = self._play_first_card(self.second_player)
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_winner(self):
-        # Play Ace of Clubs
-        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                             headers=self.headers, json={'suit': 'clubs',
-                                                         'rank': 'ace'})
-        # Play King of Clubs
-        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                             headers=self.second_player, json={'suit': 'clubs',
-                                                               'rank': 'king'})
+        _ = self._play_first_card(self.headers)
+        _ = self._play_first_card(self.second_player)
+        _ = self._play_first_card(self.third_player)
+        _ = self._play_first_card(self.forth_player)
         response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
                                    headers=self.headers)
-        self.assertEqual('marcel', PlayerAtTable(**response.json()).player.username)
+        self.assertIsInstance(PlayerAtTable(**response.json()), PlayerAtTable)
 
     def test_no_winner_yet(self):
-        # Play Ace of Clubs
-        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                             headers=self.headers, json={'suit': 'clubs',
-                                                         'rank': 'ace'})
+        _ = self._play_first_card(self.headers)
         response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
                                    headers=self.headers)
         expected_message = 'The trick is not yet done, so there is no winner.'
@@ -140,21 +124,29 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_next_trick(self):
-        # Play Ace of Clubs
-        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                             headers=self.headers, json={'suit': 'clubs',
-                                                         'rank': 'ace'})
-        # Play King of Clubs
-        _ = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                             headers=self.second_player, json={'suit': 'clubs',
-                                                               'rank': 'king'})
-        # Play Ace of Hearts in next trick
-        response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
-                                    headers=self.headers, json={'suit': 'hearts',
-                                                                'rank': 'ace'})
+        _ = self._play_first_card(self.headers)
+        _ = self._play_first_card(self.second_player)
+        _ = self._play_first_card(self.third_player)
+        _ = self._play_first_card(self.forth_player)
+        response = self.client.get(url=f'/game/trick/winner/{self.game_id}',
+                                   headers=self.headers)
+        winner = PlayerAtTable(**response.json())
+        winner_header = self.players[winner.player.username]
+        card_dict, response = self._play_first_card(winner_header)
+
         self.assertEqual(200, response.status_code, msg=response.content)
 
         expected_stack = OrderedCardContainer.empty()
-        expected_stack.add(Card(suit=Suit.HEARTS, rank=Rank.A))
+        expected_stack.add(Card(**card_dict))
         response_stack = OrderedCardContainer(**response.json())
         self.assertEqual(expected_stack, response_stack)
+
+    def _play_first_card(self, player):
+        response = self.client.get(url=f'/game/trick/hand/{self.game_id}',
+                                   headers=player)
+        hand = UnorderedCardContainer(**response.json())
+        # Play Ace of Clubs
+        card_dict = list(hand)[0].dict()
+        response = self.client.post(url=f'/game/trick/play_card/{self.game_id}',
+                                    headers=player, json=card_dict)
+        return card_dict, response

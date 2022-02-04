@@ -1,9 +1,11 @@
 """Interaction with the current trick of a room."""
 from typing import Union
 
-from fastapi import APIRouter, Security, HTTPException, status
+from fastapi import APIRouter, Security
+from fastapi import HTTPException, status
 from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
+from whist.core.cards.card_container import UnorderedCardContainer
 from whist.core.game.errors import NotPlayersTurnError
 from whist.core.game.player_at_table import PlayerAtTable
 from whist.core.game.warnings import TrickNotDoneWarning
@@ -13,6 +15,21 @@ from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 
 router = APIRouter(prefix='/game/trick')
+
+
+@router.get('/hand/{game_id}', status_code=200, response_model=UnorderedCardContainer)
+def hand(game_id: str, user: Player = Security(get_current_user)) -> UnorderedCardContainer:
+    """
+    Returns the current hand of player.
+    :param game_id: unique identifier for which the player's hand is requested
+    :param user: for which the hand is requested
+    :return: UnorderedCardContainer containing all cards of the player
+    """
+    game_service = GameDatabaseService()
+    room = game_service.get(game_id)
+
+    player = room.get_player(user)
+    return player.hand
 
 
 @router.post('/play_card/{game_id}', status_code=200, response_model=OrderedCardContainer)

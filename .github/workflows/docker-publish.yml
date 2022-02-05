@@ -46,6 +46,6 @@ jobs:
           platforms: linux/${{ matrix.arch }}
           tags: |
             whist-team/whist-server:latest
-            whist-team/whist-server:${{ steps.get_version.outputs.docker_tags }}
+            whist-team/whist-server:${{ steps.get_version.outputs.version-without-v }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

@@ -42,10 +42,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: ./${{ matrix.arch }}.dockerfile
+          file: ./Dockerfile
           platforms: linux/${{ matrix.arch }}
           tags: |
-            whist-team/whist-server:latest
-            whist-team/whist-server:${{ steps.get_version.outputs.version-without-v }}
+            whist-team/whist-server:${{ matrix.arch }}-latest
+            whist-team/whist-server:${{ matrix.arch }}-${{ steps.get_version.outputs.version-without-v }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

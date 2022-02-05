@@ -28,12 +28,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Get Version
         id: get_version
         uses: battila7/get-version-action@v2
@@ -45,7 +39,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/${{ matrix.arch }}
           tags: |
-            whist-team/whist-server:${{ matrix.arch }}-latest
-            whist-team/whist-server:${{ matrix.arch }}-${{ steps.get_version.outputs.version-without-v }}
+            teamwhist/whist-server:${{ matrix.arch }}-latest
+            teamwhist/whist-server:${{ matrix.arch }}-${{ steps.get_version.outputs.version-without-v }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

@@ -1,5 +1,6 @@
-from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.core.user.player import Player
+
+from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database.game import GameInDb
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
@@ -11,7 +12,9 @@ class GameInDbTestCase(BasePlayerTestCase):
         password_service = PasswordService()
         self.game: GameInDb = GameInDb.create_with_pwd(game_name='test',
                                                        hashed_password=password_service.hash('abc'),
-                                                       creator=self.player)
+                                                       creator=self.player,
+                                                       max_player=2,
+                                                       min_player=2)
         self.second_player = Player(username='2', rating=1200)
         self.expected_players = [self.player, self.second_player]
 

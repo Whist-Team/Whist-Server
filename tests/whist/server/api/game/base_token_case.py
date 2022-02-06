@@ -6,12 +6,15 @@ from starlette.testclient import TestClient
 from whist.server import app
 from whist.server.database import db
 from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.password import PasswordService
 
 
 class TestCaseWithToken(unittest.TestCase):
     def setUp(self) -> None:
         self.game_service_mock = MagicMock(save=MagicMock())
+        self.password_service_mock = MagicMock(verify=MagicMock())
         app.dependency_overrides[GameDatabaseService] = lambda: self.game_service_mock
+        app.dependency_overrides[PasswordService] = lambda: self.password_service_mock
 
         self.client = TestClient(app)
         self.app = app

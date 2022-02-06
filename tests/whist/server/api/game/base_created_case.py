@@ -1,9 +1,10 @@
+from unittest.mock import MagicMock
+
 from tests.whist.server.api.game.base_token_case import TestCaseWithToken
 
 
 class BaseCreateGameTestCase(TestCaseWithToken):
     def setUp(self) -> None:
         super().setUp()
-        self.game_creds = {'game_name': 'test', 'password': 'abc', 'min_player': 1}
-        response = self.client.post(url='/game/create', json=self.game_creds, headers=self.headers)
-        self.game_id = response.json()['game_id']
+        self.game_mock = MagicMock(id='1', start=MagicMock())
+        self.game_service_mock.get = MagicMock(return_value=self.game_mock)

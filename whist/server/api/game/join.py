@@ -3,7 +3,7 @@ Route to join a game.
 """
 from typing import Dict
 
-from fastapi import APIRouter, HTTPException, Security, status
+from fastapi import APIRouter, HTTPException, Security, status, Depends
 from whist.core.user.player import Player
 
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
@@ -15,19 +15,20 @@ router = APIRouter(prefix='/game')
 
 
 @router.post('/join/{game_id}', status_code=200)
-def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get_current_user)):
+def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get_current_user),
+              pwd_service=Depends(PasswordService), game_service=Depends(GameDatabaseService)):
     """
     User requests to join a game.
     :param game_id: unique identifier for a game
     :param request: must contain the key 'password'
     :param user: that tries to join the game. Must be authenticated.
+    :param pwd_service: Injection of the password service. Required to create and check passwords.
+    :param game_service: Injection of the game database service. Requires to interact with the
+    database.
     :return: the status of the join request. 'joined' for successful join
     """
-    pwd_service = PasswordService()
 
     game_pwd = request['password']
-
-    game_service = GameDatabaseService()
     game = game_service.get(game_id)
 
     if not pwd_service.verify(game_pwd, game.hashed_password):

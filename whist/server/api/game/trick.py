@@ -1,7 +1,7 @@
 """Interaction with the current trick of a room."""
 from typing import Union
 
-from fastapi import APIRouter, Security
+from fastapi import APIRouter, Security, Depends
 from fastapi import HTTPException, status
 from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
@@ -18,14 +18,16 @@ router = APIRouter(prefix='/game/trick')
 
 
 @router.get('/hand/{game_id}', status_code=200, response_model=UnorderedCardContainer)
-def hand(game_id: str, user: Player = Security(get_current_user)) -> UnorderedCardContainer:
+def hand(game_id: str, user: Player = Security(get_current_user),
+         game_service=Depends(GameDatabaseService)) -> UnorderedCardContainer:
     """
     Returns the current hand of player.
     :param game_id: unique identifier for which the player's hand is requested
     :param user: for which the hand is requested
+    :param game_service: Injection of the game database service. Requires to interact with the
+    database.
     :return: UnorderedCardContainer containing all cards of the player
     """
-    game_service = GameDatabaseService()
     room = game_service.get(game_id)
 
     player = room.get_player(user)
@@ -34,15 +36,17 @@ def hand(game_id: str, user: Player = Security(get_current_user)) -> UnorderedCa
 
 @router.post('/play_card/{game_id}', status_code=200, response_model=OrderedCardContainer)
 def play_card(game_id: str, card: Card,
-              user: Player = Security(get_current_user)) -> OrderedCardContainer:
+              user: Player = Security(get_current_user),
+              game_service=Depends(GameDatabaseService)) -> OrderedCardContainer:
     """
     Request to play a card for a given game.
     :param game_id: at which table the card is requested to be played
     :param card: which is requested to be played
     :param user: who to played a card
+    :param game_service: Injection of the game database service. Requires to interact with the
+    database.
     :return: the stack after card being played if successful. If not the players turn raises error.
     """
-    game_service = GameDatabaseService()
     room = game_service.get(game_id)
 
     try:
@@ -59,16 +63,17 @@ def play_card(game_id: str, card: Card,
 
 @router.get('/winner/{game_id}', status_code=200,
             response_model=Union[PlayerAtTable, dict[str, str]])
-def get_winner(game_id: str, user: Player = Security(get_current_user)) -> Union[PlayerAtTable,
-                                                                                 dict[str, str]]:
+def get_winner(game_id: str, user: Player = Security(get_current_user),
+               game_service=Depends(GameDatabaseService)) -> Union[PlayerAtTable, dict[str, str]]:
     """
     Requests the winner of the current stack.
     :param game_id: for which the stack is requested
     :param user: who requested the winner
+    :param game_service: Injection of the game database service. Requires to interact with the
+    database.
     :return: The PlayerAtTable object of the winner. Raises Exception if the user has not joined
     the game yet. Replies with a warning if the trick has not be done.
     """
-    game_service = GameDatabaseService()
     room = game_service.get(game_id)
     if user not in room.players:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,

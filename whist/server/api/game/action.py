@@ -1,7 +1,7 @@
 """Route to interaction with a table."""
 from typing import Optional
 
-from fastapi import APIRouter, Security, HTTPException, status
+from fastapi import APIRouter, Depends, Security, HTTPException, status
 from pydantic import BaseModel
 from whist.core.error.table_error import PlayerNotJoinedError, TableNotReadyError
 from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher, Matcher
@@ -30,16 +30,18 @@ class StartModel(BaseModel):
 
 @router.post('/action/start/{game_id}', status_code=200)
 def start_game(game_id: str, model: StartModel,
-               user: Player = Security(get_current_user)) -> dict:
+               user: Player = Security(get_current_user),
+               game_service=Depends(GameDatabaseService)) -> dict:
     """
     Allows the creator of the table to start it.
     :param game_id: unique identifier of the game
     :param model: model containing configuration of the game.
     :param user: Required to identify if the user is the creator.
+    :param game_service: Injection of the game database service. Requires to interact with the
+    database.
     :return: dictionary containing the status of whether the table has been started or not.
     Raises 403 exception if the user has not the appropriate privileges.
     """
-    game_service = GameDatabaseService()
     game = game_service.get(game_id)
 
     try:
@@ -64,15 +66,18 @@ def start_game(game_id: str, model: StartModel,
 
 
 @router.post('/action/ready/{game_id}', status_code=200)
-def ready_player(game_id: str, user: Player = Security(get_current_user)) -> dict:
+def ready_player(game_id: str, user: Player = Security(get_current_user),
+                 game_service=Depends(GameDatabaseService)) -> dict:
     """
     A player can mark theyself to be ready.
     :param game_id: unique identifier of the game
     :param user: Required to identify the user.
+    :param game_service: Injection of the game database service. Requires to interact with the
+    database.
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
     """
-    game_service = GameDatabaseService()
+
     game = game_service.get(game_id)
 
     try:

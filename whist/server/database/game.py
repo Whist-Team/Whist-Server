@@ -2,6 +2,7 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
+from whist.core.game.player_at_table import PlayerAtTable
 from whist.core.game.rubber import Rubber
 from whist.core.game.trick import Trick
 from whist.core.session.matcher import Matcher
@@ -111,7 +112,7 @@ class Game(BaseModel):
         self.current_trick(auto_next=True)
         return self.table.started
 
-    def get_player(self, player):
+    def get_player(self, player) -> PlayerAtTable:
         """
         Gets the player at table for player instance.
         :param player: for which the player at table is requested.

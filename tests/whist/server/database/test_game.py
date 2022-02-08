@@ -1,8 +1,10 @@
 from unittest.mock import MagicMock, PropertyMock
 
+from whist.core.session.matcher import RandomMatcher
 from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
+from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.game import GameInDb
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.game_db_service import GameDatabaseService
@@ -54,3 +56,7 @@ class GameInDbTestCase(BasePlayerTestCase):
         first_trick = self.game.current_trick()
         second_trick = self.game.current_trick(auto_next=False)
         self.assertEqual(first_trick, second_trick)
+
+    def test_start_not_creator(self):
+        with self.assertRaises(PlayerNotCreatorError):
+            self.game.start(player=self.second_player, matcher=RandomMatcher())

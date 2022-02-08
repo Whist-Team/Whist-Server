@@ -34,7 +34,7 @@ setup(
         "testing": [
             "pytest==7.0.0",
             "pytest-cov==3.0.0",
-            "pytest-asyncio==0.17.2"
+            "pytest-asyncio==0.18.0"
         ]
     },
 )

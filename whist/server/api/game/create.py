@@ -2,9 +2,9 @@
 from typing import Dict, Optional
 
 from fastapi import APIRouter, HTTPException, Security
+from fastapi import Depends
 from whist.core.user.player import Player
 
-from whist.server.database.game import GameInDb
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
@@ -13,17 +13,18 @@ router = APIRouter(prefix='/game')
 
 
 @router.post('/create', status_code=200)
-def create_game(request: Dict[str, str], user: Player = Security(get_current_user)):
+def create_game(request: Dict[str, str], user: Player = Security(get_current_user),
+                game_service=Depends(GameDatabaseService)):
     """
     Creates a new game of whist.
     :param request: Must contain a 'game_name'. 'password' is optional.
     :param user: that created the game session.
+    :param game_service: service to handle database interaction for games.
     :return: the ID of the game instance.
     """
     game_parameter = _set_game_parameter(request, user)
-    game = GameInDb.create_with_pwd(**game_parameter)
-    game_db_service = GameDatabaseService()
-    game_id = game_db_service.add(game)
+    game = game_service.create_with_pwd(**game_parameter)
+    game_id = game_service.add(game)
     return {'game_id': game_id}
 
 

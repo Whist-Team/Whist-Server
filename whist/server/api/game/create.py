@@ -1,8 +1,7 @@
 """Route of /game/creation"""
 from typing import Dict, Optional
 
-from fastapi import APIRouter, HTTPException
-from fastapi import Depends
+from fastapi import APIRouter, Depends, HTTPException
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user

@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock, PropertyMock
+
 from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
@@ -40,3 +42,15 @@ class GameInDbTestCase(BasePlayerTestCase):
         with self.assertRaises(PlayerAlreadyJoinedWarning):
             self.assertTrue(self.game.join(self.second_player))
         self.assertEqual(self.expected_players, self.game.players)
+
+    def test_auto_next(self):
+        self.game.table = MagicMock(started=PropertyMock(return_value=True))
+        first_trick = self.game.current_trick()
+        second_trick = self.game.current_trick(auto_next=True)
+        self.assertNotEqual(first_trick, second_trick)
+
+    def test_auto_next_off(self):
+        self.game.table = MagicMock(started=PropertyMock(return_value=True))
+        first_trick = self.game.current_trick()
+        second_trick = self.game.current_trick(auto_next=False)
+        self.assertEqual(first_trick, second_trick)

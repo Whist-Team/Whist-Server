@@ -6,7 +6,6 @@ from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database import db
-from whist.server.database.game import GameInDb
 from whist.server.services.error import GameNotFoundError, GameNotUpdatedError
 from whist.server.services.game_db_service import GameDatabaseService
 
@@ -15,8 +14,8 @@ class GameDdServiceTestCase(BasePlayerTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.service = GameDatabaseService()
-        self.game = GameInDb.create_with_pwd(game_name='test', hashed_password='abc',
-                                             creator=self.player)
+        self.game = self.service.create_with_pwd(game_name='test', hashed_password='abc',
+                                                 creator=self.player)
 
     def test_add(self):
         game_id = self.service.add(self.game)

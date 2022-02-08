@@ -5,6 +5,7 @@ from starlette.testclient import TestClient
 
 from whist.server import app
 from whist.server.database import db
+from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
@@ -20,6 +21,7 @@ class TestCaseWithToken(unittest.TestCase):
         app.dependency_overrides[GameDatabaseService] = lambda: self.game_service_mock
         app.dependency_overrides[PasswordService] = lambda: self.password_service_mock
         app.dependency_overrides[UserDatabaseService] = lambda: user_service
+        app.dependency_overrides[get_current_user] = lambda: self.player_mock
 
         self.client = TestClient(app)
         self.app = app

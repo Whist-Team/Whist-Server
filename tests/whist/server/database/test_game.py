@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, PropertyMock
 
+from whist.core.cards.card_container import UnorderedCardContainer
 from whist.core.session.matcher import RandomMatcher
 from whist.core.user.player import Player
 
@@ -60,3 +61,12 @@ class GameInDbTestCase(BasePlayerTestCase):
     def test_start_not_creator(self):
         with self.assertRaises(PlayerNotCreatorError):
             self.game.start(player=self.second_player, matcher=RandomMatcher())
+
+    def test_get_player(self):
+        play_at_table_mock = MagicMock(player=PropertyMock(return_value=self.player),
+                                       hand=UnorderedCardContainer.empty(), team=MagicMock())
+        game_mock = MagicMock(get_player=MagicMock(return_value=play_at_table_mock))
+        self.game.table = MagicMock(ready=PropertyMock(return_value=True),
+                                    current_rubber=PropertyMock(games=[game_mock]))
+        player_at_table = self.game.get_player(self.player)
+        self.assertEqual(play_at_table_mock, player_at_table)

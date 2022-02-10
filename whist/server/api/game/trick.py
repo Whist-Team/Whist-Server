@@ -63,7 +63,7 @@ def play_card(game_id: str, card: Card,
 
 @router.get('/winner/{game_id}', status_code=200,
             response_model=Union[PlayerAtTable, dict[str, str]])
-def get_winner(game_id: str, user: Player = Security(get_current_user),
+def get_winner(game_id: str, user: Player = Depends(get_current_user),
                game_service=Depends(GameDatabaseService)) -> Union[PlayerAtTable, dict[str, str]]:
     """
     Requests the winner of the current stack.

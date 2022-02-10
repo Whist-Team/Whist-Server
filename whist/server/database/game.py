@@ -2,6 +2,7 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
+from whist.core.game.player_at_table import PlayerAtTable
 from whist.core.game.rubber import Rubber
 from whist.core.game.trick import Trick
 from whist.core.session.matcher import Matcher
@@ -111,7 +112,7 @@ class Game(BaseModel):
         self.current_trick(auto_next=True)
         return self.table.started
 
-    def get_player(self, player):
+    def get_player(self, player) -> PlayerAtTable:
         """
         Gets the player at table for player instance.
         :param player: for which the player at table is requested.
@@ -131,22 +132,6 @@ class GameInDb(Game):
     Game DO
     """
     hashed_password: Optional[str]
-
-    # pylint: disable=too-many-arguments
-    @classmethod
-    def create_with_pwd(cls, game_name: str, creator: Player, hashed_password: Optional[str] = None,
-                        min_player: int = 4, max_player: int = 4) -> 'GameInDb':
-        """
-        Factory method to create a Game in database object.
-        :param game_name: name of this session
-        :param creator: player object of the host
-        :param hashed_password: the hash value of the password required to join
-        :param min_player: the minimum amount of player to start a game
-        :param max_player: the maximum amount of player that can join this session
-        :return: the Game object
-        """
-        game = super().create(game_name, creator, min_player, max_player)
-        return GameInDb(**game.dict(), hashed_password=hashed_password)
 
     def verify_password(self, password: Optional[str]):
         """

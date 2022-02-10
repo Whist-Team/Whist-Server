@@ -1,5 +1,8 @@
 """Game database connector"""
+from typing import Optional
+
 from bson import ObjectId
+from whist.core.user.player import Player
 
 from whist.server.database import db
 from whist.server.database.game import GameInDb
@@ -18,6 +21,23 @@ class GameDatabaseService:
             cls._instance = super(GameDatabaseService, cls).__new__(cls)
             cls._games = db.game
         return cls._instance
+
+    # pylint: disable=too-many-arguments
+    @classmethod
+    def create_with_pwd(cls, game_name: str, creator: Player,
+                        hashed_password: Optional[str] = None,
+                        min_player: int = 4, max_player: int = 4) -> 'GameInDb':
+        """
+        Factory method to create a Game in database object.
+        :param game_name: name of this session
+        :param creator: player object of the host
+        :param hashed_password: the hash value of the password required to join
+        :param min_player: the minimum amount of player to start a game
+        :param max_player: the maximum amount of player that can join this session
+        :return: the Game object
+        """
+        game = GameInDb.create(game_name, creator, min_player, max_player)
+        return GameInDb(**game.dict(), hashed_password=hashed_password)
 
     @classmethod
     def add(cls, game: GameInDb) -> str:

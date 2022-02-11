@@ -14,6 +14,9 @@ jobs:
       fail-fast: false
 
     runs-on: ubuntu-latest
+    
+    env:
+      SHA8: ${GITHUB_SHA::8}
 
     steps:
       - uses: actions/checkout@v2
@@ -29,4 +32,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/${{ matrix.arch }}
           tags: |
-            whist-team/whist-server:${{ matrix.arch }}-${GITHUB_SHA::8}
+            whist-team/whist-server:${{ matrix.arch }}-$SHA8

@@ -29,4 +29,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/${{ matrix.arch }}
           tags: |
-            whist-team/whist-server:${{ matrix.arch }}-${{ github.event.pull_request.head.sha }}
+            whist-team/whist-server:${{ matrix.arch }}-${GITHUB_SHA}

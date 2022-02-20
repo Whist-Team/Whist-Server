@@ -25,7 +25,7 @@ def _create_user():
 async def test_get_current_user():
     user = _create_user()
     token = create_access_token(data={'sub': user.username})
-    result_user = await get_current_user(token)
+    result_user = await get_current_user(token, user_db_service=UserDatabaseService())
     assert user.to_user() == result_user
 
 
@@ -33,7 +33,7 @@ async def test_get_current_user():
 async def test_get_current_user_no_user():
     token = create_access_token(data={'sub': 'a'})
     with pytest.raises(UserNotFoundError):
-        _ = await get_current_user(token)
+        _ = await get_current_user(token, user_db_service=UserDatabaseService())
 
 
 @pytest.mark.asyncio
@@ -48,7 +48,7 @@ async def test_get_current_user_with_delta():
     user = _create_user()
     expires_delta = timedelta(days=2)
     token = create_access_token(data={'sub': user.username}, expires_delta=expires_delta)
-    result_user = await get_current_user(token)
+    result_user = await get_current_user(token, user_db_service=UserDatabaseService())
     assert user.to_user() == result_user
 
 

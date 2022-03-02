@@ -35,3 +35,9 @@ class AuthTestCase(unittest.TestCase):
         response = self.client.post(url='/user/auth/', data={'password': 'abc'})
         self.assertEqual(response.status_code, 422, msg=response.content)
         self.assertFalse('token' in response.json())
+
+    def test_wrong_username(self):
+        response = self.client.post(url='/user/auth/',
+                                    data={'username': 'miles', 'password': 'abcd'})
+        self.assertEqual(response.status_code, 403, msg=response.content)
+        self.assertFalse('token' in response.json())

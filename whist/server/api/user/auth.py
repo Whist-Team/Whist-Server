@@ -35,5 +35,5 @@ async def auth(request: OAuth2PasswordRequestForm = Depends()):
         ) from error
     token_request = {'sub': username}
     token = create_access_token(token_request)
-    # nosec
+    # nosec B106
     return AccessToken(token=token, token_type='Bearer')

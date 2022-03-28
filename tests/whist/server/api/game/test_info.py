@@ -17,3 +17,9 @@ class GameInfoTestCase(BaseCreateGameTestCase):
         game_name: str = 'hornblower'
         response = self.client.get(f'/game/info/id/{game_name}')
         self.assertEqual(400, response.status_code, msg=response.content)
+
+    def test_get_all_ids(self):
+        self.game_service_mock.all = MagicMock(return_value=[self.game_mock])
+        response = self.client.get('/game/info/ids')
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual(['1'], response.json()['games'])

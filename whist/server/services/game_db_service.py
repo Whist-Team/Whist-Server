@@ -54,6 +54,13 @@ class GameDatabaseService:
             return str(game_id.inserted_id)
 
     @classmethod
+    def all(cls) -> [GameInDb]:
+        """
+        Returns all games in the database.
+        """
+        return [GameInDb(**game) for game in cls._games.find()]
+
+    @classmethod
     def get(cls, game_id: str) -> GameInDb:
         """
         Retrieves a game from the database.

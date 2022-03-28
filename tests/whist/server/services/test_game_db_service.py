@@ -91,3 +91,10 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         trick = game.current_trick
         trick.play_card(player, player.hand.cards[0])
         self.service.save(self.game)
+
+    def test_all(self):
+        game_id = self.service.add(self.game)
+        self.game.id = game_id
+        all_games = self.service.all()
+        self.assertEqual(1, len(all_games))
+        self.assertEqual(game_id, str(all_games[0].id))

@@ -8,6 +8,17 @@ from whist.server.services.game_db_service import GameDatabaseService
 router = APIRouter(prefix='/game')
 
 
+@router.get('/info/ids', status_code=200, response_model=dict[str, list[str]])
+def all_games(game_service=Depends(GameDatabaseService)) -> dict[str, list[str]]:
+    """
+    Returns all game id.
+    :param game_service: Dependency injection of the game service
+    :return: a list of all game ids as strings.
+    """
+    rooms = game_service.all()
+    return {'games': [str(room.id) for room in rooms]}
+
+
 @router.get('/info/id/{game_name}', status_code=200, response_model=dict[str, str])
 def game_id_from_name(game_name: str, game_service=Depends(GameDatabaseService)) -> dict[str, str]:
     """

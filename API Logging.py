@@ -1,51 +1,45 @@
 import logging
 import sys
+import socket
 
 logger = logging.getLogger(__name__)
 stream_handler = logging.StreamHandler(sys.stdout)
-formatter = logging.Formatter("[%(asctime)s] %(levelname)s:%(message)s")
+formatter = logging.Formatter("%(levelname)s:%(message)s")
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
 logger.setLevel(logging.INFO)
 
+#function that will log localhost, and available port
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+target = "localhost"
+target_ip = socket.gethostbyname(target)
+ 
+available_port = False
+port_count = 0
+
+def port_scan(port):
+    try:
+        s.connect((target_ip, port))
+        available_port = True
+    except:
+        available_port = False
+
+#function that will log username
 def log_user(route):
-    if "/" in route:
-        # splitting the route string into a list based on forward slashes
-        tokens = route.split("/")
-        # AT&T Unix Route
-        if tokens[1] == "usr":
-            logger.info(tokens[2])
-        # Unix Derived Routes
-        elif tokens[2] == "users":
-            logger.info(tokens[3])
-        elif tokens[1] == "u01":
-            logger.info(tokens[2])
-        elif tokens[1] == "user":
-            logger.info(tokens[2])
-        elif tokens[1] == "users":
-            logger.info(tokens[2])
-        # Unix-based Route
-        elif tokens[1] == "home":
-            logger.info(tokens[2])
-        # SunOS Route
-        elif tokens[2] == "home":
-            logger.info(tokens[3])
-        # macOS Route
-        elif tokens[1] == "Users":
-            logger.info(tokens[2])
-    elif "\\" in route:
-        # splitting the route string into a list based on back slashes
-        tokens = route.split("\\")
-        # Microsoft Windows NT Route
-        if tokens[2] == "Profiles":
-            logger.info(tokens[3])
-        # Microsoft Windows 2000, XP and 2003 Route
-        elif tokens[1] == "Documents and Settings":
-            logger.info(tokens[2])
-        # Microsoft Windows Vista, 7, 8, 10 and 11 Route
-        elif tokens[1] == "Users":
-            logger.info(tokens[2])
+    tokens = route.split("/")
+    logger.info(" " + tokens[2] + " has been created")
+
     
-# call function
+    
+# call functions
 user_route = str(input("Enter a route: "))
 log_user(user_route)
+
+while available_port == False:
+    port_scan(port_count)
+    if available_port == True:
+        break
+    else:
+        port_count += 1
+
+logger.info(" " + target_ip + str(port_count) + " - " + user_route)

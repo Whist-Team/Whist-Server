@@ -3,6 +3,8 @@ Route to join a game.
 """
 from typing import Dict
 
+import logging
+
 from fastapi import APIRouter, HTTPException, Security, status, Depends
 from whist.core.user.player import Player
 
@@ -10,8 +12,6 @@ from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
-
-import logging
 
 logger = logging.getLogger(__name__)
 

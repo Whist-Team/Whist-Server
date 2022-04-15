@@ -72,8 +72,8 @@ def start_game(game_id: str, model: StartModel,
             headers={"WWW-Authenticate": "Basic"},
         ) from ready_error
     else:
-        #return {'status': 'started'}
-        return logger.info(user.username + " has started")
+        logger.info(user.username + " has started")
+        return {'status': 'started'}
 
 
 @router.post('/action/ready/{game_id}', status_code=200)
@@ -101,5 +101,5 @@ def ready_player(game_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Basic"},
         ) from ready_error
-    #return {'status': f'{user.username} is ready'}
-    return logger.info(user.username + " is ready")
+    logger.info(user.username + " is ready")
+    return {'status': f'{user.username} is ready'}

@@ -7,6 +7,10 @@ from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix='/user')
 
 

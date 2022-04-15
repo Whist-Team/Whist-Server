@@ -7,6 +7,16 @@ from whist.server.database.access_token import AccessToken
 from whist.server.services.authentication import create_access_token, check_credentials
 from whist.server.services.error import UserNotFoundError
 
+import logging
+import sys
+
+logger = logging.getLogger(__name__)
+stream_handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter("%(levelname)s:%(message)s")
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
+logger.setLevel(logging.INFO)
+
 router = APIRouter(prefix='/user/auth')
 
 
@@ -35,4 +45,5 @@ async def auth(request: OAuth2PasswordRequestForm = Depends()):
         ) from error
     token_request = {'sub': username}
     token = create_access_token(token_request)
+    logger.info(username + " has logged in")
     return AccessToken(token=token, token_type='Bearer')  # nosec B106

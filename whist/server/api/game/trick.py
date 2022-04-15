@@ -95,5 +95,5 @@ def get_winner(game_id: str, user: Player = Depends(get_current_user),
         winner = trick.winner
     except TrickNotDoneWarning:
         return {'status': 'The trick is not yet done, so there is no winner.'}
-    #return winner
-    return logger.info(user.username + " has won")
+    logger.info(user.username + " has won")
+    return winner

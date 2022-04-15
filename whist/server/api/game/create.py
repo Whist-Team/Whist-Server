@@ -49,7 +49,6 @@ def _get_amount_player(request, key) -> Optional[int]:
     if key in request:
         return int(request[key])
     return None
-#jjj
 
 def _get_game_name(request):
     try:

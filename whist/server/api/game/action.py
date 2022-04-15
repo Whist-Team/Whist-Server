@@ -11,16 +11,6 @@ from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 
-import logging
-import sys
-
-logger = logging.getLogger(__name__)
-stream_handler = logging.StreamHandler(sys.stdout)
-formatter = logging.Formatter("%(levelname)s:%(message)s")
-stream_handler.setFormatter(formatter)
-logger.addHandler(stream_handler)
-logger.setLevel(logging.INFO)
-
 router = APIRouter(prefix='/game')
 
 
@@ -72,7 +62,8 @@ def start_game(game_id: str, model: StartModel,
             headers={"WWW-Authenticate": "Basic"},
         ) from ready_error
     else:
-        logger.info(user.username + " has started")
+        logger.info("Game name: " + game)
+        logger.info(user.username + " has started the game")
         return {'status': 'started'}
 
 
@@ -101,5 +92,6 @@ def ready_player(game_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Basic"},
         ) from ready_error
+    logger.info("Game name: " + game)
     logger.info(user.username + " is ready")
     return {'status': f'{user.username} is ready'}

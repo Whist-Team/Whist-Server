@@ -14,7 +14,6 @@ from whist.server.services.game_db_service import GameDatabaseService
 import logging
 
 logger = logging.getLogger(__name__)
-#logger.setLevel(logging.INFO)
 
 router = APIRouter(prefix='/game')
 

@@ -7,6 +7,16 @@ from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
 
+import logging
+import sys
+
+logger = logging.getLogger(__name__)
+stream_handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter("%(levelname)s:%(message)s")
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
+logger.setLevel(logging.INFO)
+
 router = APIRouter(prefix='/user')
 
 
@@ -33,4 +43,5 @@ def create_user(request: Dict[str, str]):
                     hashed_password=pwd_hash)
     user_db_service = UserDatabaseService()
     user_id = user_db_service.add(user)
-    return {'user_id': user_id}
+    #return {'user_id': user_id}
+    return logger.info(user.username + " has been created")

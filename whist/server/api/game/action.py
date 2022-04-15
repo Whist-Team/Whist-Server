@@ -1,6 +1,8 @@
 """Route to interaction with a table."""
 from typing import Optional
 
+import logging
+
 from fastapi import APIRouter, Depends, Security, HTTPException, status
 from pydantic import BaseModel
 from whist.core.error.table_error import PlayerNotJoinedError, TableNotReadyError
@@ -10,8 +12,6 @@ from whist.core.user.player import Player
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
-
-import logging
 
 logger = logging.getLogger(__name__)
 

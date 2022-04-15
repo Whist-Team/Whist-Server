@@ -7,6 +7,10 @@ from whist.server.database.access_token import AccessToken
 from whist.server.services.authentication import create_access_token, check_credentials
 from whist.server.services.error import UserNotFoundError
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix='/user/auth')
 
 

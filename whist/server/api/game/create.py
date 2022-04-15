@@ -8,16 +8,6 @@ from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
 
-import logging
-import sys
-
-logger = logging.getLogger(__name__)
-stream_handler = logging.StreamHandler(sys.stdout)
-formatter = logging.Formatter("%(levelname)s:%(message)s")
-stream_handler.setFormatter(formatter)
-logger.addHandler(stream_handler)
-logger.setLevel(logging.INFO)
-
 router = APIRouter(prefix='/game')
 
 
@@ -35,7 +25,7 @@ def create_game(request: Dict[str, str], user: Player = Depends(get_current_user
     game_parameter = _set_game_parameter(request, user, pwd_service)
     game = game_service.create_with_pwd(**game_parameter)
     game_id = game_service.add(game)
-    logger.info(user.username + " has created a game")
+    logger.info(user.username + " has created " + game)
     return {'game_id': game_id}
 
 

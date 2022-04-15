@@ -43,5 +43,5 @@ def create_user(request: Dict[str, str]):
                     hashed_password=pwd_hash)
     user_db_service = UserDatabaseService()
     user_id = user_db_service.add(user)
-    #return {'user_id': user_id}
-    return logger.info(user.username + " has been created")
+    logger.info(user.username + " has been created")
+    return {'user_id': user_id}

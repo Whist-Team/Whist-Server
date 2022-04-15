@@ -1,13 +1,13 @@
 """'/user/create api"""
 from typing import Dict
 
+import logging
+
 from fastapi import APIRouter, HTTPException
 
 from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
-
-import logging
 
 logger = logging.getLogger(__name__)
 

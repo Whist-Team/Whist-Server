@@ -8,6 +8,10 @@ from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix='/game')
 
 

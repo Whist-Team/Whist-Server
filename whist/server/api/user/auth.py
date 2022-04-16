@@ -1,4 +1,4 @@
-"""User authentication. """
+"""User authentication."""
 
 import logging
 

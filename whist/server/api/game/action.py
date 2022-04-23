@@ -12,7 +12,6 @@ from whist.core.user.player import Player
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
-from tests.whist.server.services.test_error import GameNotFoundTestCase
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +19,16 @@ router = APIRouter(prefix='/game')
 
 
 class PlayerNotReadyError(Exception):
+    """
+    Will check to see if player is ready before unreadying
+    """
+    pass
+
+
+class GameNotFoundError(Exception):
+    """
+    Checks to see if user enters correct game_id
+    """
     pass
 
 
@@ -107,6 +116,17 @@ def ready_player(game_id: str, user: Player = Security(get_current_user),
 @router.post('/action/unready/{game_id}', status_code=200)
 def unready_player(game_id: str, user: Player = Security(get_current_user),
                    game_service=Depends(GameDatabaseService)) -> dict:
+    """
+    A player can mark themself to be unready.
+    :param game_id: unique identifier of the game
+    :param user: Required to identify the user.
+    :param game_service: Injection of the game database service. Requires to interact with the
+    database.
+    :return: dictionary containing the status of whether the action was successful.
+    Raises 403 exception if the user has not be joined yet.
+    Raises 404 exception if game_id is not found
+    Raises 400 exception if player is not ready
+    """
 
     game = game_service.get(game_id)
 
@@ -120,7 +140,7 @@ def unready_player(game_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Basic"},
         ) from join_error
-    except GameNotFoundTestCase as game_error:
+    except GameNotFoundError as game_error:
         message = "Game-id not found"
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

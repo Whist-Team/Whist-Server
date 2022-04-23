@@ -12,10 +12,6 @@ from whist.core.user.player import Player
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
-from test.whist.server.services.test_error import GameNotFoundTestCase
-
-class PlayerNotReadyError(Exception):
-    pass
 
 logger = logging.getLogger(__name__)
 
@@ -101,35 +97,3 @@ def ready_player(game_id: str, user: Player = Security(get_current_user),
         ) from ready_error
     logger.info(user.username + " has started " + game)
     return {'status': f'{user.username} is ready'}
-
-@router.post('/action/unready/{game_id}', status_code=200)
-def unready_player(game_id: str, user: Player = Security(get_current_user),
-                 game_service=Depends(GameDatabaseService)) -> dict:
-    
-    game = game_service.get(game_id)
-    
-    try:
-        game.unready_player(user)
-        game_service.save(game)
-    except PlayerNotJoinedError as join_error:
-        message = 'Player not joined yet.'
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=message,
-            headers={"WWW-Authenticate": "Basic"},
-        ) from join_error
-    except GameNotFoundTestCase as game_error:
-        message = "Game-id not found"
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=message,
-            headers={"WWW-Authenticate": "Basic"},
-        ) from game_error
-    except PlayerNotReadyError as ready_error:
-        message = "Player not ready"
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=message,
-            headers={"WWW-Authenticate": "Basic"},
-        ) from ready_error 
-    return {'status': f'{user.username} is unready'}

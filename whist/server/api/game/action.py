@@ -9,11 +9,12 @@ from whist.core.error.table_error import PlayerNotJoinedError, TableNotReadyErro
 from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher, Matcher
 from whist.core.user.player import Player
 
-from whist.server.database.error import PlayerNotCreatorError, GameNotFoundError
+from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
+from test.whist.server.services.test_error import GameNotFoundTestCase
 
-class PlayerNotReadyError:
+class PlayerNotReadyError(Exception):
     pass
 
 logger = logging.getLogger(__name__)
@@ -118,7 +119,7 @@ def unready_player(game_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Basic"},
         ) from join_error
-    except GameNotFoundError as game_error:
+    except GameNotFoundTestCase as game_error:
         message = "Game-id not found"
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

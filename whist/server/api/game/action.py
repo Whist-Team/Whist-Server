@@ -22,14 +22,12 @@ class PlayerNotReadyError(Exception):
     """
     Will check to see if player is ready before unreadying
     """
-    pass
 
 
 class GameNotFoundError(Exception):
     """
     Checks to see if user enters correct game_id
     """
-    pass
 
 
 class StartModel(BaseModel):

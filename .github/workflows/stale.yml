@@ -10,7 +10,6 @@ jobs:
   - name: Close Stale PRs
     uses: actions/stale@v5
     with:
-      remove-pr-stale-when-updated: true
       days-before-issue-close: -1
       days-before-pr-stale: 30
       exempt-pr-assignees: 'iTitus, Segelzwerg'

@@ -1,8 +1,6 @@
 """Route to interaction with a table."""
 from typing import Optional
 
-import logging
-
 from fastapi import APIRouter, Depends, Security, HTTPException, status
 from pydantic import BaseModel
 from whist.core.error.table_error import PlayerNotJoinedError, TableNotReadyError
@@ -13,9 +11,19 @@ from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 
-logger = logging.getLogger(__name__)
-
 router = APIRouter(prefix='/game')
+
+
+class PlayerNotReadyError(Exception):
+    """
+    Will check to see if player is ready before unreadying
+    """
+
+
+class GameNotFoundError(Exception):
+    """
+    Checks to see if user enters correct game_id
+    """
 
 
 class StartModel(BaseModel):
@@ -66,7 +74,6 @@ def start_game(game_id: str, model: StartModel,
             headers={"WWW-Authenticate": "Basic"},
         ) from ready_error
     else:
-        logger.info(user.username + " has started " + game)
         return {'status': 'started'}
 
 
@@ -95,5 +102,48 @@ def ready_player(game_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Basic"},
         ) from ready_error
-    logger.info(user.username + " has started " + game)
     return {'status': f'{user.username} is ready'}
+
+
+@router.post('/action/unready/{game_id}', status_code=200)
+def unready_player(game_id: str, user: Player = Security(get_current_user),
+                   game_service=Depends(GameDatabaseService)) -> dict:
+    """
+    A player can mark themself to be unready.
+    :param game_id: unique identifier of the game
+    :param user: Required to identify the user.
+    :param game_service: Injection of the game database service. Requires to interact with the
+    database.
+    :return: dictionary containing the status of whether the action was successful.
+    Raises 403 exception if the user has not be joined yet.
+    Raises 404 exception if game_id is not found
+    Raises 400 exception if player is not ready
+    """
+
+    game = game_service.get(game_id)
+
+    try:
+        game.unready_player(user)
+        game_service.save(game)
+    except PlayerNotJoinedError as join_error:
+        message = 'Player not joined yet.'
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=message,
+            headers={"WWW-Authenticate": "Basic"},
+        ) from join_error
+    except GameNotFoundError as game_error:
+        message = "Game-id not found"
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=message,
+            headers={"WWW-Authenticate": "Basic"},
+        ) from game_error
+    except PlayerNotReadyError as ready_error:
+        message = "Player not ready"
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=message,
+            headers={"WWW-Authenticate": "Basic"},
+        ) from ready_error
+    return {'status': f'{user.username} is unready'}

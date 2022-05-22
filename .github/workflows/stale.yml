@@ -1,0 +1,17 @@
+name: 'Close stale PRs'
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+jobs:
+  stale:
+  runs-on: ubuntu-latest
+  steps:
+  - name: Close Stale PRs
+    uses: actions/stale@v5.0.0
+    with:
+      remove-pr-stale-when-updated: true
+      days-before-issue-close: -1
+      days-before-pr-stale: 30
+      exempt-pr-assignees: 'iTitus, Segelzwerg'
+      exempt-draft-pr: true

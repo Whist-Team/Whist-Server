@@ -7,6 +7,18 @@ from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.game_db_service import GameDatabaseService
 
 
+class PlayerNotReadyError(Exception):
+    """
+    Will check to see if player is ready before unreadying
+    """
+
+
+class GameNotFoundError(Exception):
+    """
+    Checks to see if user enters correct game_id
+    """
+    
+
 class ActionGameTestCase(BaseCreateGameTestCase):
     def setUp(self) -> None:
         super().setUp()
@@ -67,3 +79,17 @@ class ActionGameTestCase(BaseCreateGameTestCase):
                                     headers=self.second_player)
         self.game_mock.unready_player.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
+        
+    def test_unready_game_not_found(self):
+        self.game_mock.unready_player = MagicMock(side_effect=GameNotFoundError)
+        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+                                    headers=self.second_player)
+        self.game_mock.unready_player.assert_called_once()
+        self.assertEqual(404, response.status_code, msg=response.content)
+
+    def test_unready_player_not_ready(self):
+        self.game_mock.unready_player = MagicMock(side_effect=PlayerNotReadyError)
+        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+                                    headers=self.second_player)
+        self.game_mock.unready_player.assert_called_once()
+        self.assertEqual(400, response.status_code, msg=response.content)

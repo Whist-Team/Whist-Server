@@ -78,7 +78,7 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
                                     headers=self.second_player)
         self.game_mock.unready_player.assert_called_once()
-        self.assertEqual(403, response.status_code, msg=response.content)
+        self.assertEqual(404, response.status_code, msg=response.content)
 
     def test_unready_not_joined(self):
         self.game_mock.unready_player = MagicMock(side_effect=PlayerNotJoinedError)
@@ -92,4 +92,4 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
                                     headers=self.second_player)
         self.game_mock.unready_player.assert_called_once()
-        self.assertEqual(403, response.status_code, msg=response.content)
+        self.assertEqual(400, response.status_code, msg=response.content)

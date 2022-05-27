@@ -17,7 +17,7 @@ class GameNotFoundError(Exception):
     """
     Checks to see if user enters correct game_id
     """
-    
+
 
 class ActionGameTestCase(BaseCreateGameTestCase):
     def setUp(self) -> None:

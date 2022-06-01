@@ -5,18 +5,7 @@ from whist.core.error.table_error import TableNotReadyError, PlayerNotJoinedErro
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.game_db_service import GameDatabaseService
-
-
-class PlayerNotReadyError(Exception):
-    """
-    Will check to see if player is ready before unreadying
-    """
-
-
-class GameNotFoundError(Exception):
-    """
-    Checks to see if user enters correct game_id
-    """
+from whist.server.services.error import GameNotFoundError
 
 
 class ActionGameTestCase(BaseCreateGameTestCase):

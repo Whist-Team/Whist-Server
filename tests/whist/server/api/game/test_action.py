@@ -8,6 +8,12 @@ from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.error import GameNotFoundError
 
 
+class PlayerNotReadyError(Exception):
+    """
+    Will check to see if player is ready before unreadying
+    """
+
+
 class ActionGameTestCase(BaseCreateGameTestCase):
     def setUp(self) -> None:
         super().setUp()

@@ -6,13 +6,7 @@ from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.error import GameNotFoundError
-
-
-class PlayerNotReadyError(Exception):
-    """
-    Will check to see if player is ready before unreadying
-    """
-
+from whist.server.services.error import UserNotReadyError
 
 class ActionGameTestCase(BaseCreateGameTestCase):
     def setUp(self) -> None:
@@ -83,7 +77,7 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.assertEqual(404, response.status_code, msg=response.content)
 
     def test_unready_player_not_ready(self):
-        self.game_mock.unready_player = MagicMock(side_effect=PlayerNotReadyError)
+        self.game_mock.unready_player = MagicMock(side_effect=UserNotReadyError)
         response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
                                     headers=self.second_player)
         self.game_mock.unready_player.assert_called_once()

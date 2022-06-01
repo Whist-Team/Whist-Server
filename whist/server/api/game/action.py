@@ -10,6 +10,7 @@ from whist.core.user.player import Player
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.error import GameNotFoundError
 
 router = APIRouter(prefix='/game')
 

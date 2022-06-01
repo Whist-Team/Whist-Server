@@ -11,14 +11,9 @@ from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.error import GameNotFoundError
+from whist.server.services.error import UserNotReadyError
 
 router = APIRouter(prefix='/game')
-
-
-class PlayerNotReadyError(Exception):
-    """
-    Will check to see if player is ready before unreadying
-    """
 
 
 class StartModel(BaseModel):
@@ -134,7 +129,7 @@ def unready_player(game_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Basic"},
         ) from game_error
-    except PlayerNotReadyError as ready_error:
+    except UserNotReadyError as ready_error:
         message = "Player not ready"
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

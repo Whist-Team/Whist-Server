@@ -11,6 +11,12 @@ class UserExistsError(Exception):
     """
 
 
+class UserNotReadyError(Exception):
+    """
+    Is raised when an user is not found in the database.
+    """
+
+
 class UserNotFoundError(Exception):
     """
     Is raised when an user is not found in the database.

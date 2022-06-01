@@ -8,6 +8,7 @@ from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.error import GameNotFoundError
 from whist.server.services.error import UserNotReadyError
 
+
 class ActionGameTestCase(BaseCreateGameTestCase):
     def setUp(self) -> None:
         super().setUp()

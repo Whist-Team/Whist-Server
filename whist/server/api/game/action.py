@@ -21,12 +21,6 @@ class PlayerNotReadyError(Exception):
     """
 
 
-class GameNotFoundError(Exception):
-    """
-    Checks to see if user enters correct game_id
-    """
-
-
 class StartModel(BaseModel):
     """
     A model to ease data posting to start a game.

@@ -1,5 +1,4 @@
 """Game models"""
-# pylint: disable=<R0801>
 
 from typing import Optional
 

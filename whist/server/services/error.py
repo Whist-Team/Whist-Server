@@ -13,7 +13,7 @@ class UserExistsError(Exception):
 
 class UserNotReadyError(Exception):
     """
-    Is raised when an user is not found in the database.
+    Is raised when an user is not to start.
     """
 
 

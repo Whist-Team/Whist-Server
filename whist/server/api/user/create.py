@@ -1,15 +1,11 @@
 """'/user/create api"""
 from typing import Dict
 
-import logging
-
 from fastapi import APIRouter, HTTPException
 
 from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
-
-logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix='/user')
 
@@ -37,5 +33,4 @@ def create_user(request: Dict[str, str]):
                     hashed_password=pwd_hash)
     user_db_service = UserDatabaseService()
     user_id = user_db_service.add(user)
-    logger.info(user.username, "has been created")
     return {'user_id': user_id}

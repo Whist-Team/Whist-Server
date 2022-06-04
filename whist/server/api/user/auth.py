@@ -1,15 +1,11 @@
 """User authentication."""
 
-import logging
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from whist.server.database.access_token import AccessToken
 from whist.server.services.authentication import create_access_token, check_credentials
 from whist.server.services.error import UserNotFoundError
-
-logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix='/user/auth')
 
@@ -39,5 +35,4 @@ async def auth(request: OAuth2PasswordRequestForm = Depends()):
         ) from error
     token_request = {'sub': username}
     token = create_access_token(token_request)
-    logger.info(username, "has logged in")
     return AccessToken(token=token, token_type='Bearer')  # nosec B106

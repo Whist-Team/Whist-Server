@@ -4,7 +4,7 @@ from whist.core.cards.card_container import UnorderedCardContainer
 from whist.core.session.matcher import RandomMatcher
 from whist.core.user.player import Player
 
-from tests.whist.server.services.base_player_test_case import BasePlayerTestCase
+from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.game import GameInDb
 from whist.server.database.warning import PlayerAlreadyJoinedWarning

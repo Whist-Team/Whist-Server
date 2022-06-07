@@ -4,7 +4,7 @@ from bson import ObjectId
 from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher
 from whist.core.user.player import Player
 
-from tests.whist.server.services.base_player_test_case import BasePlayerTestCase
+from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database import db
 from whist.server.services.error import GameNotFoundError, GameNotUpdatedError
 from whist.server.services.game_db_service import GameDatabaseService

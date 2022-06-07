@@ -1,4 +1,4 @@
-from tests.whist.server.services.base_user_test_case import UserBaseTestCase
+from tests.whist.server.base_user_test_case import UserBaseTestCase
 from whist.server.database import db
 from whist.server.services.error import UserNotFoundError, UserExistsError
 

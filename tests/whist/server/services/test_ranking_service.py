@@ -1,4 +1,4 @@
-from tests.whist.server.services.base_user_test_case import UserBaseTestCase
+from tests.whist.server.base_user_test_case import UserBaseTestCase
 from whist.server.const import INITIAL_RATING
 
 from whist.server.database.user import UserInDb

@@ -27,8 +27,9 @@ class RankingService:
         :param order: Integer either 1 for ascending or -1 for descending order.
         """
         mongodb_order = cls._convert_order_to_mongodb(order)
-        ranked_users = cls._users.find().sort('rating', mongodb_order)
-        return ranked_users
+        user_cursor = cls._users.find()
+        user_cursor.sort('rating', mongodb_order)
+        return [Player(**user) for user in user_cursor]
 
     @classmethod
     def _convert_order_to_mongodb(cls, order: str) -> int:

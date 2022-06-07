@@ -27,7 +27,7 @@ class RankingService:
         :param order: Integer either 1 for ascending or -1 for descending order.
         """
         mongodb_order = cls._convert_order_to_mongodb(order)
-        ranked_users = cls._users.find().sort({'rating': mongodb_order})
+        ranked_users = cls._users.find().sort('rating', mongodb_order)
         return ranked_users
 
     @classmethod

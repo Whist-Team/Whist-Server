@@ -1,3 +1,4 @@
+"""Routes handling all request regarding ranking or rating of players."""
 from fastapi import APIRouter, Depends
 from whist.core.user.player import Player
 

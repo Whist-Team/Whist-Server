@@ -9,7 +9,8 @@ from whist.server.services.user_db_service import UserDatabaseService
 class LeaderboardTestCase(UserBaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        self.second_user = UserInDb(username='lower_ranking', rating=INITIAL_RATING - 10)
+        self.second_user = UserInDb(username='lower_ranking', rating=INITIAL_RATING - 10,
+                                    hashed_password='abc')
         self.ranking_service = RankingService()
         user_service = UserDatabaseService()
         user_service.add(self.user)

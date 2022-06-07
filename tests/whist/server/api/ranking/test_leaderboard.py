@@ -11,13 +11,11 @@ class LeaderboardTestCase(unittest.TestCase):
         self.app = app
 
     def test_correct_des_order(self):
-        data = {'order': 'descending'}
-        response = self.client.get(url='/leaderboard', json=data)
+        response = self.client.get(url='/leaderboard/descending')
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertEqual([self.user.to_user(), self.second_user.to_user()], response['ranking'])
 
     def test_correct_asc_order(self):
-        data = {'order': 'ascending'}
-        response = self.client.get(url='/leaderboard', json=data)
+        response = self.client.get(url='/leaderboard/ascending')
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertEqual([self.second_user.to_user(), self.user.to_user()], response['ranking'])

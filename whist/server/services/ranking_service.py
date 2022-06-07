@@ -3,6 +3,7 @@ from whist.core.user.player import Player
 
 from whist.server.database import db
 
+ASCENDING = 1
 DESCENDING = -1
 
 
@@ -20,9 +21,10 @@ class RankingService:
         return cls._instance
 
     @classmethod
-    def all(cls) -> list[Player]:
+    def all(cls, order: int) -> list[Player]:
         """
-        Returns a list of all users in descending order of their rating.
+        Returns a list of all users in order of their rating.
+        :param order: Integer either 1 for ascending or -1 for descending order.
         """
-        ranked_users = cls._user.find().sort({'rating': DESCENDING})
+        ranked_users = cls._user.find().sort({'rating': order})
         return ranked_users

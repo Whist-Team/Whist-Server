@@ -4,9 +4,9 @@ from typing import Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from whist.core.user.player import Player
 
-from whist.server.services.password import PasswordService
 from whist.server.services.authentication import get_current_user
 from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.password import PasswordService
 
 router = APIRouter(prefix='/game')
 

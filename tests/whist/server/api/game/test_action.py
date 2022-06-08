@@ -5,6 +5,8 @@ from whist.core.error.table_error import TableNotReadyError, PlayerNotJoinedErro
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.error import GameNotFoundError
+from whist.server.services.error import UserNotReadyError
 
 
 class ActionGameTestCase(BaseCreateGameTestCase):
@@ -54,3 +56,30 @@ class ActionGameTestCase(BaseCreateGameTestCase):
                                     headers=self.second_player)
         self.game_mock.ready_player.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
+
+    def test_unready(self):
+        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+                                    headers=self.headers)
+        self.game_mock.unready_player.assert_called_once()
+        self.assertEqual(200, response.status_code, msg=response.content)
+
+    def test_unready_not_joined(self):
+        self.game_mock.unready_player = MagicMock(side_effect=PlayerNotJoinedError)
+        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+                                    headers=self.second_player)
+        self.game_mock.unready_player.assert_called_once()
+        self.assertEqual(403, response.status_code, msg=response.content)
+
+    def test_unready_game_not_found(self):
+        self.game_mock.unready_player = MagicMock(side_effect=GameNotFoundError)
+        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+                                    headers=self.second_player)
+        self.game_mock.unready_player.assert_called_once()
+        self.assertEqual(404, response.status_code, msg=response.content)
+
+    def test_unready_player_not_ready(self):
+        self.game_mock.unready_player = MagicMock(side_effect=UserNotReadyError)
+        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+                                    headers=self.second_player)
+        self.game_mock.unready_player.assert_called_once()
+        self.assertEqual(400, response.status_code, msg=response.content)

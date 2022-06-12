@@ -36,18 +36,18 @@ def _set_game_parameter(request, user, pwd_service: PasswordService):
     :param pwd_service: service to handle password requests.
     :return: the players in the game
   """
-    pwd_hash = _get_password(pwd_service, request)
-    game_name = _get_game_name(request)
-    game_parameter = dict(game_name=game_name,
+  pwd_hash = _get_password(pwd_service, request)
+  game_name = _get_game_name(request)
+  game_parameter = dict(game_name=game_name,
                           hashed_password=pwd_hash,
                           creator=user)
-    min_player = _get_amount_player(request, 'min_player')
-    if min_player is not None:
-        game_parameter.update({'min_player': min_player})
-    max_player = _get_amount_player(request, 'max_player')
-    if max_player is not None:
-        game_parameter.update({'max_player': max_player})
-    return game_parameter
+  min_player = _get_amount_player(request, 'min_player')
+  if min_player is not None:
+      game_parameter.update({'min_player': min_player})
+  max_player = _get_amount_player(request, 'max_player')
+  if max_player is not None:
+      game_parameter.update({'max_player': max_player})
+  return game_parameter
 
 
 def _get_amount_player(request, key) -> Optional[int]:
@@ -56,11 +56,11 @@ def _get_amount_player(request, key) -> Optional[int]:
     :param request: Must contain a 'game_name'. 'password' is optional
     :param key: the player entering game
   """
-    if key not in ['min_player', 'max_player']:
-        raise KeyError(f'{key} is not a valid key for this operation.')
-    if key in request:
-        return int(request[key])
-    return None
+  if key not in ['min_player', 'max_player']:
+    raise KeyError(f'{key} is not a valid key for this operation.')
+  if key in request:
+    return int(request[key])
+  return None
 
 
 def _get_game_name(request):
@@ -69,11 +69,11 @@ def _get_game_name(request):
     :param request: Must contain a 'game_name'. 'password' is optional
     :return: the game name instance
   """
-    try:
-        game_name = request['game_name']
-    except KeyError as key_error:
-        raise HTTPException(status_code=400, detail='"game_name" is required.') from key_error
-    return game_name
+  try:
+      game_name = request['game_name']
+  except KeyError as key_error:
+      raise HTTPException(status_code=400, detail='"game_name" is required.') from key_error
+  return game_name
 
 
 def _get_password(pwd_service, request):
@@ -83,9 +83,9 @@ def _get_password(pwd_service, request):
     :param pwd_service: service to handle password requests.
     :return: the password for game instance
   """
-    try:
-        password = request['password']
-        pwd_hash = pwd_service.hash(password)
-    except KeyError:
-        pwd_hash = None
-    return pwd_hash
+  try:
+      password = request['password']
+      pwd_hash = pwd_service.hash(password)
+  except KeyError:
+      pwd_hash = None
+  return pwd_hash

@@ -39,14 +39,14 @@ def _set_game_parameter(request, user, pwd_service: PasswordService):
   pwd_hash = _get_password(pwd_service, request)
   game_name = _get_game_name(request)
   game_parameter = dict(game_name=game_name,
-                          hashed_password=pwd_hash,
-                          creator=user)
+                        hashed_password=pwd_hash,
+                        creator=user)
   min_player = _get_amount_player(request, 'min_player')
   if min_player is not None:
-      game_parameter.update({'min_player': min_player})
+    game_parameter.update({'min_player': min_player})
   max_player = _get_amount_player(request, 'max_player')
   if max_player is not None:
-      game_parameter.update({'max_player': max_player})
+    game_parameter.update({'max_player': max_player})
   return game_parameter
 
 
@@ -70,9 +70,9 @@ def _get_game_name(request):
     :return: the game name instance
   """
   try:
-      game_name = request['game_name']
+    game_name = request['game_name']
   except KeyError as key_error:
-      raise HTTPException(status_code=400, detail='"game_name" is required.') from key_error
+    raise HTTPException(status_code=400, detail='"game_name" is required.') from key_error
   return game_name
 
 
@@ -84,8 +84,8 @@ def _get_password(pwd_service, request):
     :return: the password for game instance
   """
   try:
-      password = request['password']
-      pwd_hash = pwd_service.hash(password)
+    password = request['password']
+    pwd_hash = pwd_service.hash(password)
   except KeyError:
-      pwd_hash = None
+    pwd_hash = None
   return pwd_hash

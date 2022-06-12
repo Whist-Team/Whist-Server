@@ -1,19 +1,9 @@
-import unittest
-
+from tests.whist.server.base_user_test_case import UserBaseTestCase
 from whist.server.database import db
-from whist.server.database.user import UserInDb
 from whist.server.services.error import UserNotFoundError, UserExistsError
-from whist.server.services.user_db_service import UserDatabaseService
 
 
-class UserDbTestCase(unittest.TestCase):
-    def setUp(self):
-        self.user_database_service = UserDatabaseService()
-        self.user: UserInDb = UserInDb(username='test', hashed_password='abc')
-        db.user.drop()
-
-    def tearDown(self) -> None:
-        db.user.drop()
+class UserDbTestCase(UserBaseTestCase):
 
     def test_add_user(self):
         self.assertTrue(self.user_database_service.add(self.user))

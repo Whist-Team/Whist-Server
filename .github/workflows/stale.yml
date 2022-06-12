@@ -12,5 +12,5 @@ jobs:
       with:
         days-before-issue-close: -1
         days-before-pr-stale: 30
-        exempt-pr-assignees: 'iTitus, Segelzwerg'
+        exempt-assignees: 'iTitus, Segelzwerg'
         exempt-draft-pr: true

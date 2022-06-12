@@ -4,6 +4,7 @@ from fastapi import WebSocket
 from whist.server.api.publish.events.event import Event
 
 
+# pylint: disable=too-few-public-methods
 class Subscriber:
     """
     A subscriber represents one client.

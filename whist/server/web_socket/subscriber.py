@@ -1,7 +1,7 @@
 """Client abstraction"""
 from fastapi import WebSocket
 
-from whist.server.api.publish.events.event import Event
+from whist.server.web_socket.events.event import Event
 
 
 # pylint: disable=too-few-public-methods

@@ -1,8 +1,8 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from whist.server.api.publish.events.event import Event
-from whist.server.api.publish.subscriber import Subscriber
+from whist.server.web_socket.events.event import Event
+from whist.server.web_socket.subscriber import Subscriber
 
 
 class SubscriberTestCase(TestCase):

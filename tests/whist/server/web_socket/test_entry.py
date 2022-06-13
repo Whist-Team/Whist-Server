@@ -34,9 +34,19 @@ class EntryTestCase(TestCaseWithToken):
     def test_subscribe_room_not_exists(self):
         self.game_service_mock.get = MagicMock(side_effect=GameNotFoundError)
         app.dependency_overrides[GameDatabaseService] = lambda: self.game_service_mock
-        with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
+        with self.client.websocket_connect(f'/room/{self.room_id}1') as websocket:
             data = {'token': self.token}
             websocket.send_json(data)
             response = websocket.receive_text()
             self.game_mock.side_channel.attach.assert_not_called()
             self.assertEqual('Game not found', response)
+
+    def test_subscribe_not_joined(self):
+        self.game_service_mock.get = MagicMock(return_value=self.game_mock)
+        app.dependency_overrides[GameDatabaseService] = lambda: self.game_service_mock
+        with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
+            data = {'token': self.token}
+            websocket.send_json(data)
+            response = websocket.receive_text()
+            self.game_mock.side_channel.attach.assert_not_called()
+            self.assertEqual('User not joined', response)

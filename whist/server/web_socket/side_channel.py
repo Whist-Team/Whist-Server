@@ -11,7 +11,11 @@ class SideChannel(BaseModel):
     """
     subscriber = []
 
+    # pylint: disable=too-few-public-methods
     class Config:
+        """
+        Configuration class that allows arbitrary types as fields.
+        """
         arbitrary_types_allowed = True
 
     def attach(self, subscriber: Subscriber) -> None:

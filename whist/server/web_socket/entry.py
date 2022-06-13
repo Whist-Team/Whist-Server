@@ -1,3 +1,4 @@
+"""Routes of the websocket communication."""
 from fastapi import APIRouter, Depends, WebSocket
 from whist.core.error.table_error import PlayerNotJoinedError
 
@@ -10,14 +11,25 @@ router = APIRouter()
 
 
 @router.websocket('/ping')
-async def ping(ws: WebSocket):
-    await ws.accept()
-    await ws.send_text('pong')
+async def ping(websocket: WebSocket):
+    """
+    Sends 'pong' to the client as response.
+    :param websocket: communication end point of the client
+    """
+    await websocket.accept()
+    await websocket.send_text('pong')
 
 
 @router.websocket('/room/{room_id}')
-async def websocket(websocket: WebSocket, room_id: str,
-                    game_service: GameDatabaseService = Depends(GameDatabaseService)):
+async def subscribe_room(websocket: WebSocket, room_id: str,
+                         game_service: GameDatabaseService = Depends(GameDatabaseService)):
+    """
+    Clients requests to subscribe to room's side channel.
+    :param websocket: communication end point of the client
+    :param room_id: ID of the room to which should be subscribed
+    :param game_service: handles all request to the db regarding rooms.
+    :return: Sends response to the websockets. No return.
+    """
     await websocket.accept()
     try:
         token = await websocket.receive_json()

@@ -33,7 +33,7 @@ async def subscribe_room(websocket: WebSocket, room_id: str,
     await websocket.accept()
     try:
         token = await websocket.receive_json()
-        player = get_current_user(token['token'])
+        player = await get_current_user(token['token'])
         subscriber = Subscriber(websocket)
         room = game_service.get(room_id)
         _ = room.get_player(player)

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, WebSocket
+from whist.core.error.table_error import PlayerNotJoinedError
 
 from whist.server.services.authentication import get_current_user
 from whist.server.services.error import GameNotFoundError
@@ -20,11 +21,15 @@ async def websocket(websocket: WebSocket, room_id: str,
     await websocket.accept()
     try:
         token = await websocket.receive_json()
-        _ = get_current_user(token['token'])
+        player = get_current_user(token['token'])
         subscriber = Subscriber(websocket)
         room = game_service.get(room_id)
+        _ = room.get_player(player)
         room.side_channel.attach(subscriber)
         await websocket.send_text('200')
     except GameNotFoundError:
         await websocket.send_text('Game not found')
+        await websocket.close()
+    except PlayerNotJoinedError:
+        await websocket.send_text('User not joined')
         await websocket.close()

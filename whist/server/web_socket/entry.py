@@ -1,6 +1,4 @@
-from fastapi import APIRouter, Depends, Query, WebSocket
-from fastapi_jwt_auth import AuthJWT
-from fastapi_jwt_auth.exceptions import AuthJWTException
+from fastapi import APIRouter, Depends, WebSocket
 
 from whist.server.services.authentication import get_current_user
 from whist.server.services.error import GameNotFoundError
@@ -17,16 +15,16 @@ async def ping(ws: WebSocket):
 
 
 @router.websocket('/room/{room_id}')
-async def websocket(websocket: WebSocket, room_id: str, token: str = Query(...),
-                    Authorize: AuthJWT = Depends(),
+async def websocket(websocket: WebSocket, room_id: str,
                     game_service: GameDatabaseService = Depends(GameDatabaseService)):
     await websocket.accept()
     try:
-        Authorize.jwt_required("websocket", token=token)
-        _ = get_current_user(token)
+        token = await websocket.receive_json()
+        _ = get_current_user(token['token'])
         subscriber = Subscriber(websocket)
         room = game_service.get(room_id)
         room.side_channel.attach(subscriber)
-    except AuthJWTException as err:
-        await websocket.send_text(err.message)
+        await websocket.send_text('200')
+    except GameNotFoundError:
+        await websocket.send_text('Game not found')
         await websocket.close()

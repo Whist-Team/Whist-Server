@@ -1,13 +1,16 @@
 from unittest import TestCase
 
 from whist.core.user.player import Player
-from whist.server.web_socket.events.event import PlayerJoined
+from whist.server.web_socket.events.event import PlayerJoinedEvent
 
 
 class EventTestCase(TestCase):
     def test_player_joined(self):
         player = Player(username='ititus', rating=100)
-        expected_dict = {'player': player}
+        event = PlayerJoinedEvent(player=player)
+        self.assertIsNotNone(event.json())
 
-        event = PlayerJoined(player=player)
-        self.assertEqual(expected_dict, dict(event))
+    def test_player_joined_name(self):
+        player = Player(username='ititus', rating=100)
+        event = PlayerJoinedEvent(player=player)
+        self.assertEqual('PlayerJoinedEvent', event.name)

@@ -18,7 +18,7 @@ class Event(ABC, BaseModel):
         return self.__class__.__name__
 
 
-class PlayerJoined(Event):
+class PlayerJoinedEvent(Event):
     """
     It is sent when a player joins a game.
     """

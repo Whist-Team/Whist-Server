@@ -9,7 +9,7 @@ from whist.server.services.game_db_service import GameDatabaseService
 class EntryTestCase(TestCaseWithToken):
     def setUp(self) -> None:
         super().setUp()
-        self.token = self.create_and_auth_user('simon', 'abc')
+        self.token = self.create_and_auth_user('simon', 'abc')['Authorization'].rsplit('Bearer ')[1]
         data = {'game_name': 'test', 'password': 'abc'}
         response = self.client.post(url='/game/create', json=data, headers=self.headers)
         self.room_id = response.json()['game_id']

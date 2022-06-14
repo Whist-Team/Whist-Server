@@ -1,12 +1,11 @@
 """Abstraction of events"""
-from abc import ABC
 
 from pydantic import BaseModel
 from whist.core.cards.card import Card
 from whist.core.user.player import Player
 
 
-class Event(ABC, BaseModel):
+class Event(BaseModel):
     """
     It is sent via the websocket upon Game State changes.
     """

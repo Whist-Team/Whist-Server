@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock
 
 from tests.whist.server.base_token_case import TestCaseWithToken
+from whist.core.error.table_error import PlayerNotJoinedError
 from whist.server import app
 from whist.server.services.error import GameNotFoundError
 from whist.server.services.game_db_service import GameDatabaseService
@@ -42,6 +43,7 @@ class EntryTestCase(TestCaseWithToken):
             self.assertEqual('Game not found', response)
 
     def test_subscribe_not_joined(self):
+        self.game_mock.get_player = MagicMock(side_effect=PlayerNotJoinedError)
         self.game_service_mock.get = MagicMock(return_value=self.game_mock)
         app.dependency_overrides[GameDatabaseService] = lambda: self.game_service_mock
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:

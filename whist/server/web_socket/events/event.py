@@ -12,6 +12,9 @@ class Event(ABC, BaseModel):
 
     @property
     def name(self):
+        """
+        Returns the class name of the event.
+        """
         return self.__class__.__name__
 
 

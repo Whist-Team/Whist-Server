@@ -30,11 +30,11 @@ def create_game(request: Dict[str, str], user: Player = Depends(get_current_user
 
 def _set_game_parameter(request, user, pwd_service: PasswordService):
     """
-    Sets the maximum and minimum level for players to join game.
+    Sets all game parameters.
     :param request: Must contain a 'game_name'. 'password' is optional
     :param user: that created the game session.
     :param pwd_service: service to handle password requests.
-    :return: the players in the game
+    :return: the game parameters user has set
     """
     pwd_hash = _get_password(pwd_service, request)
     game_name = _get_game_name(request)
@@ -51,11 +51,6 @@ def _set_game_parameter(request, user, pwd_service: PasswordService):
 
 
 def _get_amount_player(request, key) -> Optional[int]:
-    """
-    Checks to see if player is in the level range.
-    :param request: Must contain a 'game_name'. 'password' is optional
-    :param key: the player entering game
-    """
     if key not in ['min_player', 'max_player']:
         raise KeyError(f'{key} is not a valid key for this operation.')
     if key in request:
@@ -64,11 +59,6 @@ def _get_amount_player(request, key) -> Optional[int]:
 
 
 def _get_game_name(request):
-    """
-    Creates a game name.
-    :param request: Must contain a 'game_name'. 'password' is optional
-    :return: the game name instance
-    """
     try:
         game_name = request['game_name']
     except KeyError as key_error:
@@ -77,12 +67,6 @@ def _get_game_name(request):
 
 
 def _get_password(pwd_service, request):
-    """
-    Creates a password for game.
-    :param request: Must contain a 'game_name'. 'password' is optional
-    :param pwd_service: service to handle password requests.
-    :return: the password for game instance
-    """
     try:
         password = request['password']
         pwd_hash = pwd_service.hash(password)

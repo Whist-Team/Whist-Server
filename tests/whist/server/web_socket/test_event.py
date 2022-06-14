@@ -5,12 +5,13 @@ from whist.server.web_socket.events.event import PlayerJoinedEvent
 
 
 class EventTestCase(TestCase):
+    def setUp(self) -> None:
+        self.player = Player(username='ititus', rating=100)
+
     def test_player_joined(self):
-        player = Player(username='ititus', rating=100)
-        event = PlayerJoinedEvent(player=player)
+        event = PlayerJoinedEvent(player=self.player)
         self.assertIsNotNone(event.json())
 
     def test_player_joined_name(self):
-        player = Player(username='ititus', rating=100)
-        event = PlayerJoinedEvent(player=player)
+        event = PlayerJoinedEvent(player=self.player)
         self.assertEqual('PlayerJoinedEvent', event.name)

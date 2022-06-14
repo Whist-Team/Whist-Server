@@ -10,6 +10,10 @@ class Event(ABC, BaseModel):
     It is sent via the websocket upon Game State changes.
     """
 
+    @property
+    def name(self):
+        return self.__class__.__name__
+
 
 class PlayerJoined(Event):
     """

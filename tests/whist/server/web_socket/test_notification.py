@@ -27,6 +27,7 @@ class NotificationTestCase(TestCase):
     def test_join_notification(self):
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
             websocket.send_text(self.token['Authorization'].rsplit('Bearer ')[1])
+            assert '200' == websocket.receive_text()
             headers = self.create_and_auth_user('miles', 'abc')
 
             _ = self.client.post(url=f'/game/join/{self.room_id}',

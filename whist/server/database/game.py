@@ -87,13 +87,21 @@ class Game(BaseModel):
         :return: True if successful else an error or warning is raised.
         :raise: PlayerAlreadyJoinedWarning when a player tries to join again.
         """
-        if user in self.players:
+        if self.has_joined(user):
             raise PlayerAlreadyJoinedWarning(
                 f'User with name "{user.username}" has already joined.')
         self.table.join(user)
         event = PlayerJoinedEvent(player=user)
         self.side_channel.notify(event)
         return True
+
+    def has_joined(self, player: Player) -> bool:
+        """
+        Checks if player has joined the table.
+        :param player: to be checked
+        :return: True if joined else false.
+        """
+        return player in self.players
 
     def ready_player(self, player: Player) -> None:
         """

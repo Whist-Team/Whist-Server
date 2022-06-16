@@ -1,6 +1,7 @@
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from bson import ObjectId
+from fastapi import WebSocket
 from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher
 from whist.core.user.player import Player
 
@@ -8,6 +9,7 @@ from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database import db
 from whist.server.services.error import GameNotFoundError, GameNotUpdatedError
 from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.web_socket.subscriber import Subscriber
 
 
 class GameDdServiceTestCase(BasePlayerTestCase):
@@ -90,6 +92,12 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         player = game.get_player(self.player)
         trick = game.current_trick
         trick.play_card(player, player.hand.cards[0])
+        self.service.save(self.game)
+
+    def test_save_subscribed(self):
+        websocket = WebSocket({'type': 'websocket'}, MagicMock(), MagicMock())
+        subscriber = Subscriber(websocket)
+        self.game.side_channel.attach(subscriber)
         self.service.save(self.game)
 
     def test_all(self):

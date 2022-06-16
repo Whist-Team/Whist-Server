@@ -13,6 +13,7 @@ from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.id_wrapper import PyObjectId
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
+from whist.server.web_socket.events.event import PlayerJoinedEvent
 from whist.server.web_socket.side_channel import SideChannel
 
 
@@ -90,6 +91,8 @@ class Game(BaseModel):
             raise PlayerAlreadyJoinedWarning(
                 f'User with name "{user.username}" has already joined.')
         self.table.join(user)
+        event = PlayerJoinedEvent(player=user)
+        self.side_channel.notify(event)
         return True
 
     def ready_player(self, player: Player) -> None:

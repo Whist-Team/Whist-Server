@@ -40,7 +40,7 @@ async def subscribe_room(websocket: WebSocket, room_id: str,
         player = await get_current_user(token, user_service)
         subscriber = Subscriber(websocket)
         room = game_service.get(room_id)
-        if not room.has_join(player):
+        if not room.has_joined(player):
             raise PlayerNotJoinedError()
         room.side_channel.attach(subscriber)
         await websocket.send_text('200')

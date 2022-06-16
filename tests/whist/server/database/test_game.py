@@ -47,10 +47,10 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.assertEqual(self.expected_players, self.game.players)
 
     def test_has_joined(self):
-        self.assertTrue(self.game.has_join(self.player))
+        self.assertTrue(self.game.has_joined(self.player))
 
     def has_not_joined(self):
-        self.assertFalse(self.game.has_join(self.second_player))
+        self.assertFalse(self.game.has_joined(self.second_player))
 
     def test_auto_next(self):
         self.game.table = MagicMock(started=PropertyMock(return_value=True))

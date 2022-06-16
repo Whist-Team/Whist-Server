@@ -27,8 +27,8 @@ async def subscribe_room(websocket: WebSocket, room_id: str,
                          user_service: UserDatabaseService = Depends(UserDatabaseService)):
     """
     Clients requests to subscribe to room's side channel.
-    :param websocket: communication end point of the client. The body of the request must contain a
-    json object with the key 'token' with its value the bare string token.
+    :param websocket: communication end point of the client. The body of the request must contain
+    the bare string token.
     :param room_id: ID of the room to which should be subscribed
     :param game_service: handles all request to the db regarding rooms.
     :param user_service: handles all request to the db regarding users.
@@ -36,8 +36,8 @@ async def subscribe_room(websocket: WebSocket, room_id: str,
     """
     await websocket.accept()
     try:
-        token = await websocket.receive_json()
-        player = await get_current_user(token['token'], user_service)
+        token = await websocket.receive_text()
+        player = await get_current_user(token, user_service)
         subscriber = Subscriber(websocket)
         room = game_service.get(room_id)
         _ = room.get_player(player)

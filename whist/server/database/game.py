@@ -13,6 +13,7 @@ from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.id_wrapper import PyObjectId
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
+from whist.server.web_socket.side_channel import SideChannel
 
 
 class Game(BaseModel):
@@ -21,10 +22,12 @@ class Game(BaseModel):
     id: unique identifier for a game.
     creator: user id as string of the player how created that session.
     players: list of user ids of player that joined the game.
+    side_channel: Communication for all clients
     """
     id: Optional[PyObjectId] = Field(alias='_id')
     creator: Player
     table: Table = None
+    side_channel: SideChannel = SideChannel()
 
     @classmethod
     def create(cls, game_name: str, creator: Player,

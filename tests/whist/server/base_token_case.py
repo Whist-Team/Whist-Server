@@ -16,7 +16,7 @@ class TestCaseWithToken(unittest.TestCase):
         self.player_mock = MagicMock(name='marcel')
         user_mock = MagicMock(name='user', to_user=self.player_mock)
         user_service = MagicMock(get=MagicMock(return_value=user_mock))
-        self.game_service_mock = MagicMock(save=MagicMock())
+        self.game_service_mock = MagicMock(save=MagicMock(), add=MagicMock(return_value='1'))
         self.password_service_mock = MagicMock(verify=MagicMock())
         app.dependency_overrides[GameDatabaseService] = lambda: self.game_service_mock
         app.dependency_overrides[PasswordService] = lambda: self.password_service_mock

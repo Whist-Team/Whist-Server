@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from tests.whist.server.api.game.base_token_case import TestCaseWithToken
+from tests.whist.server.base_token_case import TestCaseWithToken
 from whist.server.database.game import GameInDb
 from whist.server.services.password import PasswordService
 

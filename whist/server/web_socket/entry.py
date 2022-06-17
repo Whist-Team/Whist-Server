@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, WebSocket
 from whist.core.error.table_error import PlayerNotJoinedError
 
 from whist.server.services.authentication import get_current_user
+from whist.server.services.channel_service import ChannelService
 from whist.server.services.error import GameNotFoundError
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.user_db_service import UserDatabaseService
@@ -23,6 +24,7 @@ async def ping(websocket: WebSocket):
 
 @router.websocket('/room/{room_id}')
 async def subscribe_room(websocket: WebSocket, room_id: str,
+                         channel_service: ChannelService = Depends(ChannelService),
                          game_service: GameDatabaseService = Depends(GameDatabaseService),
                          user_service: UserDatabaseService = Depends(UserDatabaseService)):
     """
@@ -42,7 +44,7 @@ async def subscribe_room(websocket: WebSocket, room_id: str,
         room = game_service.get(room_id)
         if not room.has_joined(player):
             raise PlayerNotJoinedError()
-        room.side_channel.attach(subscriber)
+        channel_service.attach(room_id, subscriber)
         await websocket.send_text('200')
     except GameNotFoundError:
         await websocket.send_text('Game not found')

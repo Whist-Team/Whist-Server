@@ -1,6 +1,7 @@
 from whist.server.services.error import ChannelAlreadyExistsError, ChannelNotFoundError
 from whist.server.web_socket.events.event import Event
 from whist.server.web_socket.side_channel import SideChannel
+from whist.server.web_socket.subscriber import Subscriber
 
 
 class ChannelService:
@@ -18,6 +19,13 @@ class ChannelService:
         if room_id in cls._channels.keys():
             raise ChannelAlreadyExistsError()
         cls._channels.update({room_id: channel})
+
+    @classmethod
+    def attach(cls, room_id: str, subscriber: Subscriber) -> None:
+        if room_id not in cls._channels.keys():
+            side_channel = SideChannel()
+            cls.add(room_id, side_channel)
+        cls._channels.get(room_id).attach(subscriber)
 
     @classmethod
     def remove(cls, room_id: str) -> None:

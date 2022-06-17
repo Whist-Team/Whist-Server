@@ -74,3 +74,15 @@ class CredentialsException(HTTPException):
         super().__init__(status_code=status.HTTP_401_UNAUTHORIZED,
                          detail="Could not validate credentials",
                          headers={"WWW-Authenticate": "Bearer"})
+
+
+class ChannelAlreadyExistsError(Exception):
+    """
+    Is raised when a side channel already exists for that room.
+    """
+
+
+class ChannelNotFoundError(Exception):
+    """
+    Is raised when a side channel could not be found for that room.
+    """

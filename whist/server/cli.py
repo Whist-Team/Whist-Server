@@ -1,6 +1,5 @@
 """CLI entrypoint"""
 import uvicorn
-from whist.server import app
 from whist.server.const import HOST_ADDR, HOST_PORT, ADMIN_NAME, ADMIN_PASSWORD
 from whist.server.database.user import UserInDb
 from whist.server.services.password import PasswordService
@@ -15,4 +14,4 @@ def main(host=HOST_ADDR, port=HOST_PORT, admin_name=ADMIN_NAME, admin_pwd=ADMIN_
         password_service = PasswordService()
         admin = UserInDb(username=admin_name, hashed_password=password_service.hash(admin_pwd))
         user_service.add(admin)
-    uvicorn.run(app, host=host, port=port, reload=reload is not None and reload)
+    uvicorn.run('whist.server:app', host=host, port=port, reload=reload is not None and reload)

@@ -32,6 +32,7 @@ async def subscribe_room(websocket: WebSocket, room_id: str,
     :param websocket: communication end point of the client. The body of the request must contain
     the bare string token.
     :param room_id: ID of the room to which should be subscribed
+    :param channel_service: handles the websocket management.
     :param game_service: handles all request to the db regarding rooms.
     :param user_service: handles all request to the db regarding users.
     :return: Sends response to the websockets. No return.

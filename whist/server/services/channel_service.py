@@ -11,7 +11,7 @@ class ChannelService:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(ChannelService, cls).__new__(cls)
-            cls._channels = dict()
+            cls._channels = {}
         return cls._instance
 
     @classmethod

@@ -12,4 +12,5 @@ if __name__ == '__main__':
                         help="Admin's inital password. Must be changed after deployment.")
     parser.add_argument('--reload', help='Enable debug reloading for the uvicorn server')
     args = parser.parse_args()
-    main(host=args.host_addr, port=args.host_port, admin_name=args.admin_name, admin_pwd=args.admin_pwd, reload=parser.reload)
+    main(host=args.host_addr, port=args.host_port, admin_name=args.admin_name,
+         admin_pwd=args.admin_pwd, reload=parser.reload)

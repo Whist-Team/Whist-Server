@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, PropertyMock
 
 from whist.core.cards.card_container import UnorderedCardContainer
 from whist.core.session.matcher import RandomMatcher
@@ -36,12 +36,9 @@ class GameInDbTestCase(BasePlayerTestCase):
         game: GameInDb = self.game_service.create_with_pwd(game_name='test', creator=self.player)
         self.assertTrue(game.verify_password(None))
 
-    @patch('whist.server.web_socket.subscriber.Subscriber')
-    def test_join(self, subscriber_mock: MagicMock):
-        self.game.side_channel.attach(subscriber_mock)
+    def test_join(self):
         self.assertTrue(self.game.join(self.second_player))
         self.assertEqual(self.expected_players, self.game.players)
-        subscriber_mock.send.assert_called_once()
 
     def test_join_twice(self):
         self.assertTrue(self.game.join(self.second_player))

@@ -1,7 +1,7 @@
 """Multi Thread adapter.."""
 import asyncio
 
-
+pylint: disable=too-few-public-methods
 class ThreadManager:
     """
     Handles multi threads calls.

@@ -1,3 +1,6 @@
+import json
+from threading import Thread
+from time import sleep
 from unittest import TestCase
 
 from starlette.testclient import TestClient
@@ -25,13 +28,25 @@ class NotificationTestCase(TestCase):
         self.room_id = response.json()['game_id']
 
     def test_join_notification(self):
+        def call_noti(results):
+            notification = websocket.receive_json()
+            results.append(notification)
+
+        def call_post():
+            self.client.post(url=f'/game/join/{self.room_id}',
+                             json={'password': 'abc'},
+                             headers=headers)
+
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
             websocket.send_text(self.token['Authorization'].rsplit('Bearer ')[1])
             assert '200' == websocket.receive_text()
             headers = self.create_and_auth_user('miles', 'abc')
-
-            _ = self.client.post(url=f'/game/join/{self.room_id}',
-                                 json={'password': 'abc'},
-                                 headers=headers)
-            notification = websocket.receive_json()
-            self.assertIsInstance(PlayerJoinedEvent, notification)
+            notification = []
+            thread_not = Thread(target=call_noti, args=[notification])
+            thread_post = Thread(target=call_post)
+            thread_not.start()
+            thread_post.start()
+            while thread_not.is_alive():
+                sleep(0.1)
+            event = PlayerJoinedEvent(**json.loads(notification[0]['event']))
+            self.assertIsInstance(event, PlayerJoinedEvent)

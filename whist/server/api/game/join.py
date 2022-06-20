@@ -16,6 +16,8 @@ from whist.server.web_socket.events.event import PlayerJoinedEvent
 router = APIRouter(prefix='/game')
 
 
+# Most of them are injections.
+# pylint: disable=too-many-arguments
 @router.post('/join/{game_id}', status_code=200)
 def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get_current_user),
               pwd_service=Depends(PasswordService), game_service=Depends(GameDatabaseService),

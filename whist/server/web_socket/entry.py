@@ -48,8 +48,6 @@ async def subscribe_room(websocket: WebSocket, room_id: str,
         channel_service.attach(room_id, subscriber)
         await websocket.send_text('200')
     except GameNotFoundError:
-        await websocket.send_text('Game not found')
-        await websocket.close()
+        await websocket.close(reason='Game not found')
     except PlayerNotJoinedError:
-        await websocket.send_text('User not joined')
-        await websocket.close()
+        await websocket.close(reason='User not joined')

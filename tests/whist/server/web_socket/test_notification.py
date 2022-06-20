@@ -5,8 +5,10 @@ from unittest import TestCase
 
 import pytest
 from starlette.testclient import TestClient
+from starlette.websockets import WebSocketDisconnect
 
 from whist.server import app
+from whist.server.database import db
 from whist.server.web_socket.events.event import PlayerJoinedEvent
 
 
@@ -15,15 +17,20 @@ class NotificationTestCase(TestCase):
     Integration Test Case
     """
 
-    def create_and_auth_user(self, user: str, password):
+    @classmethod
+    def setUpClass(cls) -> None:
+        db.user.drop()
+        cls.client = TestClient(app)
+        cls.token = cls.create_and_auth_user('ws_user', '123')
+
+    @classmethod
+    def create_and_auth_user(cls, user: str, password):
         login_creds = {'username': user, 'password': password}
-        _ = self.client.post(url='/user/create', json=login_creds)
-        token = self.client.post(url='/user/auth/', data=login_creds).json()['token']
+        _ = cls.client.post(url='/user/create', json=login_creds)
+        token = cls.client.post(url='/user/auth/', data=login_creds).json()['token']
         return {'Authorization': f'Bearer {token}'}
 
     def setUp(self) -> None:
-        self.client = TestClient(app)
-        self.token = self.create_and_auth_user('ws_user', '123')
         data = {'game_name': 'test', 'password': 'abc'}
         response = self.client.post(url='/game/create', json=data, headers=self.token)
         self.room_id = response.json()['game_id']
@@ -52,3 +59,9 @@ class NotificationTestCase(TestCase):
                 sleep(0.1)
             event = PlayerJoinedEvent(**json.loads(notification[0]['event']))
             self.assertIsInstance(event, PlayerJoinedEvent)
+
+    @pytest.mark.integtest
+    def test_join_notification_no_game(self):
+        with self.assertRaises(WebSocketDisconnect):
+            with self.client.websocket_connect('/room/' + '1' * 24):
+                pass

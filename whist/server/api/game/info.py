@@ -12,11 +12,11 @@ router = APIRouter(prefix='/game')
 
 @router.get('/info/ids', status_code=200, response_model=dict[str, list[str]])
 def all_games(game_service=Depends(GameDatabaseService),
-              user: Player = Depends(get_current_user)) -> dict[str, list[str]]:
+              _: Player = Depends(get_current_user)) -> dict[str, list[str]]:
     """
     Returns all game id.
     :param game_service: Dependency injection of the game service
-    :param user: not required for logic, but authentication
+    :param _: not required for logic, but authentication
     :return: a list of all game ids as strings.
     """
     rooms = game_service.all()

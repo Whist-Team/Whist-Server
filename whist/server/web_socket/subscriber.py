@@ -1,4 +1,6 @@
 """Client abstraction"""
+import asyncio
+
 from fastapi import WebSocket
 
 from whist.server.web_socket.events.event import Event
@@ -23,5 +25,6 @@ class Subscriber:
         :param event: Any type of event.
         :return: None
         """
-        wrapped_event = {'name': event.name, 'event': event}
-        self._connection.send_json(wrapped_event)
+        wrapped_event = {'name': event.name, 'event': event.json()}
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(self._connection.send_json(wrapped_event))

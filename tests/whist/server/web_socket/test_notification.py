@@ -3,6 +3,7 @@ from threading import Thread
 from time import sleep
 from unittest import TestCase
 
+import pytest
 from starlette.testclient import TestClient
 
 from whist.server import app
@@ -27,6 +28,7 @@ class NotificationTestCase(TestCase):
         response = self.client.post(url='/game/create', json=data, headers=self.token)
         self.room_id = response.json()['game_id']
 
+    @pytest.mark.integtest
     def test_join_notification(self):
         def call_noti(results):
             notification = websocket.receive_json()

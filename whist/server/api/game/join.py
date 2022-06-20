@@ -8,15 +8,18 @@ from whist.core.user.player import Player
 
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.authentication import get_current_user
+from whist.server.services.channel_service import ChannelService
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
+from whist.server.web_socket.events.event import PlayerJoinedEvent
 
 router = APIRouter(prefix='/game')
 
 
 @router.post('/join/{game_id}', status_code=200)
 def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get_current_user),
-              pwd_service=Depends(PasswordService), game_service=Depends(GameDatabaseService)):
+              pwd_service=Depends(PasswordService), game_service=Depends(GameDatabaseService),
+              channel_service: ChannelService = Depends(ChannelService)):
     """
     User requests to join a game.
     :param game_id: unique identifier for a game
@@ -25,6 +28,7 @@ def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get
     :param pwd_service: Injection of the password service. Required to create and check passwords.
     :param game_service: Injection of the game database service. Requires to interact with the
     database.
+    :param channel_service: Injection of the websocket channel manager.
     :return: the status of the join request. 'joined' for successful join
     """
 
@@ -40,6 +44,7 @@ def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get
     try:
         game.join(user)
         game_service.save(game)
+        channel_service.notify(game_id, PlayerJoinedEvent(player=user))
     except PlayerAlreadyJoinedWarning:
         return {'status': 'already joined'}
     return {'status': 'joined'}

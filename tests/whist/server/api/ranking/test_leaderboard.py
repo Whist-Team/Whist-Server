@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock
 
+from fastapi import status
 from starlette.testclient import TestClient
 from whist.core.user.player import Player
 
@@ -18,6 +19,10 @@ class LeaderboardTestCase(UserBaseTestCase):
 
         self.client = TestClient(app)
         self.app = app
+
+    def test_login_required(self):
+        response = self.client.get(url='/leaderboard/descending')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     def test_correct_des_order(self):
         self.ranking_service_mock.all = MagicMock(return_value=self.users_desc)

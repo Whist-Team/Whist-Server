@@ -24,7 +24,7 @@ class JoinGameTestCase(BaseCreateGameTestCase):
                                     headers=self.headers)
         self.assertEqual(401, response.status_code, msg=response.content)
 
-    def test_join__login_required(self):
+    def test_join_login_required(self):
         self.app.dependency_overrides = {}
         self.password_service_mock.verify = MagicMock(return_value=True)
         response = self.client.post(url=f'/game/join/{self.game_mock.id}',

@@ -19,5 +19,5 @@ class IndexTestCase(unittest.TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(response.json(),
-                             {'info': [{'game': 'whist-core', 'version': whist_core_version},
-                                       {'game': 'whist-server', 'version': whist_server_version}]})
+                             {'info': {'game': 'whist', 'whist-core': whist_core_version,
+                                       'whist-server': whist_server_version}})

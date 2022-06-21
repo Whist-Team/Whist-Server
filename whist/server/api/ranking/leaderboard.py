@@ -1,5 +1,5 @@
 """Routes handling all request regarding ranking or rating of players."""
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Security
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
@@ -9,7 +9,7 @@ router = APIRouter(prefix='/leaderboard')
 
 
 @router.get('/{order}', response_model=list[Player])
-def get_ranking_by(order: str, _: Player = Depends(get_current_user),
+def get_ranking_by(order: str, _: Player = Security(get_current_user),
                    ranking_service=Depends(RankingService)) -> list[Player]:
     """
     Retrieves a ranking of the players by selected order.

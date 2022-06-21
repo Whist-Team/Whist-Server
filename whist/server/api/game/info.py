@@ -1,5 +1,5 @@
 """Collection of general game information getter."""
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Security, status
 from whist.core.user.player import Player
 
 from whist.server.database.game import GameInDb
@@ -12,7 +12,7 @@ router = APIRouter(prefix='/game')
 
 @router.get('/info/ids', status_code=200, response_model=dict[str, list[str]])
 def all_games(game_service=Depends(GameDatabaseService),
-              _: Player = Depends(get_current_user)) -> dict[str, list[str]]:
+              _: Player = Security(get_current_user)) -> dict[str, list[str]]:
     """
     Returns all game id.
     :param game_service: Dependency injection of the game service
@@ -25,7 +25,7 @@ def all_games(game_service=Depends(GameDatabaseService),
 
 @router.get('/info/id/{game_name}', status_code=200, response_model=dict[str, str])
 def game_id_from_name(game_name: str, game_service=Depends(GameDatabaseService),
-                      user: Player = Depends(get_current_user)) -> dict[str, str]:
+                      user: Player = Security(get_current_user)) -> dict[str, str]:
     """
     Returns the game id for a given game name. Basically it transforms human-readable data to
     computer data.

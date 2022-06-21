@@ -16,5 +16,4 @@ class ThreadManager:
         :param args: to be parsed to the call.
         :return: None
         """
-        loop = asyncio.new_event_loop()
-        loop.run_until_complete(func(args))
+        asyncio.run(func(args))

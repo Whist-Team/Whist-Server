@@ -26,7 +26,7 @@ app.include_router(leaderboard)
 app.include_router(user_creation)
 app.include_router(auth.router)
 app.include_router(ws_router)
-whist_core_version = pkg_resources.get_distribution('whist-core').version
-game_info = GameInfo(game='whist', version=whist_core_version)
+whist_server_version = pkg_resources.get_distribution('whist-server').version
+game_info = GameInfo(game='whist', version=whist_server_version)
 game_info_db_service = GameInfoDatabaseService()
 game_info_db_service.add(game_info)

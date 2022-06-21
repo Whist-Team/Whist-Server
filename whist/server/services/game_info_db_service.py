@@ -7,12 +7,12 @@ class GameInfoDatabaseService:
     Handles interaction with the game info database.
     """
     _instance = None
-    _info = None
+    _info: list[GameInfo] = None
 
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(GameInfoDatabaseService, cls).__new__(cls)
-            cls._info = None
+            cls._info = []
 
         return cls._instance
 
@@ -23,7 +23,7 @@ class GameInfoDatabaseService:
         :param info: to be added
         :return: None
         """
-        cls._info = info
+        cls._info.append(info)
 
     @classmethod
     def get(cls):

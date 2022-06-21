@@ -1,7 +1,7 @@
 """Route of /game/creation"""
 from typing import Dict, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Security, HTTPException
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
@@ -12,7 +12,7 @@ router = APIRouter(prefix='/game')
 
 
 @router.post('/create', status_code=200)
-def create_game(request: Dict[str, str], user: Player = Depends(get_current_user),
+def create_game(request: Dict[str, str], user: Player = Security(get_current_user),
                 game_service=Depends(GameDatabaseService), pwd_service=Depends(PasswordService)):
     """
     Creates a new game of whist.

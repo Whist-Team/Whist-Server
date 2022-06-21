@@ -15,7 +15,9 @@ class IndexTestCase(unittest.TestCase):
         Test the index route returns the game whist.
         """
         whist_core_version = pkg_resources.get_distribution('whist-core').version
+        whist_server_version = pkg_resources.get_distribution('whist-server').version
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(response.json(),
-                             {'info': {'game': 'whist', 'version': whist_core_version}})
+                             {'info': [{'game': 'whist-core', 'version': whist_core_version},
+                                       {'game': 'whist-server', 'version': whist_server_version}]})

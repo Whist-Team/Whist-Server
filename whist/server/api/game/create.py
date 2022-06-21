@@ -1,5 +1,5 @@
 """Route of /game/creation"""
-from typing import Dict, Optional, Union
+from typing import Dict, Optional
 
 from fastapi import APIRouter, Depends, Security, HTTPException
 from whist.core.user.player import Player

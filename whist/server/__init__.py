@@ -11,7 +11,6 @@ from whist.server.api.game.trick import router as game_trick
 from whist.server.api.ranking.leaderboard import router as leaderboard
 from whist.server.api.user import auth
 from whist.server.api.user.create import router as user_creation
-from whist.server.database.game_info import GameInfo
 from whist.server.services.game_info_db_service import GameInfoDatabaseService
 from whist.server.web_socket.entry import router as ws_router
 
@@ -26,7 +25,10 @@ app.include_router(leaderboard)
 app.include_router(user_creation)
 app.include_router(auth.router)
 app.include_router(ws_router)
-whist_core_version = pkg_resources.get_distribution('whist-core').version
-game_info = GameInfo(game='whist', version=whist_core_version)
 game_info_db_service = GameInfoDatabaseService()
+
+game_info = {'game': 'whist'}
+for module in ['whist-core', 'whist-server']:
+    version = pkg_resources.get_distribution(module).version
+    game_info.update({module: version})
 game_info_db_service.add(game_info)

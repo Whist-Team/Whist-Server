@@ -30,16 +30,6 @@ class UserNotFoundError(Exception):
         super().__init__(message)
 
 
-class GameInfoNotSetError(Exception):
-    """
-    Is raised when the game info is not set.
-    """
-
-    def __init__(self):
-        message = 'Game info is not set.'
-        super().__init__(message)
-
-
 class GameNotFoundError(Exception):
     """
     Is raised when the game is not found in db.

@@ -1,5 +1,5 @@
 """Route of /game/creation"""
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 from fastapi import APIRouter, Depends, Security, HTTPException
 from whist.core.user.player import Player
@@ -12,7 +12,7 @@ router = APIRouter(prefix='/game')
 
 
 @router.post('/create', status_code=200)
-def create_game(request: Dict[str, str], user: Player = Security(get_current_user),
+def create_game(request: Dict[str, Optional[str]], user: Player = Security(get_current_user),
                 game_service=Depends(GameDatabaseService), pwd_service=Depends(PasswordService)):
     """
     Creates a new game of whist.
@@ -46,9 +46,10 @@ def _set_game_parameter(request, user, pwd_service: PasswordService):
 def _get_amount_player(request, key) -> Optional[int]:
     if key not in ['min_player', 'max_player']:
         raise KeyError(f'{key} is not a valid key for this operation.')
-    if key in request:
+    try:
         return int(request[key])
-    return None
+    except (KeyError, TypeError):
+        return None
 
 
 def _get_game_name(request):
@@ -56,13 +57,17 @@ def _get_game_name(request):
         game_name = request['game_name']
     except KeyError as key_error:
         raise HTTPException(status_code=400, detail='"game_name" is required.') from key_error
+    if game_name is None:
+        raise HTTPException(status_code=400, detail='"game_name" is required.')
     return game_name
 
 
 def _get_password(pwd_service, request):
     try:
         password = request['password']
-        pwd_hash = pwd_service.hash(password)
     except KeyError:
-        pwd_hash = None
-    return pwd_hash
+        return None
+    if password is not None:
+        return pwd_service.hash(password)
+    else:
+        return None

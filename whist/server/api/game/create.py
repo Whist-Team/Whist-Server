@@ -69,5 +69,4 @@ def _get_password(pwd_service, request):
         return None
     if password is not None:
         return pwd_service.hash(password)
-    else:
-        return None
+    return None

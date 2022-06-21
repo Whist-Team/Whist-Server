@@ -1,8 +1,6 @@
 import unittest
 
-from whist.server.database import db
 from whist.server.database.game_info import GameInfo
-from whist.server.services.error import GameInfoNotSetError
 from whist.server.services.game_info_db_service import GameInfoDatabaseService
 
 
@@ -14,8 +12,3 @@ class GameInfoDatabaseServiceTestCase(unittest.TestCase):
     def test_add(self):
         self.service.add(self.info)
         self.assertEqual(self.info, self.service.get())
-
-    def test_get_none(self):
-        db.info.drop()
-        with self.assertRaises(GameInfoNotSetError):
-            self.assertIsNone(self.service.get())

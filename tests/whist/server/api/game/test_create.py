@@ -40,7 +40,6 @@ class CreateGameTestCase(TestCaseWithToken):
         data = {'password': 'abc'}
         response = self.client.post(url='/game/create', json=data, headers=self.headers)
         self.assertEqual(response.status_code, 422, msg=response.content)
-        self.assertEqual('"game_name" is required.', response.json()['detail'])
 
     def test_post_game_with_settings(self):
         data = {'game_name': 'test', 'password': 'abc', 'min_player': 1, 'max_player': 1}

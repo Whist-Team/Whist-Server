@@ -10,7 +10,7 @@ from whist.server.services.error import UserNotFoundError
 router = APIRouter(prefix='/user/auth')
 
 
-@router.post('/', response_model=AccessToken)
+@router.post('', response_model=AccessToken)
 async def auth(request: OAuth2PasswordRequestForm = Depends()):
     """
     Authenticates a user for password.

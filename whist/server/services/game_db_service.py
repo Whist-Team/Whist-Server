@@ -24,9 +24,9 @@ class GameDatabaseService:
 
     # pylint: disable=too-many-arguments
     @classmethod
-    def create_with_pwd(cls, game_name: str, creator: Player,
-                        hashed_password: Optional[str] = None,
-                        min_player: Optional[int] = None, max_player: Optional[int] = None) -> 'GameInDb':
+    def create_with_pwd(cls, game_name: str, creator: Player, hashed_password: Optional[str] = None,
+                        min_player: Optional[int] = None,
+                        max_player: Optional[int] = None) -> 'GameInDb':
         """
         Factory method to create a Game in database object.
         :param game_name: name of this session

@@ -1,7 +1,7 @@
 """Route of /game/creation"""
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Security, HTTPException
+from fastapi import APIRouter, Depends, Security
 from pydantic import BaseModel
 from whist.core.user.player import Player
 

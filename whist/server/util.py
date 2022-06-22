@@ -1,5 +1,5 @@
 """Multi Thread adapter.."""
-from anyio import run
+import asyncio
 
 
 # pylint: disable=too-few-public-methods
@@ -9,12 +9,11 @@ class ThreadManager:
     """
 
     @staticmethod
-    def run(func, *args, **kwargs) -> None:
+    def run(func, args) -> None:
         """
         Runs an async function in a new thread.
         :param func: to be called
         :param args: to be parsed to the call.
-        :param kwargs: to be parsed to the call.
         :return: None
         """
-        run(func(args, kwargs))
+        asyncio.run(func(args))

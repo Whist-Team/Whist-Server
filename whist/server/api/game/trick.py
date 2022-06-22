@@ -55,15 +55,15 @@ def play_card(game_id: str, card: Card,
         trick.play_card(player=player, card=card)
         game_service.save(room)
     except NotPlayersTurnError as turn_error:
-        raise HTTPException(detail=f'It is not {player.player.username} turn',
+        raise HTTPException(detail=f'It is not {user.username}\'s turn',
                             status_code=status.HTTP_400_BAD_REQUEST,
-                            headers={"WWW-Authenticate": "Basic"}) from turn_error
+                            headers={"WWW-Authenticate": "Bearer"}) from turn_error
     return trick.stack
 
 
 @router.get('/winner/{game_id}', status_code=200,
             response_model=Union[PlayerAtTable, dict[str, str]])
-def get_winner(game_id: str, user: Player = Depends(get_current_user),
+def get_winner(game_id: str, user: Player = Security(get_current_user),
                game_service=Depends(GameDatabaseService)) -> Union[PlayerAtTable, dict[str, str]]:
     """
     Requests the winner of the current stack.
@@ -77,7 +77,7 @@ def get_winner(game_id: str, user: Player = Depends(get_current_user),
     room = game_service.get(game_id)
     if user not in room.players:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            headers={'WWW-Authenticate': 'Basic'},
+                            headers={'WWW-Authenticate': 'Bearer'},
                             detail='You have not joined the table.')
 
     trick = room.current_trick()

@@ -1,9 +1,10 @@
 """
 Route to join a game.
 """
-from typing import Dict
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Security, status, Depends
+from pydantic import BaseModel
 from whist.core.user.player import Player
 
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
@@ -14,13 +15,20 @@ from whist.server.services.password import PasswordService
 router = APIRouter(prefix='/game')
 
 
+class JoinGameArgs(BaseModel):
+    """
+    JSON body for joining game
+    """
+    password: Optional[str] = None
+
+
 @router.post('/join/{game_id}', status_code=200)
-def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get_current_user),
+def join_game(game_id: str, request: JoinGameArgs, user: Player = Security(get_current_user),
               pwd_service=Depends(PasswordService), game_service=Depends(GameDatabaseService)):
     """
     User requests to join a game.
     :param game_id: unique identifier for a game
-    :param request: must contain the key 'password'
+    :param request: may contain the key 'password'
     :param user: that tries to join the game. Must be authenticated.
     :param pwd_service: Injection of the password service. Required to create and check passwords.
     :param game_service: Injection of the game database service. Requires to interact with the
@@ -28,15 +36,14 @@ def join_game(game_id: str, request: Dict[str, str], user: Player = Security(get
     :return: the status of the join request. 'joined' for successful join
     """
     game = game_service.get(game_id)
-    if game.hashed_password is not None:
-        game_pwd = request['password']
-
-        if not pwd_service.verify(game_pwd, game.hashed_password):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Wrong game password.",
-                headers={"WWW-Authenticate": "Basic"},
-            )
+    if game.hashed_password is not None and (
+            request.password is None or not pwd_service.verify(request.password,
+                                                               game.hashed_password)):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Wrong game password.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
         game.join(user)
         game_service.save(game)

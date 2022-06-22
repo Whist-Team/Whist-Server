@@ -26,8 +26,10 @@ class CreateGameArgs(BaseModel):
 def create_game(request: CreateGameArgs, user: Player = Security(get_current_user),
                 game_service=Depends(GameDatabaseService), pwd_service=Depends(PasswordService)):
     """
-    Creates a new game of whist.
-    :param request: Must contain a 'game_name'. 'password' is optional.
+    Creates a new game of whist with the given name 'game_name' and optional password 'password'.
+    The optional 'min_player' parameter controls how many people are required to start a game.
+    The optional 'max_player' parameter controls how many people are allowed in a game.
+    :param request: Must contain a 'game_name'. 'password', 'min_player', 'max_player' are optional.
     :param user: that created the game session.
     :param game_service: service to handle database interaction for games.
     :param pwd_service: service to handle password requests.

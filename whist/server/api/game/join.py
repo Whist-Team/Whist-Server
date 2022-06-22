@@ -35,16 +35,16 @@ def join_game(game_id: str, request: Dict[str, str], background_tasks: Backgroun
     :param channel_service: Injection of the websocket channel manager.
     :return: the status of the join request. 'joined' for successful join
     """
-
-    game_pwd = request['password']
     game = game_service.get(game_id)
+    if game.hashed_password is not None:
+        game_pwd = request['password']
 
-    if not pwd_service.verify(game_pwd, game.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Wrong game password.",
-            headers={"WWW-Authenticate": "Basic"},
-        )
+        if not pwd_service.verify(game_pwd, game.hashed_password):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Wrong game password.",
+                headers={"WWW-Authenticate": "Basic"},
+            )
     try:
         game.join(user)
         game_service.save(game)

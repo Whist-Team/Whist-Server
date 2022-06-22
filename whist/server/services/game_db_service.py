@@ -26,7 +26,7 @@ class GameDatabaseService:
     @classmethod
     def create_with_pwd(cls, game_name: str, creator: Player,
                         hashed_password: Optional[str] = None,
-                        min_player: int = 4, max_player: int = 4) -> 'GameInDb':
+                        min_player: Optional[int] = None, max_player: Optional[int] = None) -> 'GameInDb':
         """
         Factory method to create a Game in database object.
         :param game_name: name of this session
@@ -36,6 +36,8 @@ class GameDatabaseService:
         :param max_player: the maximum amount of player that can join this session
         :return: the Game object
         """
+        min_player = 4 if min_player is None else int(min_player)
+        max_player = 4 if max_player is None else int(max_player)
         game = GameInDb.create(game_name, creator, min_player, max_player)
         return GameInDb(**game.dict(), hashed_password=hashed_password)
 

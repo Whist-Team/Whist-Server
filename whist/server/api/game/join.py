@@ -16,6 +16,9 @@ router = APIRouter(prefix='/game')
 
 
 class JoinGameArgs(BaseModel):
+    """
+    JSON body for joining game
+    """
     password: Optional[str] = None
 
 

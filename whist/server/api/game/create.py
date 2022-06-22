@@ -13,6 +13,9 @@ router = APIRouter(prefix='/game')
 
 
 class CreateGameArgs(BaseModel):
+    """
+    JSON body for creating game
+    """
     game_name: str
     password: Optional[str] = None
     min_player: Optional[int] = None

@@ -11,6 +11,9 @@ router = APIRouter(prefix='/user')
 
 
 class CreateUserArgs(BaseModel):
+    """
+    JSON body for creating user
+    """
     username: str
     password: str
 

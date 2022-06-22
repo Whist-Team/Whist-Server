@@ -10,9 +10,9 @@ class SubscriberTestCase(TestCase):
         self.connection_mock = MagicMock()
         self.subscriber = Subscriber(self.connection_mock)
 
-    @patch('whist.server.util.ThreadManager.run')
+    @patch('asyncio.run')
     def test_send(self, run_mock):
         event = Event()
         self.subscriber.send(event)
-        run_mock.assert_called_with(self.connection_mock.send_json,
-                                    {'name': event.name, 'event': event.json()})
+        run_mock.assert_called_with(
+            self.connection_mock.send_json({'name': event.name, 'event': event.json()}))

@@ -8,7 +8,7 @@ from whist.server.web_socket.side_channel import SideChannel
 from whist.server.web_socket.subscriber import Subscriber
 
 
-@patch('whist.server.util.ThreadManager.run')
+@patch('asyncio.run')
 class TestCase(TestCase):
     def setUp(self):
         self.connection_mock = MagicMock()
@@ -20,8 +20,8 @@ class TestCase(TestCase):
     def test_send_joined(self, run_mock):
         self.side_channel.attach(self.subscriber)
         self.side_channel.notify(self.event)
-        run_mock.assert_called_with(self.connection_mock.send_json,
-                                    {'name': self.event.name, 'event': self.event.json()})
+        run_mock.assert_called_with(self.connection_mock.send_json(
+            {'name': self.event.name, 'event': self.event.json()}))
 
     def test_send_not_joined(self, run_mock):
         self.side_channel.notify(self.event)

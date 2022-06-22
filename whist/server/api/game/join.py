@@ -42,7 +42,7 @@ def join_game(game_id: str, request: JoinGameArgs, user: Player = Security(get_c
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Wrong game password.",
-            headers={"WWW-Authenticate": "Basic"},
+            headers={"WWW-Authenticate": "Bearer"},
         )
     try:
         game.join(user)

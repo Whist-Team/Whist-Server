@@ -57,7 +57,7 @@ def play_card(game_id: str, card: Card,
     except NotPlayersTurnError as turn_error:
         raise HTTPException(detail=f'It is not {user.username}\'s turn',
                             status_code=status.HTTP_400_BAD_REQUEST,
-                            headers={"WWW-Authenticate": "Basic"}) from turn_error
+                            headers={"WWW-Authenticate": "Bearer"}) from turn_error
     return trick.stack
 
 
@@ -77,7 +77,7 @@ def get_winner(game_id: str, user: Player = Security(get_current_user),
     room = game_service.get(game_id)
     if user not in room.players:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            headers={'WWW-Authenticate': 'Basic'},
+                            headers={'WWW-Authenticate': 'Bearer'},
                             detail='You have not joined the table.')
 
     trick = room.current_trick()

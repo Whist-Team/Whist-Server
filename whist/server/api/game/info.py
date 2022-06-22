@@ -40,10 +40,10 @@ def game_id_from_name(game_name: str, game_service=Depends(GameDatabaseService),
         if not room.has_joined(user):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                                 detail='User has not access.',
-                                headers={"WWW-Authenticate": "Basic"},
+                                headers={"WWW-Authenticate": "Bearer"},
                                 )
     except GameNotFoundError as not_found:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f'Game not found with name: {game_name}',
-                            headers={"WWW-Authenticate": "Basic"}, ) from not_found
+                            headers={"WWW-Authenticate": "Bearer"}, ) from not_found
     return {'id': str(room.id)}

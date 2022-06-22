@@ -26,12 +26,12 @@ async def auth(request: OAuth2PasswordRequestForm = Depends()):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='Incorrect password.',
-                headers={'WWW-Authenticate': 'Basic'})
+                headers={'WWW-Authenticate': 'Bearer'})
     except UserNotFoundError as error:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Incorrect username',
-            headers={'WWW-Authenticate': 'Basic'}
+            headers={'WWW-Authenticate': 'Bearer'}
         ) from error
     token_request = {'sub': username}
     token = create_access_token(token_request)

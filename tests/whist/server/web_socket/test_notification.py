@@ -52,11 +52,12 @@ class NotificationTestCase(TestCase):
             headers = self.create_and_auth_user('miles', 'abc')
             notification = []
             thread_not = Thread(target=call_noti, args=[notification])
-            thread_post = Thread(target=call_post)
             thread_not.start()
-            thread_post.start()
-            while thread_not.is_alive():
+            while not thread_not.is_alive():
                 sleep(0.1)
+            call_post()
+            thread_not.join(30)
+            self.assertFalse(thread_not.is_alive(), msg='Thread should been done by now')
             event = PlayerJoinedEvent(**json.loads(notification[0]['event']))
             self.assertIsInstance(event, PlayerJoinedEvent)
 

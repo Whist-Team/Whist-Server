@@ -32,7 +32,7 @@ class TestCaseWithToken(unittest.TestCase):
     def create_and_auth_user(self, user: str, password):
         login_creds = {'username': user, 'password': password}
         _ = self.client.post(url='/user/create', json=login_creds)
-        token = self.client.post(url='/user/auth', data=login_creds).json()['token']
+        token = self.client.post(url='/user/auth', data=login_creds).json()['access_token']
         return {'Authorization': f'Bearer {token}'}
 
     def tearDown(self) -> None:

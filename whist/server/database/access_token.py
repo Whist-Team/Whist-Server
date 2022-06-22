@@ -6,5 +6,5 @@ class AccessToken(BaseModel):
     """
     Wrapper of the access token.
     """
-    token: str
+    access_token: str
     token_type: str

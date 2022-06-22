@@ -1,7 +1,8 @@
 """Route of /game/creation"""
-from typing import Dict, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Security, HTTPException
+from pydantic import BaseModel
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
@@ -11,8 +12,15 @@ from whist.server.services.password import PasswordService
 router = APIRouter(prefix='/game')
 
 
+class CreateGameArgs(BaseModel):
+    game_name: str
+    password: Optional[str] = None
+    min_player: Optional[int] = None
+    max_player: Optional[int] = None
+
+
 @router.post('/create', status_code=200)
-def create_game(request: Dict[str, Optional[str]], user: Player = Security(get_current_user),
+def create_game(request: CreateGameArgs, user: Player = Security(get_current_user),
                 game_service=Depends(GameDatabaseService), pwd_service=Depends(PasswordService)):
     """
     Creates a new game of whist.
@@ -22,51 +30,10 @@ def create_game(request: Dict[str, Optional[str]], user: Player = Security(get_c
     :param pwd_service: service to handle password requests.
     :return: the ID of the game instance.
     """
-    game_parameter = _set_game_parameter(request, user, pwd_service)
-    game = game_service.create_with_pwd(**game_parameter)
+    hashed_password = None if request.password is None else pwd_service.hash(request.password)
+    game = game_service.create_with_pwd(game_name=request.game_name, creator=user,
+                                        hashed_password=hashed_password,
+                                        min_player=request.min_player,
+                                        max_player=request.max_player)
     game_id = game_service.add(game)
     return {'game_id': game_id}
-
-
-def _set_game_parameter(request, user, pwd_service: PasswordService):
-    pwd_hash = _get_password(pwd_service, request)
-    game_name = _get_game_name(request)
-    game_parameter = dict(game_name=game_name,
-                          hashed_password=pwd_hash,
-                          creator=user)
-    min_player = _get_amount_player(request, 'min_player')
-    if min_player is not None:
-        game_parameter.update({'min_player': min_player})
-    max_player = _get_amount_player(request, 'max_player')
-    if max_player is not None:
-        game_parameter.update({'max_player': max_player})
-    return game_parameter
-
-
-def _get_amount_player(request, key) -> Optional[int]:
-    if key not in ['min_player', 'max_player']:
-        raise KeyError(f'{key} is not a valid key for this operation.')
-    try:
-        return int(request[key])
-    except (KeyError, TypeError):
-        return None
-
-
-def _get_game_name(request):
-    try:
-        game_name = request['game_name']
-    except KeyError as key_error:
-        raise HTTPException(status_code=400, detail='"game_name" is required.') from key_error
-    if game_name is None:
-        raise HTTPException(status_code=400, detail='"game_name" is required.')
-    return game_name
-
-
-def _get_password(pwd_service, request):
-    try:
-        password = request['password']
-    except KeyError:
-        return None
-    if password is not None:
-        return pwd_service.hash(password)
-    return None

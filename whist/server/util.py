@@ -1,5 +1,5 @@
 """Multi Thread adapter.."""
-import asyncio
+from anyio import run
 
 
 # pylint: disable=too-few-public-methods
@@ -17,4 +17,4 @@ class ThreadManager:
         :param kwargs: to be parsed to the call.
         :return: None
         """
-        asyncio.run(func(args, kwargs))
+        run(func(args, kwargs))

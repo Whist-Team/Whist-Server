@@ -3,7 +3,7 @@ Route to join a game.
 """
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Security, status, Depends
+from fastapi import APIRouter, HTTPException, Security, status, Depends
 from pydantic import BaseModel
 from whist.core.user.player import Player
 
@@ -27,9 +27,8 @@ class JoinGameArgs(BaseModel):
 # Most of them are injections.
 # pylint: disable=too-many-arguments
 @router.post('/join/{game_id}', status_code=200)
-def join_game(game_id: str, request: JoinGameArgs, background_tasks: BackgroundTasks,
-              user: Player = Security(get_current_user), pwd_service=Depends(PasswordService),
-              game_service=Depends(GameDatabaseService),
+def join_game(game_id: str, request: JoinGameArgs, user: Player = Security(get_current_user),
+              pwd_service=Depends(PasswordService), game_service=Depends(GameDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)):
     """
     User requests to join a game.
@@ -54,7 +53,7 @@ def join_game(game_id: str, request: JoinGameArgs, background_tasks: BackgroundT
     try:
         game.join(user)
         game_service.save(game)
-        background_tasks.add_task(channel_service.notify, game_id, PlayerJoinedEvent(player=user))
+        channel_service.notify(game_id, PlayerJoinedEvent(player=user))
     except PlayerAlreadyJoinedWarning:
         return {'status': 'already joined'}
     return {'status': 'joined'}

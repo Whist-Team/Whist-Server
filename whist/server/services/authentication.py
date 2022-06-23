@@ -13,7 +13,7 @@ from whist.server.services.error import CredentialsException
 from whist.server.services.password import PasswordService
 from whist.server.services.user_db_service import UserDatabaseService
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/user/auth/')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/user/auth')
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

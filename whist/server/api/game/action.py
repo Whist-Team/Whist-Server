@@ -54,14 +54,14 @@ def start_game(game_id: str, model: StartModel,
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=message,
-            headers={"WWW-Authenticate": "Basic"},
+            headers={"WWW-Authenticate": "Bearer"},
         ) from start_exception
     except TableNotReadyError as ready_error:
         message = 'At least one player is not ready and therefore the table cannot be started'
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=message,
-            headers={"WWW-Authenticate": "Basic"},
+            headers={"WWW-Authenticate": "Bearer"},
         ) from ready_error
     else:
         return {'status': 'started'}
@@ -90,7 +90,7 @@ def ready_player(game_id: str, user: Player = Security(get_current_user),
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=message,
-            headers={"WWW-Authenticate": "Basic"},
+            headers={"WWW-Authenticate": "Bearer"},
         ) from ready_error
     return {'status': f'{user.username} is ready'}
 
@@ -120,20 +120,20 @@ def unready_player(game_id: str, user: Player = Security(get_current_user),
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=message,
-            headers={"WWW-Authenticate": "Basic"},
+            headers={"WWW-Authenticate": "Bearer"},
         ) from join_error
     except GameNotFoundError as game_error:
         message = 'Game id not found'
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=message,
-            headers={"WWW-Authenticate": "Basic"},
+            headers={"WWW-Authenticate": "Bearer"},
         ) from game_error
     except UserNotReadyError as ready_error:
         message = 'Player not ready'
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=message,
-            headers={"WWW-Authenticate": "Basic"},
+            headers={"WWW-Authenticate": "Bearer"},
         ) from ready_error
     return {'status': f'{user.username} is unready'}

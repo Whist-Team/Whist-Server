@@ -29,10 +29,10 @@ class Game(BaseModel):
 
     @classmethod
     def create(cls, game_name: str, creator: Player,
-               min_player: int = 4, max_player: int = 4) -> 'Game':
+               min_player: int, max_player: int) -> 'Game':
         """
         Factory method to create a Game object.
-        :param game_name: name of the this session
+        :param game_name: name of the session
         :param creator: player object of the host
         :param min_player: the minimum amount of player to start a game
         :param max_player: the maximum amount of player that can join this session

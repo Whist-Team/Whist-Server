@@ -29,8 +29,7 @@ class UserTestCase(unittest.TestCase):
         """
         data = {'password': 'abc'}
         response = self.client.post(url='/user/create', json=data)
-        response = self.client.post(url='/user/create', json=data)
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(422, response.status_code)
         self.assertEqual(0, db.user.estimated_document_count())
 
     def test_post_user_no_pwd(self):
@@ -39,5 +38,5 @@ class UserTestCase(unittest.TestCase):
         """
         data = {'username': 'test'}
         response = self.client.post(url='/user/create', json=data)
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(422, response.status_code)
         self.assertEqual(0, db.user.estimated_document_count())

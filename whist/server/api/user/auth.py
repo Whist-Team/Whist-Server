@@ -10,7 +10,7 @@ from whist.server.services.error import UserNotFoundError
 router = APIRouter(prefix='/user/auth')
 
 
-@router.post('/', response_model=AccessToken)
+@router.post('', response_model=AccessToken)
 async def auth(request: OAuth2PasswordRequestForm = Depends()):
     """
     Authenticates a user for password.
@@ -26,13 +26,13 @@ async def auth(request: OAuth2PasswordRequestForm = Depends()):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='Incorrect password.',
-                headers={'WWW-Authenticate': 'Basic'})
+                headers={'WWW-Authenticate': 'Bearer'})
     except UserNotFoundError as error:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Incorrect username',
-            headers={'WWW-Authenticate': 'Basic'}
+            headers={'WWW-Authenticate': 'Bearer'}
         ) from error
     token_request = {'sub': username}
     token = create_access_token(token_request)
-    return AccessToken(token=token, token_type='Bearer')  # nosec B106
+    return AccessToken(access_token=token, token_type='Bearer')  # nosec B106

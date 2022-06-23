@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from whist.server.web_socket.events.event import Event
 from whist.server.web_socket.subscriber import Subscriber
@@ -10,9 +10,8 @@ class SubscriberTestCase(TestCase):
         self.connection_mock = MagicMock()
         self.subscriber = Subscriber(self.connection_mock)
 
-    @patch('asyncio.run')
-    def test_send(self, run_mock):
+    def test_send(self):
         event = Event()
         self.subscriber.send(event)
-        run_mock.assert_called_with(
-            self.connection_mock.send_json({'name': event.name, 'event': event.json()}))
+        self.connection_mock.send_json.assert_called_with({'name': event.name, 'event':
+            event.json()})

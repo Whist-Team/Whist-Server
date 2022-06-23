@@ -38,9 +38,6 @@ class ChannelService:
         :param subscriber: the client wrapper
         :return: None
         """
-        if room_id not in cls._channels.keys():
-            side_channel = SideChannel()
-            cls.add(room_id, side_channel)
         cls._channels.get(room_id).attach(subscriber)
 
     @classmethod

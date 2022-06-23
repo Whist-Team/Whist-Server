@@ -12,7 +12,9 @@ from whist.core.game.warnings import TrickNotDoneWarning
 from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
+from whist.server.services.channel_service import ChannelService
 from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.web_socket.events.event import CardPlayedEvent
 
 router = APIRouter(prefix='/game/trick')
 
@@ -37,7 +39,8 @@ def hand(game_id: str, user: Player = Security(get_current_user),
 @router.post('/play_card/{game_id}', status_code=200, response_model=OrderedCardContainer)
 def play_card(game_id: str, card: Card,
               user: Player = Security(get_current_user),
-              game_service=Depends(GameDatabaseService)) -> OrderedCardContainer:
+              game_service=Depends(GameDatabaseService),
+              channel_service: ChannelService = Depends(ChannelService)) -> OrderedCardContainer:
     """
     Request to play a card for a given game.
     :param game_id: at which table the card is requested to be played
@@ -45,6 +48,7 @@ def play_card(game_id: str, card: Card,
     :param user: who to played a card
     :param game_service: Injection of the game database service. Requires to interact with the
     database.
+    :param channel_service: Injection of the websocket channel manager.
     :return: the stack after card being played if successful. If not the players turn raises error.
     """
     room = game_service.get(game_id)
@@ -54,6 +58,7 @@ def play_card(game_id: str, card: Card,
         player = room.get_player(user)
         trick.play_card(player=player, card=card)
         game_service.save(room)
+        channel_service.notify(game_id, CardPlayedEvent(card=card, player=user))
     except NotPlayersTurnError as turn_error:
         raise HTTPException(detail=f'It is not {user.username}\'s turn',
                             status_code=status.HTTP_400_BAD_REQUEST,

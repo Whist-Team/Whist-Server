@@ -9,6 +9,7 @@ from starlette.websockets import WebSocketDisconnect
 
 from whist.server import app
 from whist.server.database import db
+from whist.server.services.channel_service import ChannelService
 from whist.server.web_socket.events.event import PlayerJoinedEvent
 
 
@@ -31,6 +32,8 @@ class NotificationTestCase(TestCase):
         return {'Authorization': f'Bearer {token}'}
 
     def setUp(self) -> None:
+        channel_service = ChannelService()
+        channel_service._channels = {}
         data = {'game_name': 'test', 'password': 'abc'}
         response = self.client.post(url='/game/create', json=data, headers=self.token)
         self.room_id = response.json()['game_id']

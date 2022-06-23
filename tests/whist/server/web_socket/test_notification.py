@@ -23,6 +23,7 @@ class NotificationTestCase(TestCase):
         db.user.drop()
         cls.client = TestClient(app)
         cls.token = cls.create_and_auth_user('ws_user', '123')
+        cls.headers = cls.create_and_auth_user('miles', 'abc')
 
     @classmethod
     def create_and_auth_user(cls, user: str, password):
@@ -49,12 +50,11 @@ class NotificationTestCase(TestCase):
         def call_post():
             self.client.post(url=f'/game/join/{self.room_id}',
                              json={'password': 'abc'},
-                             headers=headers)
+                             headers=self.headers)
 
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
             websocket.send_text(self.token['Authorization'].rsplit('Bearer ')[1])
             assert '200' == websocket.receive_text()
-            headers = self.create_and_auth_user('miles', 'abc')
             notification = []
             thread_not = Thread(target=call_noti, args=[notification])
             thread_not.start()
@@ -82,9 +82,9 @@ class NotificationTestCase(TestCase):
         def call_post():
             self.client.post(url=f'/game/join/{self.room_id}',
                              json={'password': 'abc'},
-                             headers=headers)
+                             headers=self.headers)
             self.client.post(url=f'/game/action/ready/{self.room_id}',
-                             headers=headers)
+                             headers=self.headers)
             self.client.post(url=f'/game/action/ready/{self.room_id}',
                              headers=self.token)
             self.client.post(url=f'/game/action/start/{self.room_id}', headers=self.token,
@@ -94,15 +94,13 @@ class NotificationTestCase(TestCase):
                                        headers=self.token)
             hand = UnorderedCardContainer(**response.json())
             card = hand.cards[0]
-            response = self.client.post(url=f'/game/trick/play_card/{self.room_id}',
-                                        json=card.dict(),
-                                        headers=self.token)
-            response
+            self.client.post(url=f'/game/trick/play_card/{self.room_id}',
+                             json=card.dict(),
+                             headers=self.token)
 
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
             websocket.send_text(self.token['Authorization'].rsplit('Bearer ')[1])
             assert '200' == websocket.receive_text()
-            headers = self.create_and_auth_user('miles', 'abc')
             notification = []
             thread_not = Thread(target=call_noti, args=[notification])
             thread_not.start()

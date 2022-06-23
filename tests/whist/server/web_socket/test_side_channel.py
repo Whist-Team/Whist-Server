@@ -19,8 +19,8 @@ class TestCase(TestCase):
     def test_send_joined(self):
         self.side_channel.attach(self.subscriber)
         self.side_channel.notify(self.event)
-        self.connection_mock.send_json.assert_called_with(
-            {'name': self.event.name, 'event': self.event.json()})
+        self.connection_mock.send_json.assert_called_with({'name': self.event.name, 'event':
+            self.event.json()})
 
     def test_send_not_joined(self):
         self.side_channel.notify(self.event)

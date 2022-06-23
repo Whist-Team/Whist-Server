@@ -13,5 +13,5 @@ class SubscriberTestCase(TestCase):
     def test_send(self):
         event = Event()
         self.subscriber.send(event)
-        self.connection_mock.send_json.assert_called_with(
-            {'name': event.name, 'event': event.json()})
+        self.connection_mock.send_json.assert_called_with({'name': event.name, 'event':
+            event.json()})

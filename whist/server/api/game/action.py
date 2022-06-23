@@ -9,9 +9,11 @@ from whist.core.user.player import Player
 
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.authentication import get_current_user
-from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.channel_service import ChannelService
 from whist.server.services.error import GameNotFoundError
 from whist.server.services.error import UserNotReadyError
+from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.web_socket.events.event import RoomStartedEvent
 
 router = APIRouter(prefix='/game')
 
@@ -33,7 +35,8 @@ class StartModel(BaseModel):
 @router.post('/action/start/{game_id}', status_code=200)
 def start_game(game_id: str, model: StartModel,
                user: Player = Security(get_current_user),
-               game_service=Depends(GameDatabaseService)) -> dict:
+               game_service=Depends(GameDatabaseService),
+               channel_service: ChannelService = Depends(ChannelService)) -> dict:
     """
     Allows the creator of the table to start it.
     :param game_id: unique identifier of the game
@@ -41,6 +44,7 @@ def start_game(game_id: str, model: StartModel,
     :param user: Required to identify if the user is the creator.
     :param game_service: Injection of the game database service. Requires to interact with the
     database.
+    :param channel_service: Injection of the websocket channel manager.
     :return: dictionary containing the status of whether the table has been started or not.
     Raises 403 exception if the user has not the appropriate privileges.
     """
@@ -49,6 +53,7 @@ def start_game(game_id: str, model: StartModel,
     try:
         game.start(user, model.matcher)
         game_service.save(game)
+        channel_service.notify(game_id, RoomStartedEvent())
     except PlayerNotCreatorError as start_exception:
         message = 'Player has not administrator rights at this table.'
         raise HTTPException(

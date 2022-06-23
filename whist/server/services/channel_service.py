@@ -35,7 +35,7 @@ class ChannelService:
         """
         Adds a client to a side-channel.
         :param room_id: ID of the room the side-channel is associated with
-        :param channel: the client wrapper
+        :param subscriber: the client wrapper
         :return: None
         """
         if room_id not in cls._channels.keys():

@@ -36,6 +36,7 @@ def create_game(request: CreateGameArgs, user: Player = Security(get_current_use
     :param user: that created the game session.
     :param game_service: service to handle database interaction for games.
     :param pwd_service: service to handle password requests.
+    :param channel_service: Injection of the websocket channel manager.
     :return: the ID of the game instance.
     """
     hashed_password = None if request.password is None else pwd_service.hash(request.password)

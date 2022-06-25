@@ -4,8 +4,6 @@ from unittest import TestCase
 
 import pytest
 from starlette.testclient import TestClient
-from starlette.websockets import WebSocketDisconnect
-from whist.core.cards.card_container import UnorderedCardContainer
 
 from whist.server import app
 from whist.server.database import db
@@ -69,9 +67,18 @@ class NotificationTestCase(TestCase):
 
     @pytest.mark.integtest
     def test_join_notification_no_game(self):
-        with self.assertRaises(WebSocketDisconnect):
-            with self.client.websocket_connect('/room/' + '1' * 24):
-                pass
+        with self.client.websocket_connect('/room/' + '1' * 24) as websocket:
+            websocket.send_text(self.token['Authorization'].rsplit('Bearer ')[1])
+            response = websocket.receive()
+            self.assertEqual('Game not found', response['reason'])
+
+    @pytest.mark.integtest
+    def test_join_notification_not_joined(self):
+        with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
+            headers = self.create_and_auth_user('nico', 'abc')
+            websocket.send_text(headers['Authorization'].rsplit('Bearer ')[1])
+            response = websocket.receive()
+            self.assertEqual('User not joined', response['reason'])
 
     @pytest.mark.integtest
     def test_play_card_notification(self):

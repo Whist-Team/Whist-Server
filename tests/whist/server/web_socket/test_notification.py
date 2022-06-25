@@ -63,12 +63,14 @@ class NotificationTestCase(TestCase):
             event = PlayerJoinedEvent(**notification[0]['event'])
             self.assertIsInstance(event, PlayerJoinedEvent)
 
+    @pytest.mark.integtest
     def test_join_notification_no_game(self):
         with self.client.websocket_connect('/room/' + '1' * 24) as websocket:
             websocket.send_text(self.token['Authorization'].rsplit('Bearer ')[1])
             response = websocket.receive()
             self.assertEqual('Game not found', response['reason'])
 
+    @pytest.mark.integtest
     def test_join_notification_not_joined(self):
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
             headers = self.create_and_auth_user('nico', 'abc')

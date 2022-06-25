@@ -82,7 +82,7 @@ class NotificationTestCase(TestCase):
             self.assertEqual('User not joined', response['reason'])
 
     @pytest.mark.integtest
-    def test_play_card_notification(self):
+    def test_start_notification(self):
         def call_noti(results):
             _ = websocket.receive_json()  # player joined
             notification = websocket.receive_json()

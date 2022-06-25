@@ -36,6 +36,8 @@ def hand(game_id: str, user: Player = Security(get_current_user),
     return player.hand
 
 
+# Most of them are injections.
+# pylint: disable=too-many-arguments
 @router.post('/play_card/{game_id}', status_code=200, response_model=OrderedCardContainer)
 def play_card(game_id: str, card: Card, background_tasks: BackgroundTasks,
               user: Player = Security(get_current_user),

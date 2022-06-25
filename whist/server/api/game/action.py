@@ -32,6 +32,8 @@ class StartModel(BaseModel):
         return RoundRobinMatcher if self.matcher_type == 'robin' else RandomMatcher
 
 
+# Most of them are injections.
+# pylint: disable=too-many-arguments
 @router.post('/action/start/{game_id}', status_code=200)
 def start_game(game_id: str, model: StartModel, background_tasks: BackgroundTasks,
                user: Player = Security(get_current_user),

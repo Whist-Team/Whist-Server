@@ -1,22 +1,14 @@
 """Handles push of events"""
-from pydantic import BaseModel
 
 from whist.server.web_socket.events.event import Event
 from whist.server.web_socket.subscriber import Subscriber
 
 
-class SideChannel(BaseModel):
+class SideChannel:
     """
     Connection to a client that pushes event regarding Game State Changes.
     """
     subscriber = []
-
-    # pylint: disable=too-few-public-methods
-    class Config:
-        """
-        Configuration class that allows arbitrary types as fields.
-        """
-        arbitrary_types_allowed = True
 
     def attach(self, subscriber: Subscriber) -> None:
         """
@@ -34,11 +26,11 @@ class SideChannel(BaseModel):
         """
         self.subscriber.remove(subscriber)
 
-    def notify(self, event: Event) -> None:
+    async def notify(self, event: Event) -> None:
         """
         Sends one event to all client that have subscribed.
         :param event: Event to be sent to all clients.
         :return: None
         """
         for subscriber in self.subscriber:
-            subscriber.send(event)
+            await subscriber.send(event)

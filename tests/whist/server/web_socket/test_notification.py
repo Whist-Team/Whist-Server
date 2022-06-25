@@ -102,7 +102,7 @@ class NotificationTestCase(TestCase):
             call_post()
             thread_not.join(30)
             self.assertFalse(thread_not.is_alive(), msg='Thread should been done by now')
-            event = RoomStartedEvent(**json.loads(notification[0]['event']))
+            event = RoomStartedEvent(**notification[0]['event'])
             self.assertIsInstance(event, RoomStartedEvent)
 
     @pytest.mark.integtest
@@ -143,5 +143,5 @@ class NotificationTestCase(TestCase):
             call_post()
             thread_not.join(30)
             self.assertFalse(thread_not.is_alive(), msg='Thread should been done by now')
-            event = CardPlayedEvent(**json.loads(notification[0]['event']))
+            event = CardPlayedEvent(**notification[0]['event'])
             self.assertIsInstance(event, CardPlayedEvent)

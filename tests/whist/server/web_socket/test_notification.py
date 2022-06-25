@@ -22,6 +22,7 @@ class NotificationTestCase(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         db.user.drop()
+        db.game.drop()
         cls.client = TestClient(app)
         cls.token = cls.create_and_auth_user('ws_user', '123')
         cls.headers = cls.create_and_auth_user('miles', 'abc')

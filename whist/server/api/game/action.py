@@ -1,7 +1,7 @@
 """Route to interaction with a table."""
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Security, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Security, HTTPException, status
 from pydantic import BaseModel
 from whist.core.error.table_error import PlayerNotJoinedError, TableNotReadyError
 from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher, Matcher
@@ -33,7 +33,7 @@ class StartModel(BaseModel):
 
 
 @router.post('/action/start/{game_id}', status_code=200)
-def start_game(game_id: str, model: StartModel,
+def start_game(game_id: str, model: StartModel, background_tasks: BackgroundTasks,
                user: Player = Security(get_current_user),
                game_service=Depends(GameDatabaseService),
                channel_service: ChannelService = Depends(ChannelService)) -> dict:
@@ -41,6 +41,7 @@ def start_game(game_id: str, model: StartModel,
     Allows the creator of the table to start it.
     :param game_id: unique identifier of the game
     :param model: model containing configuration of the game.
+    :param background_tasks: asynchronous handler
     :param user: Required to identify if the user is the creator.
     :param game_service: Injection of the game database service. Requires to interact with the
     database.
@@ -53,7 +54,7 @@ def start_game(game_id: str, model: StartModel,
     try:
         game.start(user, model.matcher)
         game_service.save(game)
-        channel_service.notify(game_id, RoomStartedEvent())
+        background_tasks.add_task(channel_service.notify, game_id, RoomStartedEvent())
     except PlayerNotCreatorError as start_exception:
         message = 'Player has not administrator rights at this table.'
         raise HTTPException(

@@ -1,7 +1,7 @@
 """Interaction with the current trick of a room."""
 from typing import Union
 
-from fastapi import APIRouter, Security, Depends
+from fastapi import APIRouter, BackgroundTasks, Security, Depends
 from fastapi import HTTPException, status
 from whist.core.cards.card import Card
 from whist.core.cards.card_container import OrderedCardContainer
@@ -37,7 +37,7 @@ def hand(game_id: str, user: Player = Security(get_current_user),
 
 
 @router.post('/play_card/{game_id}', status_code=200, response_model=OrderedCardContainer)
-def play_card(game_id: str, card: Card,
+def play_card(game_id: str, card: Card, background_tasks: BackgroundTasks,
               user: Player = Security(get_current_user),
               game_service=Depends(GameDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)) -> OrderedCardContainer:
@@ -45,7 +45,8 @@ def play_card(game_id: str, card: Card,
     Request to play a card for a given game.
     :param game_id: at which table the card is requested to be played
     :param card: which is requested to be played
-    :param user: who to played a card
+    :param background_tasks: asynchronous handler
+    :param user: who played a card
     :param game_service: Injection of the game database service. Requires to interact with the
     database.
     :param channel_service: Injection of the websocket channel manager.
@@ -58,7 +59,8 @@ def play_card(game_id: str, card: Card,
         player = room.get_player(user)
         trick.play_card(player=player, card=card)
         game_service.save(room)
-        channel_service.notify(game_id, CardPlayedEvent(card=card, player=user))
+        background_tasks.add_task(channel_service.notify, game_id,
+                                  CardPlayedEvent(card=card, player=user))
     except NotPlayersTurnError as turn_error:
         raise HTTPException(detail=f'It is not {user.username}\'s turn',
                             status_code=status.HTTP_400_BAD_REQUEST,

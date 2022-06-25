@@ -52,7 +52,7 @@ class ChannelService:
         cls._channels.pop(room_id)
 
     @classmethod
-    def notify(cls, room_id: str, event: Event) -> None:
+    async def notify(cls, room_id: str, event: Event) -> None:
         """
         Multicast to all clients of a room.
         :param room_id: ID of the room the side-channel is associated with
@@ -61,4 +61,4 @@ class ChannelService:
         """
         if room_id not in cls._channels.keys():
             raise ChannelNotFoundError()
-        cls._channels.get(room_id).notify(event)
+        await cls._channels.get(room_id).notify(event)

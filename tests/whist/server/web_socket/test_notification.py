@@ -1,4 +1,3 @@
-import json
 from threading import Thread
 from time import sleep
 from unittest import TestCase
@@ -62,7 +61,7 @@ class NotificationTestCase(TestCase):
             call_post()
             thread_not.join(30)
             self.assertFalse(thread_not.is_alive(), msg='Thread should been done by now')
-            event = PlayerJoinedEvent(**json.loads(notification[0]['event']))
+            event = PlayerJoinedEvent(**notification[0]['event'])
             self.assertIsInstance(event, PlayerJoinedEvent)
 
     @pytest.mark.integtest

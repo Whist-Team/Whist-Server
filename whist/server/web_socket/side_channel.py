@@ -26,11 +26,11 @@ class SideChannel:
         """
         self.subscriber.remove(subscriber)
 
-    def notify(self, event: Event) -> None:
+    async def notify(self, event: Event) -> None:
         """
         Sends one event to all client that have subscribed.
         :param event: Event to be sent to all clients.
         :return: None
         """
         for subscriber in self.subscriber:
-            subscriber.send(event)
+            await subscriber.send(event)

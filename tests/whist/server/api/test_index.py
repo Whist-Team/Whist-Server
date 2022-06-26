@@ -21,3 +21,7 @@ class IndexTestCase(unittest.TestCase):
         self.assertDictEqual(response.json(),
                              {'info': {'game': 'whist', 'whist-core': whist_core_version,
                                        'whist-server': whist_server_version}})
+
+    def test_favicon(self):
+        response = self.client.get('/favicon.ico')
+        self.assertEqual(response.status_code, 200)

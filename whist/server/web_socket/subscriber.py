@@ -17,11 +17,11 @@ class Subscriber:
         """
         self._connection = connection
 
-    def send(self, event: Event) -> None:
+    async def send(self, event: Event) -> None:
         """
         Sends one event to this client.
         :param event: Any type of event.
         :return: None
         """
-        wrapped_event = {'name': event.name, 'event': event}
-        self._connection.send_json(wrapped_event)
+        wrapped_event = {'name': event.name, 'event': event.dict()}
+        await self._connection.send_json(wrapped_event)

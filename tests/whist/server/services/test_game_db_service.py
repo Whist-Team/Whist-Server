@@ -86,7 +86,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         self.game.ready_player(second_player)
         self.game.start(self.player, RoundRobinMatcher)
         self.service.save(self.game)
-        game = self.game.table.current_rubber.next_game()
+        game = self.game.table.current_rubber.current_game()
         player = game.get_player(self.player)
         trick = game.current_trick
         trick.play_card(player, player.hand.cards[0])

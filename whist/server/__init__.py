@@ -29,8 +29,8 @@ app.include_router(ws_router)
 app.add_middleware(CORSMiddleware,
                    allow_origins=['*'],
                    allow_credentials=True,
-                   allow_methods=["*"],
-                   allow_headers=["*"])
+                   allow_methods=['*'],
+                   allow_headers=['*'])
 game_info_db_service = GameInfoDatabaseService()
 
 game_info = {'game': 'whist'}

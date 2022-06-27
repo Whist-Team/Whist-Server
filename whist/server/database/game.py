@@ -118,8 +118,9 @@ class Game(BaseModel):
             raise PlayerNotCreatorError()
         if not self.table.started:
             self.table.start(matcher)
-        self.current_trick(auto_next=True)
-        return self.table.started
+        started = self.table.started
+        self.table.current_rubber.next_game()
+        return started
 
     def get_player(self, player) -> PlayerAtTable:
         """
@@ -130,10 +131,10 @@ class Game(BaseModel):
         return self.current_rubber.games[-1].get_player(player)
 
     def _current_hand(self):
-        return self._current_game().next_hand()
+        return self._current_game().current_hand
 
     def _current_game(self):
-        return self.current_rubber.next_game()
+        return self.current_rubber.current_game()
 
 
 class GameInDb(Game):

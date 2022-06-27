@@ -8,6 +8,7 @@ from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher, Matcher
 from whist.core.user.player import Player
 
 from whist.server.database.error import PlayerNotCreatorError
+from whist.server.database.game import GameInDb
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
 from whist.server.services.error import GameNotFoundError
@@ -51,10 +52,11 @@ def start_game(game_id: str, model: StartModel, background_tasks: BackgroundTask
     :return: dictionary containing the status of whether the table has been started or not.
     Raises 403 exception if the user has not the appropriate privileges.
     """
-    game = game_service.get(game_id)
+    game: GameInDb = game_service.get(game_id)
 
     try:
         game.start(user, model.matcher)
+        game.current_rubber.current_game().next_hand()
         game_service.save(game)
         background_tasks.add_task(channel_service.notify, game_id, RoomStartedEvent())
     except PlayerNotCreatorError as start_exception:

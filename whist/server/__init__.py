@@ -1,6 +1,7 @@
 """A Whist game server using FastAPI"""
 import pkg_resources
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
 from whist.server.api import api
 from whist.server.api.game.action import router as game_action
@@ -25,6 +26,11 @@ app.include_router(leaderboard)
 app.include_router(user_creation)
 app.include_router(auth.router)
 app.include_router(ws_router)
+app.add_middleware(CORSMiddleware,
+                   allow_origins=['*'],
+                   allow_credentials=True,
+                   allow_methods=['*'],
+                   allow_headers=['*'])
 game_info_db_service = GameInfoDatabaseService()
 
 game_info = {'game': 'whist'}

@@ -12,6 +12,7 @@ from whist.server.services.game_db_service import GameDatabaseService
 
 class GameDdServiceTestCase(BasePlayerTestCase):
     def setUp(self) -> None:
+        db.game.drop()
         super().setUp()
         self.service = GameDatabaseService()
         self.game = self.service.create_with_pwd(game_name='test', hashed_password='abc',
@@ -88,7 +89,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         self.service.save(self.game)
         game = self.game.table.current_rubber.current_game()
         player = game.get_player(self.player)
-        trick = game.current_trick
+        trick = game.next_hand().current_trick
         trick.play_card(player, player.hand.cards[0])
         self.service.save(self.game)
 

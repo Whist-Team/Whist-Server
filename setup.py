@@ -8,7 +8,7 @@ with open('requirements/requirements.txt') as f:
 
 setup(
     name='whist-server',
-    version='0.1.2',
+    version='0.2.0',
     author='Whist Team',
     description='Whist game server.',
     long_description=long_description,

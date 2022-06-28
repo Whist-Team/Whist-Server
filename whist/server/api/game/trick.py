@@ -14,7 +14,7 @@ from whist.core.user.player import Player
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
 from whist.server.services.game_db_service import GameDatabaseService
-from whist.server.web_socket.events.event import CardPlayedEvent
+from whist.server.web_socket.events.event import CardPlayedEvent, TrickStartedEvent
 
 router = APIRouter(prefix='/game/trick')
 
@@ -58,6 +58,7 @@ def play_card(game_id: str, card: Card, background_tasks: BackgroundTasks,
     trick = room.current_trick()
     if trick.done:
         trick = room.next_trick()
+        background_tasks.add_task(channel_service.notify, game_id, TrickStartedEvent())
     try:
         player = room.get_player(user)
         trick.play_card(player=player, card=card)

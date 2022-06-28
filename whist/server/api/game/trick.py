@@ -55,9 +55,10 @@ def play_card(game_id: str, card: Card, background_tasks: BackgroundTasks,
     :return: the stack after card being played if successful. If not the players turn raises error.
     """
     room = game_service.get(game_id)
-
+    trick = room.current_trick()
+    if trick.done:
+        trick = room.next_trick()
     try:
-        trick = room.current_trick(auto_next=True)
         player = room.get_player(user)
         trick.play_card(player=player, card=card)
         game_service.save(room)

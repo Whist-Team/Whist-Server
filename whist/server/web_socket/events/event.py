@@ -39,6 +39,12 @@ class RoomStartedEvent(Event):
     """
 
 
+class TrickDoneEvent(Event):
+    """
+    It is sent when a trick is done.
+    """
+
+
 class TrickStartedEvent(Event):
     """
     It is sent when a trick has been started.

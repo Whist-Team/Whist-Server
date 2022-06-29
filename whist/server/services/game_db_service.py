@@ -5,7 +5,7 @@ from bson import ObjectId
 from whist.core.user.player import Player
 
 from whist.server.database import db
-from whist.server.database.room import GameInDb
+from whist.server.database.room import RoomInDb
 from whist.server.services.error import GameNotFoundError, GameNotUpdatedError
 
 
@@ -26,7 +26,7 @@ class GameDatabaseService:
     @classmethod
     def create_with_pwd(cls, game_name: str, creator: Player, hashed_password: Optional[str] = None,
                         min_player: Optional[int] = None,
-                        max_player: Optional[int] = None) -> 'GameInDb':
+                        max_player: Optional[int] = None) -> 'RoomInDb':
         """
         Factory method to create a Game in database object.
         :param game_name: name of this session
@@ -38,32 +38,32 @@ class GameDatabaseService:
         """
         min_player = 4 if min_player is None else int(min_player)
         max_player = 4 if max_player is None else int(max_player)
-        game = GameInDb.create(game_name, creator, min_player, max_player)
-        return GameInDb(**game.dict(), hashed_password=hashed_password)
+        game = RoomInDb.create(game_name, creator, min_player, max_player)
+        return RoomInDb(**game.dict(), hashed_password=hashed_password)
 
     @classmethod
-    def add(cls, game: GameInDb) -> str:
+    def add(cls, game: RoomInDb) -> str:
         """
         Adds a game to the database.
         :param game: to be added
         :return: The id of the successful added game.
         """
         try:
-            game: GameInDb = cls.get_by_name(game.game_name)
+            game: RoomInDb = cls.get_by_name(game.room_name)
             return str(game.id)
         except GameNotFoundError:
             game_id = cls._games.insert_one(game.dict(exclude={'id'}))
             return str(game_id.inserted_id)
 
     @classmethod
-    def all(cls) -> [GameInDb]:
+    def all(cls) -> [RoomInDb]:
         """
         Returns all games in the database.
         """
-        return [GameInDb(**game) for game in cls._games.find()]
+        return [RoomInDb(**game) for game in cls._games.find()]
 
     @classmethod
-    def get(cls, game_id: str) -> GameInDb:
+    def get(cls, game_id: str) -> RoomInDb:
         """
         Retrieves a game from the database.
         :param game_id: of the game
@@ -72,10 +72,10 @@ class GameDatabaseService:
         game = cls._games.find_one(ObjectId(game_id))
         if game is None:
             raise GameNotFoundError(game_id)
-        return GameInDb(**game)
+        return RoomInDb(**game)
 
     @classmethod
-    def get_by_name(cls, game_name: str) -> GameInDb:
+    def get_by_name(cls, game_name: str) -> RoomInDb:
         """
         Similar to 'get(game_id)', but queries by game_name instead of game id.
         :param game_name: of the game
@@ -84,10 +84,10 @@ class GameDatabaseService:
         game = cls._games.find_one({'table.name': game_name})
         if game is None:
             raise GameNotFoundError(game_name=game_name)
-        return GameInDb(**game)
+        return RoomInDb(**game)
 
     @classmethod
-    def save(cls, game: GameInDb) -> None:
+    def save(cls, game: RoomInDb) -> None:
         """
         Saves an updated game object to the database.
         :param game: updated game object

@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from tests.whist.server.base_token_case import TestCaseWithToken
-from whist.server.database.room import GameInDb
+from whist.server.database.room import RoomInDb
 from whist.server.services.password import PasswordService
 
 
@@ -9,7 +9,7 @@ class CreateGameTestCase(TestCaseWithToken):
     def setUp(self) -> None:
         super().setUp()
         self.game_in_db_mock = MagicMock(create_with_pwd=MagicMock())
-        self.app.dependency_overrides[GameInDb] = lambda: self.game_in_db_mock
+        self.app.dependency_overrides[RoomInDb] = lambda: self.game_in_db_mock
         self.game_service_mock.add = MagicMock(return_value=1)
         self.app.dependency_overrides[PasswordService] = lambda: MagicMock(
             hash=MagicMock(return_value='abc'))

@@ -15,12 +15,12 @@ from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.password import PasswordService
 
 
-class Game(BaseModel):
+class Room(BaseModel):
     """
-    Game DAO
-    id: unique identifier for a game.
+    Room DAO
+    id: unique identifier for a room.
     creator: user id as string of the player how created that session.
-    players: list of user ids of player that joined the game.
+    players: list of user ids of player that joined the roo,.
     side_channel: Communication for all clients
     """
     id: Optional[PyObjectId] = Field(alias='_id')
@@ -28,38 +28,38 @@ class Game(BaseModel):
     table: Table = None
 
     @classmethod
-    def create(cls, game_name: str, creator: Player,
-               min_player: int, max_player: int) -> 'Game':
+    def create(cls, room_name: str, creator: Player,
+               min_player: int, max_player: int) -> 'Room':
         """
-        Factory method to create a Game object.
-        :param game_name: name of the session
+        Factory method to create a Room object.
+        :param room_name: name of the session
         :param creator: player object of the host
-        :param min_player: the minimum amount of player to start a game
+        :param min_player: the minimum amount of player to start a room
         :param max_player: the maximum amount of player that can join this session
-        :return: the Game object
+        :return: the room object
         """
-        table = Table(name=game_name, min_player=min_player, max_player=max_player)
+        table = Table(name=room_name, min_player=min_player, max_player=max_player)
         table.join(creator)
-        return Game(creator=creator, table=table)
+        return Room(creator=creator, table=table)
 
     @property
-    def game_name(self) -> str:
+    def room_name(self) -> str:
         """
-        :return: name of the game.
+        :return: name of the room.
         """
         return self.table.name
 
     @property
     def players(self) -> list[Player]:
         """
-        :return: list of user ids that joined the game.
+        :return: list of user ids that joined the room.
         """
         return self.table.users.players
 
     @property
     def current_rubber(self) -> Rubber:
         """
-        Retrieves the current rubber of the game.
+        Retrieves the current rubber of the room.
         """
         return self.table.current_rubber
 
@@ -79,7 +79,7 @@ class Game(BaseModel):
 
     def join(self, user: Player) -> bool:
         """
-        Adds the user to this game.
+        Adds the user to this room.
         :param user: user that wants to join.
         :return: True if successful else an error or warning is raised.
         :raise: PlayerAlreadyJoinedWarning when a player tries to join again.
@@ -137,9 +137,9 @@ class Game(BaseModel):
         return self.current_rubber.current_game()
 
 
-class GameInDb(Game):
+class RoomInDb(Room):
     """
-    Game DO
+    room DO
     """
     hashed_password: Optional[str]
 

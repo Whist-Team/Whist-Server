@@ -6,7 +6,7 @@ from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database.error import PlayerNotCreatorError
-from whist.server.database.room import GameInDb
+from whist.server.database.room import RoomInDb
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
@@ -17,7 +17,7 @@ class GameInDbTestCase(BasePlayerTestCase):
         super().setUp()
         password_service = PasswordService()
         self.game_service = GameDatabaseService()
-        self.game: GameInDb = self.game_service.create_with_pwd(
+        self.game: RoomInDb = self.game_service.create_with_pwd(
             game_name='test',
             hashed_password=password_service.hash('abc'),
             creator=self.player,
@@ -33,7 +33,7 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.assertFalse(self.game.verify_password('bac'))
 
     def test_verify_without_password(self):
-        game: GameInDb = self.game_service.create_with_pwd(game_name='test', creator=self.player)
+        game: RoomInDb = self.game_service.create_with_pwd(game_name='test', creator=self.player)
         self.assertTrue(game.verify_password(None))
 
     def test_join(self):

@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from whist.core.user.player import Player
 
-from whist.server.database.room import GameInDb
+from whist.server.database.room import RoomInDb
 from whist.server.services.authentication import get_current_user
 from whist.server.services.error import GameNotFoundError
 from whist.server.services.game_db_service import GameDatabaseService
@@ -36,7 +36,7 @@ def game_id_from_name(game_name: str, game_service=Depends(GameDatabaseService),
     with that name in the DB it will return GameNotFoundError.
     """
     try:
-        room: GameInDb = game_service.get_by_name(game_name)
+        room: RoomInDb = game_service.get_by_name(game_name)
         if not room.has_joined(user):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                                 detail='User has not access.',

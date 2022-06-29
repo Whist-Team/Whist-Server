@@ -56,15 +56,16 @@ def play_card(game_id: str, card: Card, background_tasks: BackgroundTasks,
     """
     room = game_service.get(game_id)
     trick = room.current_trick()
-    if trick.done:
-        background_tasks.add_task(channel_service.notify, game_id,
-                                  TrickDoneEvent(winner=trick.winner))
+
     try:
         player = room.get_player(user)
         trick.play_card(player=player, card=card)
         game_service.save(room)
         background_tasks.add_task(channel_service.notify, game_id,
                                   CardPlayedEvent(card=card, player=user))
+        if trick.done:
+            background_tasks.add_task(channel_service.notify, game_id,
+                                      TrickDoneEvent(winner=trick.winner))
     except NotPlayersTurnError as turn_error:
         raise HTTPException(detail=f'It is not {user.username}\'s turn',
                             status_code=status.HTTP_400_BAD_REQUEST,

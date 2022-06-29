@@ -35,7 +35,7 @@ class StartModel(BaseModel):
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@router.post('/action/start/{game_id}', status_code=200)
+@router.post('/action/start/{room_id}', status_code=200)
 def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTasks,
                user: Player = Security(get_current_user),
                room_service=Depends(RoomDatabaseService),

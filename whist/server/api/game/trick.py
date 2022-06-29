@@ -16,7 +16,7 @@ from whist.server.services.channel_service import ChannelService
 from whist.server.services.room_db_service import RoomDatabaseService
 from whist.server.web_socket.events.event import CardPlayedEvent
 
-router = APIRouter(prefix='/game/trick')
+router = APIRouter(prefix='/room/trick')
 
 
 @router.get('/hand/{room_id}', status_code=200, response_model=UnorderedCardContainer)

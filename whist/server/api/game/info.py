@@ -7,7 +7,7 @@ from whist.server.services.authentication import get_current_user
 from whist.server.services.error import RoomNotFoundError
 from whist.server.services.room_db_service import RoomDatabaseService
 
-router = APIRouter(prefix='/game')
+router = APIRouter(prefix='/room')
 
 
 @router.get('/info/ids', status_code=200, response_model=dict[str, list[str]])
@@ -20,7 +20,7 @@ def all_rooms(room_service=Depends(RoomDatabaseService),
     :return: a list of all room ids as strings.
     """
     rooms = room_service.all()
-    return {'games': [str(room.id) for room in rooms]}
+    return {'rooms': [str(room.id) for room in rooms]}
 
 
 @router.get('/info/id/{room_name}', status_code=200, response_model=dict[str, str])

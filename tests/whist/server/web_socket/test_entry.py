@@ -12,9 +12,9 @@ class EntryTestCase(TestCaseWithToken):
     def setUp(self) -> None:
         super().setUp()
         self.token = self.create_and_auth_user('simon', 'abc')['Authorization'].rsplit('Bearer ')[1]
-        data = {'game_name': 'test', 'password': 'abc'}
-        response = self.client.post(url='/game/create', json=data, headers=self.headers)
-        self.room_id = response.json()['game_id']
+        data = {'room_name': 'test', 'password': 'abc'}
+        response = self.client.post(url='/room/create', json=data, headers=self.headers)
+        self.room_id = response.json()['room_id']
         channel_mock = MagicMock()
         self.game_mock = MagicMock(side_channel=channel_mock)
         self.channel_service_mock = MagicMock()
@@ -44,7 +44,7 @@ class EntryTestCase(TestCaseWithToken):
             websocket.send_text(self.token)
             response = websocket.receive_text()
             self.channel_service_mock.attach.assert_not_called()
-            self.assertEqual('Game not found', response)
+            self.assertEqual('Room not found', response)
 
     @skip('Probably bug in Test Client')
     def test_subscribe_not_joined(self):

@@ -17,69 +17,69 @@ class ActionGameTestCase(BaseCreateGameTestCase):
 
     def test_start(self):
         # Request to start table.
-        response = self.client.post(url=f'/game/action/start/{self.game_mock.id}',
+        response = self.client.post(url=f'/room/action/start/{self.room_mock.id}',
                                     headers=self.headers,
                                     json={'matcher_type': 'robin'})
-        self.game_mock.start.assert_called_once()
-        self.room_service_mock.save.assert_called_once_with(self.game_mock)
+        self.room_mock.start.assert_called_once()
+        self.room_service_mock.save.assert_called_once_with(self.room_mock)
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('started', response.json()['status'])
 
     def test_start_not_creator(self):
-        self.game_mock.start = MagicMock(side_effect=PlayerNotCreatorError)
+        self.room_mock.start = MagicMock(side_effect=PlayerNotCreatorError)
 
         # New user tries to start table.
-        response = self.client.post(url=f'/game/action/start/{self.game_mock.id}',
+        response = self.client.post(url=f'/room/action/start/{self.room_mock.id}',
                                     headers=self.second_player,
                                     json={'matcher_type': 'robin'})
-        self.game_mock.start.assert_called_once()
+        self.room_mock.start.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_start_table_not_ready(self):
-        self.game_mock.start = MagicMock(side_effect=TableNotReadyError)
+        self.room_mock.start = MagicMock(side_effect=TableNotReadyError)
         # Request to start table.
-        response = self.client.post(url=f'/game/action/start/{self.game_mock.id}',
+        response = self.client.post(url=f'/room/action/start/{self.room_mock.id}',
                                     headers=self.headers,
                                     json={'matcher_type': 'robin'})
-        self.game_mock.start.assert_called_once()
+        self.room_mock.start.assert_called_once()
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_ready(self):
-        response = self.client.post(url=f'/game/action/ready/{self.game_mock.id}',
+        response = self.client.post(url=f'/room/action/ready/{self.room_mock.id}',
                                     headers=self.headers)
-        self.game_mock.ready_player.assert_called_once()
+        self.room_mock.ready_player.assert_called_once()
         self.assertEqual(200, response.status_code, msg=response.content)
 
     def test_ready_not_joined(self):
-        self.game_mock.ready_player = MagicMock(side_effect=PlayerNotJoinedError)
-        response = self.client.post(url=f'/game/action/ready/{self.game_mock.id}',
+        self.room_mock.ready_player = MagicMock(side_effect=PlayerNotJoinedError)
+        response = self.client.post(url=f'/room/action/ready/{self.room_mock.id}',
                                     headers=self.second_player)
-        self.game_mock.ready_player.assert_called_once()
+        self.room_mock.ready_player.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_unready(self):
-        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+        response = self.client.post(url=f'/room/action/unready/{self.room_mock.id}',
                                     headers=self.headers)
-        self.game_mock.unready_player.assert_called_once()
+        self.room_mock.unready_player.assert_called_once()
         self.assertEqual(200, response.status_code, msg=response.content)
 
     def test_unready_not_joined(self):
-        self.game_mock.unready_player = MagicMock(side_effect=PlayerNotJoinedError)
-        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+        self.room_mock.unready_player = MagicMock(side_effect=PlayerNotJoinedError)
+        response = self.client.post(url=f'/room/action/unready/{self.room_mock.id}',
                                     headers=self.second_player)
-        self.game_mock.unready_player.assert_called_once()
+        self.room_mock.unready_player.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_unready_game_not_found(self):
-        self.game_mock.unready_player = MagicMock(side_effect=RoomNotFoundError)
-        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+        self.room_mock.unready_player = MagicMock(side_effect=RoomNotFoundError)
+        response = self.client.post(url=f'/room/action/unready/{self.room_mock.id}',
                                     headers=self.second_player)
-        self.game_mock.unready_player.assert_called_once()
+        self.room_mock.unready_player.assert_called_once()
         self.assertEqual(404, response.status_code, msg=response.content)
 
     def test_unready_player_not_ready(self):
-        self.game_mock.unready_player = MagicMock(side_effect=UserNotReadyError)
-        response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
+        self.room_mock.unready_player = MagicMock(side_effect=UserNotReadyError)
+        response = self.client.post(url=f'/room/action/unready/{self.room_mock.id}',
                                     headers=self.second_player)
-        self.game_mock.unready_player.assert_called_once()
+        self.room_mock.unready_player.assert_called_once()
         self.assertEqual(400, response.status_code, msg=response.content)

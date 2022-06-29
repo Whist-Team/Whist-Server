@@ -31,7 +31,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
 
     def test_not_existing(self):
         game_id = '1' * 24
-        error_msg = f'Game with id "{game_id}" not found.'
+        error_msg = f'Room with id "{game_id}" not found.'
         with self.assertRaisesRegex(RoomNotFoundError, error_msg):
             self.service.get(game_id)
 

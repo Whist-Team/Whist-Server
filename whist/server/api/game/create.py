@@ -11,7 +11,7 @@ from whist.server.services.password import PasswordService
 from whist.server.services.room_db_service import RoomDatabaseService
 from whist.server.web_socket.side_channel import SideChannel
 
-router = APIRouter(prefix='/game')
+router = APIRouter(prefix='/room')
 
 
 class CreateRoomArgs(BaseModel):

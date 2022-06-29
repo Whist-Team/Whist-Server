@@ -16,7 +16,7 @@ from whist.server.services.error import UserNotReadyError
 from whist.server.services.room_db_service import RoomDatabaseService
 from whist.server.web_socket.events.event import RoomStartedEvent
 
-router = APIRouter(prefix='/game')
+router = APIRouter(prefix='/room')
 
 
 class StartModel(BaseModel):

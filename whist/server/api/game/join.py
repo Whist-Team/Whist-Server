@@ -14,7 +14,7 @@ from whist.server.services.password import PasswordService
 from whist.server.services.room_db_service import RoomDatabaseService
 from whist.server.web_socket.events.event import PlayerJoinedEvent
 
-router = APIRouter(prefix='/game')
+router = APIRouter(prefix='/room')
 
 
 class JoinRoomArgs(BaseModel):

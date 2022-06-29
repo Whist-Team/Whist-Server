@@ -5,7 +5,7 @@ from whist.core.user.player import Player
 from whist.server.database.room import RoomInDb
 from whist.server.services.authentication import get_current_user
 from whist.server.services.error import RoomNotFoundError
-from whist.server.services.game_db_service import RoomDatabaseService
+from whist.server.services.room_db_service import RoomDatabaseService
 
 router = APIRouter(prefix='/game')
 

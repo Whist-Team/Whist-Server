@@ -7,7 +7,7 @@ from whist.core.user.player import Player
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database import db
 from whist.server.services.error import RoomNotFoundError, GameNotUpdatedError
-from whist.server.services.game_db_service import RoomDatabaseService
+from whist.server.services.room_db_service import RoomDatabaseService
 
 
 class GameDdServiceTestCase(BasePlayerTestCase):

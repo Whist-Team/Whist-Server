@@ -8,8 +8,8 @@ from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.room import RoomInDb
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
-from whist.server.services.game_db_service import RoomDatabaseService
 from whist.server.services.password import PasswordService
+from whist.server.services.room_db_service import RoomDatabaseService
 
 
 class GameInDbTestCase(BasePlayerTestCase):

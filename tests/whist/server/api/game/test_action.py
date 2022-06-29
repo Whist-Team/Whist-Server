@@ -6,7 +6,7 @@ from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 from whist.server.database.error import PlayerNotCreatorError
 from whist.server.services.error import RoomNotFoundError
 from whist.server.services.error import UserNotReadyError
-from whist.server.services.game_db_service import RoomDatabaseService
+from whist.server.services.room_db_service import RoomDatabaseService
 
 
 class ActionGameTestCase(BaseCreateGameTestCase):

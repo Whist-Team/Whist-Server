@@ -8,8 +8,8 @@ from whist.server import app
 from whist.server.database import db
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
-from whist.server.services.game_db_service import RoomDatabaseService
 from whist.server.services.password import PasswordService
+from whist.server.services.room_db_service import RoomDatabaseService
 from whist.server.services.user_db_service import UserDatabaseService
 
 

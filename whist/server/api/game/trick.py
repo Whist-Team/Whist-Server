@@ -13,7 +13,7 @@ from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
-from whist.server.services.game_db_service import RoomDatabaseService
+from whist.server.services.room_db_service import RoomDatabaseService
 from whist.server.web_socket.events.event import CardPlayedEvent
 
 router = APIRouter(prefix='/game/trick')

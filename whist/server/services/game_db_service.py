@@ -5,7 +5,7 @@ from bson import ObjectId
 from whist.core.user.player import Player
 
 from whist.server.database import db
-from whist.server.database.game import GameInDb
+from whist.server.database.room import GameInDb
 from whist.server.services.error import GameNotFoundError, GameNotUpdatedError
 
 

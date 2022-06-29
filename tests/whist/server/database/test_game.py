@@ -6,7 +6,7 @@ from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database.error import PlayerNotCreatorError
-from whist.server.database.game import GameInDb
+from whist.server.database.room import GameInDb
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService

@@ -8,7 +8,7 @@ from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher, Matcher
 from whist.core.user.player import Player
 
 from whist.server.database.error import PlayerNotCreatorError
-from whist.server.database.game import GameInDb
+from whist.server.database.room import GameInDb
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
 from whist.server.services.error import GameNotFoundError

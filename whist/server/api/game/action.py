@@ -79,22 +79,22 @@ def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTask
 
 @router.post('/action/ready/{room_id}', status_code=200)
 def ready_player(room_id: str, user: Player = Security(get_current_user),
-                 game_service=Depends(RoomDatabaseService)) -> dict:
+                 room_service=Depends(RoomDatabaseService)) -> dict:
     """
     A player can mark theyself to be ready.
     :param room_id: unique identifier of the room
     :param user: Required to identify the user.
-    :param game_service: Injection of the room database service. Requires to interact with the
+    :param room_service: Injection of the room database service. Requires to interact with the
     database.
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
     """
 
-    room = game_service.get(room_id)
+    room = room_service.get(room_id)
 
     try:
         room.ready_player(user)
-        game_service.save(room)
+        room_service.save(room)
     except PlayerNotJoinedError as ready_error:
         message = 'Player has not joined the table yet.'
         raise HTTPException(
@@ -107,24 +107,24 @@ def ready_player(room_id: str, user: Player = Security(get_current_user),
 
 @router.post('/action/unready/{room_id}', status_code=200)
 def unready_player(room_id: str, user: Player = Security(get_current_user),
-                   game_service=Depends(RoomDatabaseService)) -> dict:
+                   room_service=Depends(RoomDatabaseService)) -> dict:
     """
     A player can mark themself to be unready.
     :param room_id: unique identifier of the room
     :param user: Required to identify the user.
-    :param game_service: Injection of the room database service. Requires to interact with the
+    :param room_service: Injection of the room database service. Requires to interact with the
     database.
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
-    Raises 404 exception if game_id is not found
+    Raises 404 exception if room_id is not found
     Raises 400 exception if player is not ready
     """
 
-    room = game_service.get(room_id)
+    room = room_service.get(room_id)
 
     try:
         room.unready_player(user)
-        game_service.save(room)
+        room_service.save(room)
     except PlayerNotJoinedError as join_error:
         message = 'Player not joined yet.'
         raise HTTPException(
@@ -132,13 +132,13 @@ def unready_player(room_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Bearer"},
         ) from join_error
-    except RoomNotFoundError as game_error:
+    except RoomNotFoundError as room_error:
         message = 'Room id not found'
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=message,
             headers={"WWW-Authenticate": "Bearer"},
-        ) from game_error
+        ) from room_error
     except UserNotReadyError as ready_error:
         message = 'Player not ready'
         raise HTTPException(

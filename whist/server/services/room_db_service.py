@@ -1,4 +1,4 @@
-"""Game database connector"""
+"""Room database connector"""
 from typing import Optional
 
 from bson import ObjectId
@@ -6,12 +6,12 @@ from whist.core.user.player import Player
 
 from whist.server.database import db
 from whist.server.database.room import RoomInDb
-from whist.server.services.error import RoomNotFoundError, GameNotUpdatedError
+from whist.server.services.error import RoomNotFoundError, RoomNotUpdatedError
 
 
 class RoomDatabaseService:
     """
-    Handles interactions with the game database.
+    Handles interactions with the room database.
     """
     _instance = None
     _rooms = None
@@ -24,29 +24,29 @@ class RoomDatabaseService:
 
     # pylint: disable=too-many-arguments
     @classmethod
-    def create_with_pwd(cls, game_name: str, creator: Player, hashed_password: Optional[str] = None,
+    def create_with_pwd(cls, room_name: str, creator: Player, hashed_password: Optional[str] = None,
                         min_player: Optional[int] = None,
                         max_player: Optional[int] = None) -> 'RoomInDb':
         """
-        Factory method to create a Game in database object.
-        :param game_name: name of this session
+        Factory method to create a Room in database object.
+        :param room_name: name of this session
         :param creator: player object of the host
         :param hashed_password: the hash value of the password required to join
         :param min_player: the minimum amount of player to start a room
         :param max_player: the maximum amount of player that can join this session
-        :return: the Game object
+        :return: the Room object
         """
         min_player = 4 if min_player is None else int(min_player)
         max_player = 4 if max_player is None else int(max_player)
-        room = RoomInDb.create(game_name, creator, min_player, max_player)
+        room = RoomInDb.create(room_name, creator, min_player, max_player)
         return RoomInDb(**room.dict(), hashed_password=hashed_password)
 
     @classmethod
     def add(cls, room: RoomInDb) -> str:
         """
-        Adds a game to the database.
+        Adds a room to the database.
         :param room: to be added
-        :return: The id of the successful added game.
+        :return: The id of the successful added room.
         """
         try:
             room: RoomInDb = cls.get_by_name(room.room_name)
@@ -89,10 +89,10 @@ class RoomDatabaseService:
     @classmethod
     def save(cls, room: RoomInDb) -> None:
         """
-        Saves an updated game object to the database.
-        :param room: updated game object
-        :return: None. Raises GameNotFoundError if it could not find a game with that ID. Raises
-        a general GameNotUpdatedError if the game could not be saved.
+        Saves an updated room object to the database.
+        :param room: updated room object
+        :return: None. Raises RoomNotFoundError if it could not find a room with that ID. Raises
+        a general RoomNotUpdatedError if the room could not be saved.
         """
         query = {'_id': ObjectId(room.id)}
         values = {'$set': room.dict()}
@@ -100,4 +100,4 @@ class RoomDatabaseService:
         if result.matched_count != 1:
             raise RoomNotFoundError(room.id)
         if result.modified_count != 1:
-            raise GameNotUpdatedError(room.id)
+            raise RoomNotUpdatedError(room.id)

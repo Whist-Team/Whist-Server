@@ -18,7 +18,7 @@ class GameInDbTestCase(BasePlayerTestCase):
         password_service = PasswordService()
         self.game_service = RoomDatabaseService()
         self.game: RoomInDb = self.game_service.create_with_pwd(
-            game_name='test',
+            room_name='test',
             hashed_password=password_service.hash('abc'),
             creator=self.player,
             max_player=2,
@@ -33,7 +33,7 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.assertFalse(self.game.verify_password('bac'))
 
     def test_verify_without_password(self):
-        game: RoomInDb = self.game_service.create_with_pwd(game_name='test', creator=self.player)
+        game: RoomInDb = self.game_service.create_with_pwd(room_name='test', creator=self.player)
         self.assertTrue(game.verify_password(None))
 
     def test_join(self):

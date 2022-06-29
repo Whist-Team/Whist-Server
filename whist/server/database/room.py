@@ -1,4 +1,4 @@
-"""Game models"""
+"""Room models"""
 from typing import Optional
 
 from pydantic import BaseModel, Field

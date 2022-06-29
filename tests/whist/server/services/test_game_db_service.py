@@ -6,7 +6,7 @@ from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database import db
-from whist.server.services.error import RoomNotFoundError, GameNotUpdatedError
+from whist.server.services.error import RoomNotFoundError, RoomNotUpdatedError
 from whist.server.services.room_db_service import RoomDatabaseService
 
 
@@ -15,7 +15,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         db.room.drop()
         super().setUp()
         self.service = RoomDatabaseService()
-        self.room = self.service.create_with_pwd(game_name='test', hashed_password='abc',
+        self.room = self.service.create_with_pwd(room_name='test', hashed_password='abc',
                                                  creator=self.player)
 
     def test_add(self):
@@ -60,7 +60,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         game_id = self.service.add(self.room)
         self.room.id = game_id
         self.room.table.min_player = 3
-        with self.assertRaises(GameNotUpdatedError):
+        with self.assertRaises(RoomNotUpdatedError):
             self.service.save(self.room)
 
     def test_save_started_table(self):

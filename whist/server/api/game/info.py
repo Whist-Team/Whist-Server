@@ -1,4 +1,4 @@
-"""Collection of general game information getter."""
+"""Collection of general room information getter."""
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from whist.core.user.player import Player
 
@@ -11,32 +11,32 @@ router = APIRouter(prefix='/game')
 
 
 @router.get('/info/ids', status_code=200, response_model=dict[str, list[str]])
-def all_games(game_service=Depends(RoomDatabaseService),
+def all_rooms(room_service=Depends(RoomDatabaseService),
               _: Player = Security(get_current_user)) -> dict[str, list[str]]:
     """
-    Returns all game id.
-    :param game_service: Dependency injection of the game service
+    Returns all room id.
+    :param room_service: Dependency injection of the room service
     :param _: not required for logic, but authentication
-    :return: a list of all game ids as strings.
+    :return: a list of all room ids as strings.
     """
-    rooms = game_service.all()
+    rooms = room_service.all()
     return {'games': [str(room.id) for room in rooms]}
 
 
-@router.get('/info/id/{game_name}', status_code=200, response_model=dict[str, str])
-def game_id_from_name(game_name: str, game_service=Depends(RoomDatabaseService),
+@router.get('/info/id/{room_name}', status_code=200, response_model=dict[str, str])
+def room_id_from_name(room_name: str, room_service=Depends(RoomDatabaseService),
                       user: Player = Security(get_current_user)) -> dict[str, str]:
     """
-    Returns the game id for a given game name. Basically it transforms human-readable data to
+    Returns the room id for a given room name. Basically it transforms human-readable data to
     computer data.
-    :param game_name: the human-readable game name
-    :param game_service: Dependency injection of the game service
+    :param room_name: the human-readable room name
+    :param room_service: Dependency injection of the room service
     :param user: not required for logic, but authentication
-    :return: dictionary containing the field 'id' with the game id as value.If there is no game
-    with that name in the DB it will return GameNotFoundError.
+    :return: dictionary containing the field 'id' with the room id as value.If there is no room
+    with that name in the DB it will return RoomNotFoundError.
     """
     try:
-        room: RoomInDb = game_service.get_by_name(game_name)
+        room: RoomInDb = room_service.get_by_name(room_name)
         if not room.has_joined(user):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                                 detail='User has not access.',
@@ -44,6 +44,6 @@ def game_id_from_name(game_name: str, game_service=Depends(RoomDatabaseService),
                                 )
     except RoomNotFoundError as not_found:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f'Game not found with name: {game_name}',
+                            detail=f'Room not found with name: {room_name}',
                             headers={"WWW-Authenticate": "Bearer"}, ) from not_found
     return {'id': str(room.id)}

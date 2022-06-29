@@ -19,7 +19,7 @@ class CreateGameTestCase(TestCaseWithToken):
         response = self.client.post(url='/game/create', json=data, headers=self.headers)
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertEqual(1, response.json()['game_id'])
-        self.room_service_mock.create_with_pwd.assert_called_once_with(game_name='test',
+        self.room_service_mock.create_with_pwd.assert_called_once_with(room_name='test',
                                                                        hashed_password='abc',
                                                                        creator=self.player_mock,
                                                                        min_player=None,
@@ -30,7 +30,7 @@ class CreateGameTestCase(TestCaseWithToken):
         response = self.client.post(url='/game/create', json=data, headers=self.headers)
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertEqual(1, response.json()['game_id'])
-        self.room_service_mock.create_with_pwd.assert_called_once_with(game_name='test',
+        self.room_service_mock.create_with_pwd.assert_called_once_with(room_name='test',
                                                                        hashed_password=None,
                                                                        creator=self.player_mock,
                                                                        min_player=None,
@@ -46,7 +46,7 @@ class CreateGameTestCase(TestCaseWithToken):
         response = self.client.post(url='/game/create', json=data, headers=self.headers)
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertEqual(1, response.json()['game_id'])
-        self.room_service_mock.create_with_pwd.assert_called_once_with(game_name='test',
+        self.room_service_mock.create_with_pwd.assert_called_once_with(room_name='test',
                                                                        hashed_password='abc',
                                                                        creator=self.player_mock,
                                                                        min_player=1, max_player=1)

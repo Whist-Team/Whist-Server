@@ -28,7 +28,7 @@ class CardPlayedEvent(Event):
 
 class PlayerJoinedEvent(Event):
     """
-    It is sent when a player joins a game.
+    It is sent when a player joins a room.
     """
     player: Player
 

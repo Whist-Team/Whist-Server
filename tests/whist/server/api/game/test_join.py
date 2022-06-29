@@ -66,10 +66,10 @@ class IntegrationTestJoinGame(TestCase):
     def test_join_no_pwd(self):
         headers_creator = self.create_and_auth_user('miles', 'abc')
         headers_joiner = self.create_and_auth_user('marcel', 'abc')
-        data = {'game_name': 'test'}
-        response = self.client.post(url='/game/create', json=data, headers=headers_creator)
-        game_id = response.json()['game_id']
-        response = self.client.post(url=f'/game/join/{game_id}',
+        data = {'room_name': 'test'}
+        response = self.client.post(url='/room/create', json=data, headers=headers_creator)
+        room_id = response.json()['room_id']
+        response = self.client.post(url=f'/room/join/{room_id}',
                                     headers=headers_joiner, json={})
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('joined', response.json()['status'])

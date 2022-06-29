@@ -57,7 +57,8 @@ def play_card(game_id: str, card: Card, background_tasks: BackgroundTasks,
     room = game_service.get(game_id)
     trick = room.current_trick()
     if trick.done:
-        background_tasks.add_task(channel_service.notify, game_id, TrickDoneEvent())
+        background_tasks.add_task(channel_service.notify, game_id,
+                                  TrickDoneEvent(winner=trick.winner))
     try:
         player = room.get_player(user)
         trick.play_card(player=player, card=card)

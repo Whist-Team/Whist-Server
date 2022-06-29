@@ -21,7 +21,7 @@ class ActionGameTestCase(BaseCreateGameTestCase):
                                     headers=self.headers,
                                     json={'matcher_type': 'robin'})
         self.game_mock.start.assert_called_once()
-        self.game_service_mock.save.assert_called_once_with(self.game_mock)
+        self.room_service_mock.save.assert_called_once_with(self.game_mock)
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('started', response.json()['status'])
 

@@ -6,7 +6,7 @@ from whist.server.services.error import RoomNotFoundError
 
 class GameInfoTestCase(BaseCreateGameTestCase):
     def test_game_name_to_id(self):
-        self.game_service_mock.get_by_name = MagicMock(return_value=self.game_mock)
+        self.room_service_mock.get_by_name = MagicMock(return_value=self.game_mock)
         game_name: str = 'albatros'
         response = self.client.get(f'/game/info/id/{game_name}')
         self.assertEqual(200, response.status_code, msg=response.content)
@@ -14,32 +14,32 @@ class GameInfoTestCase(BaseCreateGameTestCase):
 
     def test_game_name_to_id_login_required(self):
         self.app.dependency_overrides = {}
-        self.game_service_mock.get_by_name = MagicMock(return_value=self.game_mock)
+        self.room_service_mock.get_by_name = MagicMock(return_value=self.game_mock)
         game_name: str = 'albatros'
         response = self.client.get(f'/game/info/id/{game_name}')
         self.assertEqual(401, response.status_code, msg=response.content)
 
     def test_game_name_to_id_not_joined(self):
         self.game_mock.has_joined = MagicMock(return_value=False)
-        self.game_service_mock.get_by_name = MagicMock(return_value=self.game_mock)
+        self.room_service_mock.get_by_name = MagicMock(return_value=self.game_mock)
         game_name: str = 'albatros'
         response = self.client.get(f'/game/info/id/{game_name}')
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_game_name_to_id_not_found(self):
-        self.game_service_mock.get_by_name = MagicMock(side_effect=RoomNotFoundError())
+        self.room_service_mock.get_by_name = MagicMock(side_effect=RoomNotFoundError())
         game_name: str = 'hornblower'
         response = self.client.get(f'/game/info/id/{game_name}')
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_get_all_ids(self):
-        self.game_service_mock.all = MagicMock(return_value=[self.game_mock])
+        self.room_service_mock.all = MagicMock(return_value=[self.game_mock])
         response = self.client.get('/game/info/ids')
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual(['1'], response.json()['games'])
 
     def test_get_all_ids_require_login(self):
         self.app.dependency_overrides = {}
-        self.game_service_mock.all = MagicMock(return_value=[self.game_mock])
+        self.room_service_mock.all = MagicMock(return_value=[self.game_mock])
         response = self.client.get('/game/info/ids')
         self.assertEqual(401, response.status_code, msg=response.content)

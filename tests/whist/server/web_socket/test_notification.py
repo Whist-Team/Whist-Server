@@ -20,7 +20,7 @@ class NotificationTestCase(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         db.user.drop()
-        db.game.drop()
+        db.room.drop()
         cls.client = TestClient(app)
         cls.token = cls.create_and_auth_user('ws_user', '123')
         cls.headers = cls.create_and_auth_user('miles', 'abc')
@@ -33,13 +33,13 @@ class NotificationTestCase(TestCase):
         return {'Authorization': f'Bearer {token}'}
 
     def setUp(self) -> None:
-        db.game.drop()
+        db.room.drop()
         data = {'game_name': 'test', 'password': 'abc', 'min_player': 1}
         response = self.client.post(url='/game/create', json=data, headers=self.token)
         self.room_id = response.json()['game_id']
 
     def tearDown(self) -> None:
-        db.game.drop()
+        db.room.drop()
 
     @pytest.mark.integtest
     def test_join_notification(self):

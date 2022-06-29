@@ -19,7 +19,7 @@ class RoomDatabaseService:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(RoomDatabaseService, cls).__new__(cls)
-            cls._rooms = db.game
+            cls._rooms = db.room
         return cls._instance
 
     # pylint: disable=too-many-arguments

@@ -32,7 +32,7 @@ class TrickTestCase(BaseCreateGameTestCase):
         response = self.client.post(url=f'/game/trick/play_card/{self.game_mock.id}',
                                     headers=self.headers, json=self.first_card.dict())
         self.assertEqual(200, response.status_code, msg=response.content)
-        self.game_service_mock.save.assert_called_once()
+        self.room_service_mock.save.assert_called_once()
         response_stack = OrderedCardContainer(**response.json())
         self.assertEqual(self.stack, response_stack)
 

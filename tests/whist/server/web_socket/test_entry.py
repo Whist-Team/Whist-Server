@@ -28,8 +28,8 @@ class EntryTestCase(TestCaseWithToken):
     @skip('Probably bug in Test Client')
     def test_subscribe(self):
         self.game_mock.has_joined = MagicMock(return_value=True)
-        self.game_service_mock.get = MagicMock(return_value=self.game_mock)
-        app.dependency_overrides[RoomDatabaseService] = lambda: self.game_service_mock
+        self.room_service_mock.get = MagicMock(return_value=self.game_mock)
+        app.dependency_overrides[RoomDatabaseService] = lambda: self.room_service_mock
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
             websocket.send_text(self.token)
             response = websocket.receive_text()
@@ -38,8 +38,8 @@ class EntryTestCase(TestCaseWithToken):
 
     @skip('Probably bug in Test Client')
     def test_subscribe_room_not_exists(self):
-        self.game_service_mock.get = MagicMock(side_effect=RoomNotFoundError)
-        app.dependency_overrides[RoomDatabaseService] = lambda: self.game_service_mock
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError)
+        app.dependency_overrides[RoomDatabaseService] = lambda: self.room_service_mock
         with self.client.websocket_connect(f'/room/{self.room_id}1') as websocket:
             websocket.send_text(self.token)
             response = websocket.receive_text()
@@ -49,8 +49,8 @@ class EntryTestCase(TestCaseWithToken):
     @skip('Probably bug in Test Client')
     def test_subscribe_not_joined(self):
         self.game_mock.has_joined = MagicMock(return_value=False)
-        self.game_service_mock.get = MagicMock(return_value=self.game_mock)
-        app.dependency_overrides[RoomDatabaseService] = lambda: self.game_service_mock
+        self.room_service_mock.get = MagicMock(return_value=self.game_mock)
+        app.dependency_overrides[RoomDatabaseService] = lambda: self.room_service_mock
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
             websocket.send_text(self.token)
             response = websocket.receive_text()

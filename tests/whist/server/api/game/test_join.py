@@ -56,11 +56,11 @@ class IntegrationTestJoinGame(TestCase):
     def setUp(self) -> None:
         self.client = TestClient(app)
         db.user.drop()
-        db.game.drop()
+        db.room.drop()
 
     def tearDown(self) -> None:
         db.user.drop()
-        db.game.drop()
+        db.room.drop()
 
     @pytest.mark.integtest
     def test_join_no_pwd(self):

@@ -11,9 +11,9 @@ from whist.server.database.error import PlayerNotCreatorError
 from whist.server.database.room import RoomInDb
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
-from whist.server.services.error import GameNotFoundError
+from whist.server.services.error import RoomNotFoundError
 from whist.server.services.error import UserNotReadyError
-from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.game_db_service import RoomDatabaseService
 from whist.server.web_socket.events.event import RoomStartedEvent
 
 router = APIRouter(prefix='/game')
@@ -38,7 +38,7 @@ class StartModel(BaseModel):
 @router.post('/action/start/{game_id}', status_code=200)
 def start_game(game_id: str, model: StartModel, background_tasks: BackgroundTasks,
                user: Player = Security(get_current_user),
-               game_service=Depends(GameDatabaseService),
+               game_service=Depends(RoomDatabaseService),
                channel_service: ChannelService = Depends(ChannelService)) -> dict:
     """
     Allows the creator of the table to start it.
@@ -79,7 +79,7 @@ def start_game(game_id: str, model: StartModel, background_tasks: BackgroundTask
 
 @router.post('/action/ready/{game_id}', status_code=200)
 def ready_player(game_id: str, user: Player = Security(get_current_user),
-                 game_service=Depends(GameDatabaseService)) -> dict:
+                 game_service=Depends(RoomDatabaseService)) -> dict:
     """
     A player can mark theyself to be ready.
     :param game_id: unique identifier of the game
@@ -107,7 +107,7 @@ def ready_player(game_id: str, user: Player = Security(get_current_user),
 
 @router.post('/action/unready/{game_id}', status_code=200)
 def unready_player(game_id: str, user: Player = Security(get_current_user),
-                   game_service=Depends(GameDatabaseService)) -> dict:
+                   game_service=Depends(RoomDatabaseService)) -> dict:
     """
     A player can mark themself to be unready.
     :param game_id: unique identifier of the game
@@ -132,7 +132,7 @@ def unready_player(game_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Bearer"},
         ) from join_error
-    except GameNotFoundError as game_error:
+    except RoomNotFoundError as game_error:
         message = 'Game id not found'
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

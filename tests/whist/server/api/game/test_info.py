@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
-from whist.server.services.error import GameNotFoundError
+from whist.server.services.error import RoomNotFoundError
 
 
 class GameInfoTestCase(BaseCreateGameTestCase):
@@ -27,7 +27,7 @@ class GameInfoTestCase(BaseCreateGameTestCase):
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_game_name_to_id_not_found(self):
-        self.game_service_mock.get_by_name = MagicMock(side_effect=GameNotFoundError())
+        self.game_service_mock.get_by_name = MagicMock(side_effect=RoomNotFoundError())
         game_name: str = 'hornblower'
         response = self.client.get(f'/game/info/id/{game_name}')
         self.assertEqual(400, response.status_code, msg=response.content)

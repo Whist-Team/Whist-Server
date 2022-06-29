@@ -6,15 +6,15 @@ from whist.core.user.player import Player
 
 from tests.whist.server.base_player_test_case import BasePlayerTestCase
 from whist.server.database import db
-from whist.server.services.error import GameNotFoundError, GameNotUpdatedError
-from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.error import RoomNotFoundError, GameNotUpdatedError
+from whist.server.services.game_db_service import RoomDatabaseService
 
 
 class GameDdServiceTestCase(BasePlayerTestCase):
     def setUp(self) -> None:
         db.game.drop()
         super().setUp()
-        self.service = GameDatabaseService()
+        self.service = RoomDatabaseService()
         self.game = self.service.create_with_pwd(game_name='test', hashed_password='abc',
                                                  creator=self.player)
 
@@ -32,7 +32,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
     def test_not_existing(self):
         game_id = '1' * 24
         error_msg = f'Game with id "{game_id}" not found.'
-        with self.assertRaisesRegex(GameNotFoundError, error_msg):
+        with self.assertRaisesRegex(RoomNotFoundError, error_msg):
             self.service.get(game_id)
 
     def test_get_by_name(self):
@@ -52,7 +52,7 @@ class GameDdServiceTestCase(BasePlayerTestCase):
         _ = self.service.add(self.game)
         self.game.id = '1' * 24
         self.game.table.min_player = 3
-        with self.assertRaises(GameNotFoundError):
+        with self.assertRaises(RoomNotFoundError):
             self.service.save(self.game)
 
     @patch('pymongo.results.UpdateResult.modified_count', return_value=1)

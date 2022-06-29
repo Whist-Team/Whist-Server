@@ -7,7 +7,7 @@ from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
-from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.game_db_service import RoomDatabaseService
 from whist.server.services.password import PasswordService
 from whist.server.web_socket.side_channel import SideChannel
 
@@ -26,7 +26,7 @@ class CreateGameArgs(BaseModel):
 
 @router.post('/create', status_code=200)
 def create_game(request: CreateGameArgs, user: Player = Security(get_current_user),
-                game_service=Depends(GameDatabaseService), pwd_service=Depends(PasswordService),
+                game_service=Depends(RoomDatabaseService), pwd_service=Depends(PasswordService),
                 channel_service: ChannelService = Depends(ChannelService)):
     """
     Creates a new game of whist with the given name 'game_name' and optional password 'password'.

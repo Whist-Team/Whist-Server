@@ -30,7 +30,7 @@ class UserNotFoundError(Exception):
         super().__init__(message)
 
 
-class GameNotFoundError(Exception):
+class RoomNotFoundError(Exception):
     """
     Is raised when the game is not found in db.
     """

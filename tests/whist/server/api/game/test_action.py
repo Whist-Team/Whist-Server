@@ -4,16 +4,16 @@ from whist.core.error.table_error import TableNotReadyError, PlayerNotJoinedErro
 
 from tests.whist.server.api.game.base_created_case import BaseCreateGameTestCase
 from whist.server.database.error import PlayerNotCreatorError
-from whist.server.services.game_db_service import GameDatabaseService
-from whist.server.services.error import GameNotFoundError
+from whist.server.services.error import RoomNotFoundError
 from whist.server.services.error import UserNotReadyError
+from whist.server.services.game_db_service import RoomDatabaseService
 
 
 class ActionGameTestCase(BaseCreateGameTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.second_player = self.create_and_auth_user('miles', 'abc')
-        self.game_service = GameDatabaseService()
+        self.game_service = RoomDatabaseService()
 
     def test_start(self):
         # Request to start table.
@@ -71,7 +71,7 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.assertEqual(403, response.status_code, msg=response.content)
 
     def test_unready_game_not_found(self):
-        self.game_mock.unready_player = MagicMock(side_effect=GameNotFoundError)
+        self.game_mock.unready_player = MagicMock(side_effect=RoomNotFoundError)
         response = self.client.post(url=f'/game/action/unready/{self.game_mock.id}',
                                     headers=self.second_player)
         self.game_mock.unready_player.assert_called_once()

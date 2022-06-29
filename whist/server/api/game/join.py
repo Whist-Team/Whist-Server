@@ -10,7 +10,7 @@ from whist.core.user.player import Player
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
-from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.game_db_service import RoomDatabaseService
 from whist.server.services.password import PasswordService
 from whist.server.web_socket.events.event import PlayerJoinedEvent
 
@@ -29,7 +29,7 @@ class JoinGameArgs(BaseModel):
 @router.post('/join/{game_id}', status_code=200)
 def join_game(game_id: str, request: JoinGameArgs, background_tasks: BackgroundTasks,
               user: Player = Security(get_current_user),
-              pwd_service=Depends(PasswordService), game_service=Depends(GameDatabaseService),
+              pwd_service=Depends(PasswordService), game_service=Depends(RoomDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)):
     """
     User requests to join a game.

@@ -13,7 +13,7 @@ from whist.core.user.player import Player
 
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
-from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.game_db_service import RoomDatabaseService
 from whist.server.web_socket.events.event import CardPlayedEvent
 
 router = APIRouter(prefix='/game/trick')
@@ -21,7 +21,7 @@ router = APIRouter(prefix='/game/trick')
 
 @router.get('/hand/{game_id}', status_code=200, response_model=UnorderedCardContainer)
 def hand(game_id: str, user: Player = Security(get_current_user),
-         game_service=Depends(GameDatabaseService)) -> UnorderedCardContainer:
+         game_service=Depends(RoomDatabaseService)) -> UnorderedCardContainer:
     """
     Returns the current hand of player.
     :param game_id: unique identifier for which the player's hand is requested
@@ -41,7 +41,7 @@ def hand(game_id: str, user: Player = Security(get_current_user),
 @router.post('/play_card/{game_id}', status_code=200, response_model=OrderedCardContainer)
 def play_card(game_id: str, card: Card, background_tasks: BackgroundTasks,
               user: Player = Security(get_current_user),
-              game_service=Depends(GameDatabaseService),
+              game_service=Depends(RoomDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)) -> OrderedCardContainer:
     """
     Request to play a card for a given game.
@@ -73,7 +73,7 @@ def play_card(game_id: str, card: Card, background_tasks: BackgroundTasks,
 @router.get('/winner/{game_id}', status_code=200,
             response_model=Union[PlayerAtTable, dict[str, str]])
 def get_winner(game_id: str, user: Player = Security(get_current_user),
-               game_service=Depends(GameDatabaseService)) -> Union[PlayerAtTable, dict[str, str]]:
+               game_service=Depends(RoomDatabaseService)) -> Union[PlayerAtTable, dict[str, str]]:
     """
     Requests the winner of the current stack.
     :param game_id: for which the stack is requested

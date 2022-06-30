@@ -18,8 +18,10 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.hand = UnorderedCardContainer.with_cards([self.first_card, self.second_card])
         self.first_player_mock = MagicMock(hand=self.hand, player=MagicMock(), team=MagicMock())
         self.stack = OrderedCardContainer.with_cards(self.first_card)
-        self.trick_mock = MagicMock(play_card=MagicMock(), stack=self.stack)
+        self.trick_mock = MagicMock(play_card=MagicMock(), stack=self.stack,
+                                    done=False)
         self.game_mock.current_trick = MagicMock(return_value=self.trick_mock)
+        self.game_mock.next_trick = MagicMock(return_value=self.trick_mock)
         self.game_mock.players = [self.player_mock]
 
     def test_player_hand(self):

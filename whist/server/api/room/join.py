@@ -1,5 +1,5 @@
 """
-Route to join a game.
+Route to join a room.
 """
 from typing import Optional
 
@@ -10,52 +10,52 @@ from whist.core.user.player import Player
 from whist.server.database.warning import PlayerAlreadyJoinedWarning
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
-from whist.server.services.game_db_service import GameDatabaseService
 from whist.server.services.password import PasswordService
+from whist.server.services.room_db_service import RoomDatabaseService
 from whist.server.web_socket.events.event import PlayerJoinedEvent
 
-router = APIRouter(prefix='/game')
+router = APIRouter(prefix='/room')
 
 
-class JoinGameArgs(BaseModel):
+class JoinRoomArgs(BaseModel):
     """
-    JSON body for joining game
+    JSON body for joining room
     """
     password: Optional[str] = None
 
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@router.post('/join/{game_id}', status_code=200)
-def join_game(game_id: str, request: JoinGameArgs, background_tasks: BackgroundTasks,
+@router.post('/join/{room_id}', status_code=200)
+def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundTasks,
               user: Player = Security(get_current_user),
-              pwd_service=Depends(PasswordService), game_service=Depends(GameDatabaseService),
+              pwd_service=Depends(PasswordService), room_service=Depends(RoomDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)):
     """
-    User requests to join a game.
-    :param game_id: unique identifier for a game
+    User requests to join a room.
+    :param room_id: unique identifier for a room
     :param request: may contain the key 'password'
     :param background_tasks: asynchronous handler
-    :param user: that tries to join the game. Must be authenticated.
+    :param user: that tries to join the room. Must be authenticated.
     :param pwd_service: Injection of the password service. Required to create and check passwords.
-    :param game_service: Injection of the game database service. Requires to interact with the
+    :param room_service: Injection of the room database service. Requires to interact with the
     database.
     :param channel_service: Injection of the websocket channel manager.
     :return: the status of the join request. 'joined' for successful join
     """
-    game = game_service.get(game_id)
-    if game.hashed_password is not None and (
+    room = room_service.get(room_id)
+    if room.hashed_password is not None and (
             request.password is None or not pwd_service.verify(request.password,
-                                                               game.hashed_password)):
+                                                               room.hashed_password)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Wrong game password.",
+            detail="Wrong room password.",
             headers={"WWW-Authenticate": "Bearer"},
         )
     try:
-        game.join(user)
-        game_service.save(game)
-        background_tasks.add_task(channel_service.notify, game_id, PlayerJoinedEvent(player=user))
+        room.join(user)
+        room_service.save(room)
+        background_tasks.add_task(channel_service.notify, room_id, PlayerJoinedEvent(player=user))
     except PlayerAlreadyJoinedWarning:
         return {'status': 'already joined'}
     return {'status': 'joined'}

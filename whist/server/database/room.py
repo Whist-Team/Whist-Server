@@ -63,19 +63,17 @@ class Room(BaseModel):
         """
         return self.table.current_rubber
 
-    def current_trick(self, auto_next: bool = False) -> Trick:
+    def current_trick(self) -> Trick:
         """
-        Returns the current trick if it exists. Else throws an IndexError.
-        :param auto_next: If set True, gets the next trick automatically if current one is done.
-        Else gets the current one regardless of being done.
+        Returns the current trick if it exists regardless of being done.
         """
-        try:
-            trick = self._current_hand().current_trick
-        except IndexError:
-            return self._current_game().current_trick
-        if trick.done and auto_next:
-            trick = self._current_hand().next_trick(self._current_game().play_order)
-        return trick
+        return self._current_hand().current_trick
+
+    def next_trick(self) -> Trick:
+        """
+        Creates the next trick.
+        """
+        return self._current_hand().next_trick(self._current_game().play_order)
 
     def join(self, user: Player) -> bool:
         """

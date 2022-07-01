@@ -14,7 +14,7 @@ from whist.core.user.player import Player
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
 from whist.server.services.room_db_service import RoomDatabaseService
-from whist.server.web_socket.events.event import CardPlayedEvent
+from whist.server.web_socket.events.event import CardPlayedEvent, TrickDoneEvent
 
 router = APIRouter(prefix='/room/trick')
 
@@ -55,14 +55,17 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
     :return: the stack after card being played if successful. If not the players turn raises error.
     """
     room = room_service.get(room_id)
+    trick = room.current_trick()
 
     try:
-        trick = room.current_trick(auto_next=True)
         player = room.get_player(user)
         trick.play_card(player=player, card=card)
         room_service.save(room)
         background_tasks.add_task(channel_service.notify, room_id,
                                   CardPlayedEvent(card=card, player=user))
+        if trick.done:
+            background_tasks.add_task(channel_service.notify, room_id,
+                                      TrickDoneEvent(winner=trick.winner))
     except NotPlayersTurnError as turn_error:
         raise HTTPException(detail=f'It is not {user.username}\'s turn',
                             status_code=status.HTTP_400_BAD_REQUEST,

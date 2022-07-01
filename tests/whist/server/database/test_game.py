@@ -52,17 +52,11 @@ class GameInDbTestCase(BasePlayerTestCase):
     def has_not_joined(self):
         self.assertFalse(self.game.has_joined(self.second_player))
 
-    def test_auto_next(self):
+    def test_next(self):
         self.game.table = MagicMock(started=PropertyMock(return_value=True))
         first_trick = self.game.current_trick()
-        second_trick = self.game.current_trick(auto_next=True)
+        second_trick = self.game.next_trick()
         self.assertNotEqual(first_trick, second_trick)
-
-    def test_auto_next_off(self):
-        self.game.table = MagicMock(started=PropertyMock(return_value=True))
-        first_trick = self.game.current_trick()
-        second_trick = self.game.current_trick(auto_next=False)
-        self.assertEqual(first_trick, second_trick)
 
     def test_start_not_creator(self):
         with self.assertRaises(PlayerNotCreatorError):

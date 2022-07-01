@@ -166,22 +166,22 @@ class NotificationTestCase(TestCase):
             results.append(done_not)
 
         def call_post():
-            self.client.post(url=f'/game/join/{self.room_id}',
+            self.client.post(url=f'/room/join/{self.room_id}',
                              json={'password': 'abc'},
                              headers=self.headers)
-            self.client.post(url=f'/game/action/ready/{self.room_id}',
+            self.client.post(url=f'/room/action/ready/{self.room_id}',
                              headers=self.headers)
-            self.client.post(url=f'/game/action/ready/{self.room_id}',
+            self.client.post(url=f'/room/action/ready/{self.room_id}',
                              headers=self.token)
-            self.client.post(url=f'/game/action/start/{self.room_id}', headers=self.token,
+            self.client.post(url=f'/room/action/start/{self.room_id}', headers=self.token,
                              json={'matcher_type': 'robin'})
 
-            response = self.client.get(url=f'/game/trick/hand/{self.room_id}',
+            response = self.client.get(url=f'/room/trick/hand/{self.room_id}',
                                        headers=self.token)
             hand = UnorderedCardContainer(**response.json())
             card = hand.cards[0]
             with patch('whist.core.game.trick.Trick.done', PropertyMock(return_value=True)):
-                self.client.post(url=f'/game/trick/play_card/{self.room_id}',
+                self.client.post(url=f'/room/trick/play_card/{self.room_id}',
                                  json=card.dict(),
                                  headers=self.token)
 

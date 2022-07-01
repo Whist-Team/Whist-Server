@@ -1,4 +1,4 @@
-"""Route of /game/creation"""
+"""Route of /room/creation"""
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Security

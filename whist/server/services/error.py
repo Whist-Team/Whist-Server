@@ -47,11 +47,11 @@ class RoomNotFoundError(Exception):
 
 class RoomNotUpdatedError(Exception):
     """
-    Is raised when a game could not be updated to the database.
+    Is raised when a room could not be updated to the database.
     """
 
     def __init__(self, game_id: str):
-        message = f'Game with id "{game_id}" could not be updated.'
+        message = f'Room with id "{game_id}" could not be updated.'
         super().__init__(message)
 
 

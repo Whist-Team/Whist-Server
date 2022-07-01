@@ -159,7 +159,7 @@ class NotificationTestCase(TestCase):
     def test_last_play_card_notification(self):
         def call_noti(results):
             _ = websocket.receive_json()  # player joined
-            _ = websocket.receive_json()  # game started
+            _ = websocket.receive_json()  # room started
             card_played = websocket.receive_json()
             done_not = websocket.receive_json()
             results.append(card_played)

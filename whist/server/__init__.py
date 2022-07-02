@@ -4,12 +4,12 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from whist.server.api import api
-from whist.server.api.game.action import router as game_action
-from whist.server.api.game.create import router as game_creation
-from whist.server.api.game.info import router as game_info
-from whist.server.api.game.join import router as game_join
-from whist.server.api.game.trick import router as game_trick
 from whist.server.api.ranking.leaderboard import router as leaderboard
+from whist.server.api.room.action import router as game_action
+from whist.server.api.room.create import router as game_creation
+from whist.server.api.room.info import router as game_info
+from whist.server.api.room.join import router as game_join
+from whist.server.api.room.trick import router as game_trick
 from whist.server.api.user import auth
 from whist.server.api.user.create import router as user_creation
 from whist.server.services.game_info_db_service import GameInfoDatabaseService

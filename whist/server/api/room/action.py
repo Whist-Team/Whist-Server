@@ -8,20 +8,20 @@ from whist.core.session.matcher import RandomMatcher, RoundRobinMatcher, Matcher
 from whist.core.user.player import Player
 
 from whist.server.database.error import PlayerNotCreatorError
-from whist.server.database.game import GameInDb
+from whist.server.database.room import RoomInDb
 from whist.server.services.authentication import get_current_user
 from whist.server.services.channel_service import ChannelService
-from whist.server.services.error import GameNotFoundError
+from whist.server.services.error import RoomNotFoundError
 from whist.server.services.error import UserNotReadyError
-from whist.server.services.game_db_service import GameDatabaseService
+from whist.server.services.room_db_service import RoomDatabaseService
 from whist.server.web_socket.events.event import RoomStartedEvent
 
-router = APIRouter(prefix='/game')
+router = APIRouter(prefix='/room')
 
 
 class StartModel(BaseModel):
     """
-    A model to ease data posting to start a game.
+    A model to ease data posting to start a room.
     """
     matcher_type: Optional[str] = None
 
@@ -35,30 +35,30 @@ class StartModel(BaseModel):
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@router.post('/action/start/{game_id}', status_code=200)
-def start_game(game_id: str, model: StartModel, background_tasks: BackgroundTasks,
+@router.post('/action/start/{room_id}', status_code=200)
+def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTasks,
                user: Player = Security(get_current_user),
-               game_service=Depends(GameDatabaseService),
+               room_service=Depends(RoomDatabaseService),
                channel_service: ChannelService = Depends(ChannelService)) -> dict:
     """
     Allows the creator of the table to start it.
-    :param game_id: unique identifier of the game
-    :param model: model containing configuration of the game.
+    :param room_id: unique identifier of the room
+    :param model: model containing configuration of the room.
     :param background_tasks: asynchronous handler
     :param user: Required to identify if the user is the creator.
-    :param game_service: Injection of the game database service. Requires to interact with the
+    :param room_service: Injection of the room database service. Requires to interact with the
     database.
     :param channel_service: Injection of the websocket channel manager.
     :return: dictionary containing the status of whether the table has been started or not.
     Raises 403 exception if the user has not the appropriate privileges.
     """
-    game: GameInDb = game_service.get(game_id)
+    room: RoomInDb = room_service.get(room_id)
 
     try:
-        game.start(user, model.matcher)
-        game.current_rubber.current_game().next_hand()
-        game_service.save(game)
-        background_tasks.add_task(channel_service.notify, game_id, RoomStartedEvent())
+        room.start(user, model.matcher)
+        room.current_rubber.current_game().next_hand()
+        room_service.save(room)
+        background_tasks.add_task(channel_service.notify, room_id, RoomStartedEvent())
     except PlayerNotCreatorError as start_exception:
         message = 'Player has not administrator rights at this table.'
         raise HTTPException(
@@ -77,24 +77,24 @@ def start_game(game_id: str, model: StartModel, background_tasks: BackgroundTask
         return {'status': 'started'}
 
 
-@router.post('/action/ready/{game_id}', status_code=200)
-def ready_player(game_id: str, user: Player = Security(get_current_user),
-                 game_service=Depends(GameDatabaseService)) -> dict:
+@router.post('/action/ready/{room_id}', status_code=200)
+def ready_player(room_id: str, user: Player = Security(get_current_user),
+                 room_service=Depends(RoomDatabaseService)) -> dict:
     """
     A player can mark theyself to be ready.
-    :param game_id: unique identifier of the game
+    :param room_id: unique identifier of the room
     :param user: Required to identify the user.
-    :param game_service: Injection of the game database service. Requires to interact with the
+    :param room_service: Injection of the room database service. Requires to interact with the
     database.
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
     """
 
-    game = game_service.get(game_id)
+    room = room_service.get(room_id)
 
     try:
-        game.ready_player(user)
-        game_service.save(game)
+        room.ready_player(user)
+        room_service.save(room)
     except PlayerNotJoinedError as ready_error:
         message = 'Player has not joined the table yet.'
         raise HTTPException(
@@ -105,26 +105,26 @@ def ready_player(game_id: str, user: Player = Security(get_current_user),
     return {'status': f'{user.username} is ready'}
 
 
-@router.post('/action/unready/{game_id}', status_code=200)
-def unready_player(game_id: str, user: Player = Security(get_current_user),
-                   game_service=Depends(GameDatabaseService)) -> dict:
+@router.post('/action/unready/{room_id}', status_code=200)
+def unready_player(room_id: str, user: Player = Security(get_current_user),
+                   room_service=Depends(RoomDatabaseService)) -> dict:
     """
     A player can mark themself to be unready.
-    :param game_id: unique identifier of the game
+    :param room_id: unique identifier of the room
     :param user: Required to identify the user.
-    :param game_service: Injection of the game database service. Requires to interact with the
+    :param room_service: Injection of the room database service. Requires to interact with the
     database.
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
-    Raises 404 exception if game_id is not found
+    Raises 404 exception if room_id is not found
     Raises 400 exception if player is not ready
     """
 
-    game = game_service.get(game_id)
+    room = room_service.get(room_id)
 
     try:
-        game.unready_player(user)
-        game_service.save(game)
+        room.unready_player(user)
+        room_service.save(room)
     except PlayerNotJoinedError as join_error:
         message = 'Player not joined yet.'
         raise HTTPException(
@@ -132,13 +132,13 @@ def unready_player(game_id: str, user: Player = Security(get_current_user),
             detail=message,
             headers={"WWW-Authenticate": "Bearer"},
         ) from join_error
-    except GameNotFoundError as game_error:
-        message = 'Game id not found'
+    except RoomNotFoundError as room_error:
+        message = 'Room id not found'
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=message,
             headers={"WWW-Authenticate": "Bearer"},
-        ) from game_error
+        ) from room_error
     except UserNotReadyError as ready_error:
         message = 'Player not ready'
         raise HTTPException(

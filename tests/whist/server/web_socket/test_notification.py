@@ -21,7 +21,7 @@ class NotificationTestCase(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         db.user.drop()
-        db.game.drop()
+        db.room.drop()
         cls.client = TestClient(app)
         cls.token = cls.create_and_auth_user('ws_user', '123')
         cls.headers = cls.create_and_auth_user('miles', 'abc')
@@ -34,13 +34,13 @@ class NotificationTestCase(TestCase):
         return {'Authorization': f'Bearer {token}'}
 
     def setUp(self) -> None:
-        db.game.drop()
-        data = {'game_name': 'test', 'password': 'abc', 'min_player': 1}
-        response = self.client.post(url='/game/create', json=data, headers=self.token)
-        self.room_id = response.json()['game_id']
+        db.room.drop()
+        data = {'room_name': 'test', 'password': 'abc', 'min_player': 1}
+        response = self.client.post(url='/room/create', json=data, headers=self.token)
+        self.room_id = response.json()['room_id']
 
     def tearDown(self) -> None:
-        db.game.drop()
+        db.room.drop()
 
     @pytest.mark.integtest
     def test_join_notification(self):
@@ -49,7 +49,7 @@ class NotificationTestCase(TestCase):
             results.append(notification)
 
         def call_post():
-            self.client.post(url=f'/game/join/{self.room_id}',
+            self.client.post(url=f'/room/join/{self.room_id}',
                              json={'password': 'abc'},
                              headers=self.headers)
 
@@ -72,7 +72,7 @@ class NotificationTestCase(TestCase):
         with self.client.websocket_connect('/room/' + '1' * 24) as websocket:
             websocket.send_text(self.token['Authorization'].rsplit('Bearer ')[1])
             response = websocket.receive()
-            self.assertEqual('Game not found', response['reason'])
+            self.assertEqual('Room not found', response['reason'])
 
     @pytest.mark.integtest
     def test_join_notification_not_joined(self):
@@ -90,14 +90,14 @@ class NotificationTestCase(TestCase):
             results.append(notification)
 
         def call_post():
-            self.client.post(url=f'/game/join/{self.room_id}',
+            self.client.post(url=f'/room/join/{self.room_id}',
                              json={'password': 'abc'},
                              headers=self.headers)
-            self.client.post(url=f'/game/action/ready/{self.room_id}',
+            self.client.post(url=f'/room/action/ready/{self.room_id}',
                              headers=self.headers)
-            self.client.post(url=f'/game/action/ready/{self.room_id}',
+            self.client.post(url=f'/room/action/ready/{self.room_id}',
                              headers=self.token)
-            self.client.post(url=f'/game/action/start/{self.room_id}', headers=self.token,
+            self.client.post(url=f'/room/action/start/{self.room_id}', headers=self.token,
                              json={'matcher_type': 'robin'})
 
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
@@ -118,26 +118,26 @@ class NotificationTestCase(TestCase):
     def test_play_card_notification(self):
         def call_noti(results):
             _ = websocket.receive_json()  # player joined
-            _ = websocket.receive_json()  # game started
+            _ = websocket.receive_json()  # room started
             notification = websocket.receive_json()
             results.append(notification)
 
         def call_post():
-            self.client.post(url=f'/game/join/{self.room_id}',
+            self.client.post(url=f'/room/join/{self.room_id}',
                              json={'password': 'abc'},
                              headers=self.headers)
-            self.client.post(url=f'/game/action/ready/{self.room_id}',
+            self.client.post(url=f'/room/action/ready/{self.room_id}',
                              headers=self.headers)
-            self.client.post(url=f'/game/action/ready/{self.room_id}',
+            self.client.post(url=f'/room/action/ready/{self.room_id}',
                              headers=self.token)
-            self.client.post(url=f'/game/action/start/{self.room_id}', headers=self.token,
+            self.client.post(url=f'/room/action/start/{self.room_id}', headers=self.token,
                              json={'matcher_type': 'robin'})
 
-            response = self.client.get(url=f'/game/trick/hand/{self.room_id}',
+            response = self.client.get(url=f'/room/trick/hand/{self.room_id}',
                                        headers=self.token)
             hand = UnorderedCardContainer(**response.json())
             card = hand.cards[0]
-            self.client.post(url=f'/game/trick/play_card/{self.room_id}',
+            self.client.post(url=f'/room/trick/play_card/{self.room_id}',
                              json=card.dict(),
                              headers=self.token)
 
@@ -159,29 +159,29 @@ class NotificationTestCase(TestCase):
     def test_last_play_card_notification(self):
         def call_noti(results):
             _ = websocket.receive_json()  # player joined
-            _ = websocket.receive_json()  # game started
+            _ = websocket.receive_json()  # room started
             card_played = websocket.receive_json()
             done_not = websocket.receive_json()
             results.append(card_played)
             results.append(done_not)
 
         def call_post():
-            self.client.post(url=f'/game/join/{self.room_id}',
+            self.client.post(url=f'/room/join/{self.room_id}',
                              json={'password': 'abc'},
                              headers=self.headers)
-            self.client.post(url=f'/game/action/ready/{self.room_id}',
+            self.client.post(url=f'/room/action/ready/{self.room_id}',
                              headers=self.headers)
-            self.client.post(url=f'/game/action/ready/{self.room_id}',
+            self.client.post(url=f'/room/action/ready/{self.room_id}',
                              headers=self.token)
-            self.client.post(url=f'/game/action/start/{self.room_id}', headers=self.token,
+            self.client.post(url=f'/room/action/start/{self.room_id}', headers=self.token,
                              json={'matcher_type': 'robin'})
 
-            response = self.client.get(url=f'/game/trick/hand/{self.room_id}',
+            response = self.client.get(url=f'/room/trick/hand/{self.room_id}',
                                        headers=self.token)
             hand = UnorderedCardContainer(**response.json())
             card = hand.cards[0]
             with patch('whist.core.game.trick.Trick.done', PropertyMock(return_value=True)):
-                self.client.post(url=f'/game/trick/play_card/{self.room_id}',
+                self.client.post(url=f'/room/trick/play_card/{self.room_id}',
                                  json=card.dict(),
                                  headers=self.token)
 

@@ -30,28 +30,28 @@ class UserNotFoundError(Exception):
         super().__init__(message)
 
 
-class GameNotFoundError(Exception):
+class RoomNotFoundError(Exception):
     """
-    Is raised when the game is not found in db.
+    Is raised when the room is not found in db.
     """
 
     def __init__(self, game_id: Optional[str] = None, game_name: Optional[str] = None):
         if game_id:
-            message = f'Game with id "{game_id}" not found.'
+            message = f'Room with id "{game_id}" not found.'
         elif game_name:
-            message = f'Game with name "{game_id}" not found.'
+            message = f'Room with name "{game_id}" not found.'
         else:
-            message = 'Game not found'
+            message = 'Room not found'
         super().__init__(message)
 
 
-class GameNotUpdatedError(Exception):
+class RoomNotUpdatedError(Exception):
     """
-    Is raised when a game could not be updated to the database.
+    Is raised when a room could not be updated to the database.
     """
 
     def __init__(self, game_id: str):
-        message = f'Game with id "{game_id}" could not be updated.'
+        message = f'Room with id "{game_id}" could not be updated.'
         super().__init__(message)
 
 

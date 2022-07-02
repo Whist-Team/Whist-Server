@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from whist.server.services.error import UserNotFoundError, GameNotFoundError
+from whist.server.services.error import UserNotFoundError, RoomNotFoundError
 
 
 class UserNotFoundTestCase(TestCase):
@@ -11,6 +11,6 @@ class UserNotFoundTestCase(TestCase):
 
 class GameNotFoundTestCase(TestCase):
     def test_game_not_found_error(self):
-        game_id = '1'
-        error = GameNotFoundError(game_id)
-        self.assertEqual(f'Game with id "{game_id}" not found.', error.args[0])
+        room_id = '1'
+        error = RoomNotFoundError(room_id)
+        self.assertEqual(f'Room with id "{room_id}" not found.', error.args[0])

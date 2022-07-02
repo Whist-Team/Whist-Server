@@ -20,21 +20,21 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.stack = OrderedCardContainer.with_cards(self.first_card)
         self.trick_mock = MagicMock(play_card=MagicMock(), stack=self.stack,
                                     done=False)
-        self.game_mock.current_trick = MagicMock(return_value=self.trick_mock)
-        self.game_mock.next_trick = MagicMock(return_value=self.trick_mock)
-        self.game_mock.players = [self.player_mock]
+        self.room_mock.current_trick = MagicMock(return_value=self.trick_mock)
+        self.room_mock.next_trick = MagicMock(return_value=self.trick_mock)
+        self.room_mock.players = [self.player_mock]
 
     def test_player_hand(self):
-        self.game_mock.get_player = MagicMock(return_value=self.first_player_mock)
-        response = self.client.get(url=f'/game/trick/hand/{self.game_mock.id}',
+        self.room_mock.get_player = MagicMock(return_value=self.first_player_mock)
+        response = self.client.get(url=f'/room/trick/hand/{self.room_mock.id}',
                                    headers=self.headers)
         self.assertEqual(UnorderedCardContainer(**response.json()), self.hand)
 
     def test_play_card(self):
-        response = self.client.post(url=f'/game/trick/play_card/{self.game_mock.id}',
+        response = self.client.post(url=f'/room/trick/play_card/{self.room_mock.id}',
                                     headers=self.headers, json=self.first_card.dict())
         self.assertEqual(200, response.status_code, msg=response.content)
-        self.game_service_mock.save.assert_called_once()
+        self.room_service_mock.save.assert_called_once()
         response_stack = OrderedCardContainer(**response.json())
         self.assertEqual(self.stack, response_stack)
 
@@ -42,14 +42,14 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.trick_mock.play_card = MagicMock(
             side_effect=NotPlayersTurnError(player=MagicMock(),
                                             turn_player=MagicMock()))
-        response = self.client.post(url=f'/game/trick/play_card/{self.game_mock.id}',
+        response = self.client.post(url=f'/room/trick/play_card/{self.room_mock.id}',
                                     headers=self.headers, json=self.first_card.dict())
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_winner(self):
         winner = PropertyMock(return_value=self.first_player_mock)
         type(self.trick_mock).winner = winner
-        response = self.client.get(url=f'/game/trick/winner/{self.game_mock.id}',
+        response = self.client.get(url=f'/room/trick/winner/{self.room_mock.id}',
                                    headers=self.headers)
         winner.assert_called_once()
         self.assertEqual(200, response.status_code)
@@ -57,13 +57,13 @@ class TrickTestCase(BaseCreateGameTestCase):
     def test_no_winner_yet(self):
         winner = PropertyMock(side_effect=TrickNotDoneWarning)
         type(self.trick_mock).winner = winner
-        response = self.client.get(url=f'/game/trick/winner/{self.game_mock.id}',
+        response = self.client.get(url=f'/room/trick/winner/{self.room_mock.id}',
                                    headers=self.headers)
         expected_message = 'The trick is not yet done, so there is no winner.'
         self.assertEqual(expected_message, response.json()['status'])
 
     def test_not_joined_winner(self):
-        self.game_mock.players = []
-        response = self.client.get(url=f'/game/trick/winner/{self.game_mock.id}',
+        self.room_mock.players = []
+        response = self.client.get(url=f'/room/trick/winner/{self.room_mock.id}',
                                    headers=self.headers)
         self.assertEqual(403, response.status_code, msg=response.content)

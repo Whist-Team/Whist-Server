@@ -2,7 +2,7 @@ version: '3'
 services:
   web:
     container_name: whist-server
-    image: teamwhist/whist-server:latest
+    image: teamwhist/whist-server:amd64-latest
     ports:
       - "8080:8080"
     depends_on:

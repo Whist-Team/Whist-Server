@@ -29,24 +29,40 @@ class LeaderboardTestCase(TestCaseWithToken):
 
     def test_login_required(self):
         self.app.dependency_overrides = {}
-        self.ranking_service_mock.all = MagicMock(return_value=self.users_desc)
+        self.ranking_service_mock.select = MagicMock(return_value=self.users_desc)
         user_service = MagicMock(get=MagicMock(side_effect=UserNotFoundError))
         self.app.dependency_overrides[UserDatabaseService] = lambda: user_service
-        response = self.client.get(url='/leaderboard/descending')
+        response = self.client.get(url='/leaderboard/descending/0/0')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     def test_correct_des_order(self):
-        self.ranking_service_mock.all = MagicMock(return_value=self.users_desc)
-        response = self.client.get(url='/leaderboard/descending')
+        self.ranking_service_mock.select = MagicMock(return_value=self.users_desc)
+        response = self.client.get(url='/leaderboard/descending/0/0')
         players = [Player(**player) for player in response.json()]
         self.assertEqual(response.status_code, 200, msg=response.content)
-        self.ranking_service_mock.all.assert_called_with('descending')
+        self.ranking_service_mock.select.assert_called_with('descending', 0, 0)
         self.assertEqual(self.users_desc, players)
 
     def test_correct_asc_order(self):
-        self.ranking_service_mock.all = MagicMock(return_value=self.users_asc)
-        response = self.client.get(url='/leaderboard/ascending', headers=self.headers)
+        self.ranking_service_mock.select = MagicMock(return_value=self.users_asc)
+        response = self.client.get(url='/leaderboard/ascending/0/0', headers=self.headers)
         players = [Player(**player) for player in response.json()]
         self.assertEqual(response.status_code, 200, msg=response.content)
-        self.ranking_service_mock.all.assert_called_with('ascending')
+        self.ranking_service_mock.select.assert_called_with('ascending', 0, 0)
         self.assertEqual(self.users_asc, players)
+
+    def test_correct_asc_order_limited(self):
+        self.ranking_service_mock.select = MagicMock(return_value=[self.user.to_user()])
+        response = self.client.get(url='/leaderboard/ascending/0/1', headers=self.headers)
+        players = [Player(**player) for player in response.json()]
+        self.assertEqual(response.status_code, 200, msg=response.content)
+        self.ranking_service_mock.select.assert_called_with('ascending', 1, 0)
+        self.assertEqual([self.user.to_user()], players)
+
+    def test_correct_asc_order_index(self):
+        self.ranking_service_mock.select = MagicMock(return_value=[self.second_user.to_user()])
+        response = self.client.get(url='/leaderboard/ascending/1/0', headers=self.headers)
+        players = [Player(**player) for player in response.json()]
+        self.assertEqual(response.status_code, 200, msg=response.content)
+        self.ranking_service_mock.select.assert_called_with('ascending', 0, 1)
+        self.assertEqual([self.second_user.to_user()], players)

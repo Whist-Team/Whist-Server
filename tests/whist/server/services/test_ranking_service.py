@@ -13,11 +13,11 @@ class LeaderboardTestCase(UserBaseTestCase):
         user_service.add(self.second_user)
 
     def test_correct_des_order(self):
-        ranking = self.ranking_service.all('descending')
+        ranking = self.ranking_service.select('descending', 0, 0)
         self.assertEqual([self.user.to_user(), self.second_user.to_user()], ranking)
 
     def test_correct_asc_order(self):
-        ranking = self.ranking_service.all('ascending')
+        ranking = self.ranking_service.select('ascending', 0, 0)
         self.assertEqual([self.second_user.to_user(), self.user.to_user()], ranking)
 
     def test_n_first(self):

@@ -21,15 +21,6 @@ class RankingService:
         return cls._instance
 
     @classmethod
-    def all(cls, order: str) -> list[Player]:
-        """
-        Returns a list of all users in order of their rating.
-        :param order: Integer either 1 for ascending or -1 for descending order.
-        """
-        user_cursor = cls._get_all_players(order)
-        return [Player(**user) for user in user_cursor]
-
-    @classmethod
     def select(cls, order: str, amount: int = 0, start: int = 0) -> list[Player]:
         """
         Returns a list of user limited by starting index and amount in order of their rating.

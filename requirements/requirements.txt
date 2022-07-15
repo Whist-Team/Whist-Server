@@ -1,4 +1,4 @@
-fastapi[all]==0.78.0
+fastapi[all]==0.79.0
 whist-core==0.2.0
 pydantic==1.9.0
 pymongo==4.1.1

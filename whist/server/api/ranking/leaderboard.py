@@ -8,7 +8,7 @@ from whist.server.services.ranking_service import RankingService
 router = APIRouter(prefix='/leaderboard')
 
 
-@router.get('/{order}', response_model=list[Player])
+@router.get('/', response_model=list[Player])
 def get_ranking_by(order: str, start: int = 0, amount: int = 0,
                    _: Player = Security(get_current_user),
                    ranking_service=Depends(RankingService)) -> list[Player]:

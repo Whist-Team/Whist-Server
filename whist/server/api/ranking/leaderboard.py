@@ -9,7 +9,8 @@ router = APIRouter(prefix='/leaderboard')
 
 
 @router.get('/{order}', response_model=list[Player])
-def get_ranking_by(order: str, start: int, amount: int, _: Player = Security(get_current_user),
+def get_ranking_by(order: str, start: int = 0, amount: int = 0,
+                   _: Player = Security(get_current_user),
                    ranking_service=Depends(RankingService)) -> list[Player]:
     """
     Retrieves a ranking of the players by selected order.

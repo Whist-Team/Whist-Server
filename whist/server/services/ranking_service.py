@@ -21,7 +21,7 @@ class RankingService:
         return cls._instance
 
     @classmethod
-    def select(cls, order: str, amount: int = 0, start: int = 0) -> list[Player]:
+    def select(cls, order: str, amount: int, start: int) -> list[Player]:
         """
         Returns a list of user limited by starting index and amount in order of their rating.
         :param order: Integer either 1 for ascending or -1 for descending order.

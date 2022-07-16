@@ -43,6 +43,14 @@ class LeaderboardTestCase(TestCaseWithToken):
         self.ranking_service_mock.select.assert_called_with('descending', 0, 0)
         self.assertEqual(self.users_desc, players)
 
+    def test_correct_des_order_no_param(self):
+        self.ranking_service_mock.select = MagicMock(return_value=self.users_desc)
+        response = self.client.get(url='/leaderboard/descending')
+        players = [Player(**player) for player in response.json()]
+        self.assertEqual(response.status_code, 200, msg=response.content)
+        self.ranking_service_mock.select.assert_called_with('descending', 0, 0)
+        self.assertEqual(self.users_desc, players)
+
     def test_correct_asc_order(self):
         self.ranking_service_mock.select = MagicMock(return_value=self.users_asc)
         response = self.client.get(url='/leaderboard/ascending/?start=0&amount=0',

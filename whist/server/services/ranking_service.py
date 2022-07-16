@@ -21,15 +21,29 @@ class RankingService:
         return cls._instance
 
     @classmethod
-    def all(cls, order: str) -> list[Player]:
+    def select(cls, order: str, amount: int, start: int) -> list[Player]:
         """
-        Returns a list of all users in order of their rating.
+        Returns a list of user limited by starting index and amount in order of their rating.
         :param order: Integer either 1 for ascending or -1 for descending order.
+        :param amount: The number of players the list shall contain at max.
+        :param start: Skip this number of players from the top.
+        """
+        user_cursor = cls._get_all_players(order)
+        user_cursor.skip(start)
+        if amount > 0:
+            user_cursor.limit(amount)
+        return [Player(**user) for user in user_cursor]
+
+    @classmethod
+    def _get_all_players(cls, order):
+        """
+        Returns a cursor object of all players sorted by their rating.
+        :param order:  Integer either 1 for ascending or -1 for descending order.
         """
         mongodb_order = cls._convert_order_to_mongodb(order)
         user_cursor = cls._users.find()
         user_cursor.sort('rating', mongodb_order)
-        return [Player(**user) for user in user_cursor]
+        return user_cursor
 
     @classmethod
     def _convert_order_to_mongodb(cls, order: str) -> int:

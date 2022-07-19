@@ -12,7 +12,7 @@ from whist_server.services.room_db_service import RoomDatabaseService
 class ActionGameTestCase(BaseCreateGameTestCase):
     def setUp(self) -> None:
         super().setUp()
-        self.second_player = self.create_and_auth_user('miles', 'abc')
+        self.second_player = self.create_and_auth_user()
         self.game_service = RoomDatabaseService()
 
     def test_start(self):

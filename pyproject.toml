@@ -13,6 +13,7 @@ keywords = ["game", "server", "whist"]
 classifiers = [
     "Operating System :: OS Independent"
 ]
+include = ["static"]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/Whist-Team/Whist-Server/issues"

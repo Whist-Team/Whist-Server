@@ -31,6 +31,6 @@ then
   admin_pwd="admin"
 fi
 
-python whist/server $host_addr $host_port --admin_name $admin_name --admin_pwd $admin_pwd &
+python -m whist_server $host_addr $host_port --admin_name $admin_name --admin_pwd $admin_pwd &
 
 exit 0

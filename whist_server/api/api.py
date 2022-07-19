@@ -25,5 +25,5 @@ async def favicon():
     Returns the Favicon.
     """
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        '../../../static/ace-of-spades-icon-17.jpg')
+                        '../../static/ace-of-spades-icon-17.jpg')
     return FileResponse(path)

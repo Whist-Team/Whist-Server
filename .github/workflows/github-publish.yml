@@ -9,9 +9,6 @@ env:
   IMAGE_NAME: whist-server
 
 jobs:
-
-  # Push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
   push:
     strategy:
       matrix:
@@ -27,6 +24,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Get Version
+        id: get_version
+        uses: battila7/get-version-action@v2
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -39,10 +40,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get Version
-        id: get_version
-        uses: battila7/get-version-action@v2
 
       - name: Build and push
         id: docker_build

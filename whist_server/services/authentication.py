@@ -19,7 +19,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/user/auth')
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """
     Creates an access token for an user.
-    :param data: Expects a dictionary with with key 'sub' and an username as value.
+    :param data: Expects a dictionary with key 'sub' and a username as value.
     :param expires_delta: The amount of time until this token shall expire.
     :return: token as a str
     """

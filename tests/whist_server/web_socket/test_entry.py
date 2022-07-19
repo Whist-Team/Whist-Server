@@ -11,7 +11,7 @@ from whist_server.services.room_db_service import RoomDatabaseService
 class EntryTestCase(TestCaseWithToken):
     def setUp(self) -> None:
         super().setUp()
-        self.token = self.create_and_auth_user('simon', 'abc')['Authorization'].rsplit('Bearer ')[1]
+        self.token = self.create_and_auth_user()['Authorization'].rsplit('Bearer ')[1]
         data = {'room_name': 'test', 'password': 'abc'}
         response = self.client.post(url='/room/create', json=data, headers=self.headers)
         self.room_id = response.json()['room_id']

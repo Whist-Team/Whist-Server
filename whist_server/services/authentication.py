@@ -46,18 +46,19 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     return user.to_user()
 
 
-async def check_credentials(username: str, password: str) -> bool:
+async def check_credentials(username: str, password: str, pwd_service=Depends(PasswordService),
+                            user_db_service=Depends(UserDatabaseService)) -> bool:
     """
     Verifies the password for a given username.
     :param username: the name of the user as string
     :param password: the plain password to be checked as string.
+    :param pwd_service: service to handle password requests.
+    :param user_db_service: service to handle request to the database storing users.
     :return: True if credentials are valid else False. If user not found raises
     UserNotFoundError.
     """
-    user_db_service = UserDatabaseService()
     user = user_db_service.get(username)
-    password_db_service = PasswordService()
-    return password_db_service.verify(password, user.hashed_password)
+    return pwd_service.verify(password, user.hashed_password)
 
 
 async def _get_token_data(token):

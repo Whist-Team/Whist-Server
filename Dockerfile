@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.10-bullseye as build
+FROM python:3.10 as build
 WORKDIR /app
 ENV LANG=C.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -11,11 +11,10 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY . .
 RUN poetry build
 
-FROM python:3.10-slim-bullseye
+FROM python:3.10-slim
 WORKDIR /app
 ENV LANG=C.UTF-8 \
-    PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive
+    PYTHONUNBUFFERED=1
 COPY --from=build /app/dist/*.whl ./
-RUN pip install --upgrade pip && pip install *.whl
+RUN pip install *.whl
 CMD ["python", "-m", "whist_server", "0.0.0.0", "8080"]

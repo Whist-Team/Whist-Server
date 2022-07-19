@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from whist_server.database.access_token import AccessToken
-from whist_server.services.authentication import create_access_token, check_credentials
+from whist_server.services import authentication
+from whist_server.services.authentication import create_access_token
 from whist_server.services.error import UserNotFoundError
 
 router = APIRouter(prefix='/user/auth')
@@ -22,7 +23,7 @@ async def auth(request: OAuth2PasswordRequestForm = Depends()):
     password = request.password
 
     try:
-        if not await check_credentials(username, password):
+        if not await authentication.check_credentials(username, password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='Incorrect password.',

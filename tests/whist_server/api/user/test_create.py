@@ -1,17 +1,7 @@
-import unittest
-
-from starlette.testclient import TestClient
-
-from whist_server import app
-from whist_server.database import db
+from tests.whist_server.base_token_case import TestCaseWithToken
 
 
-class UserTestCase(unittest.TestCase):
-    def setUp(self):
-        self.client = TestClient(app)
-
-    def tearDown(self) -> None:
-        db.user.drop()
+class UserTestCase(TestCaseWithToken):
 
     def test_post_user(self):
         """
@@ -21,7 +11,7 @@ class UserTestCase(unittest.TestCase):
         response = self.client.post(url='/user/create', json=data)
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertTrue('user_id' in response.json())
-        self.assertEqual(1, db.user.estimated_document_count())
+        self.user_service_mock.add.assert_called_once()
 
     def test_post_user_no_username(self):
         """
@@ -30,7 +20,7 @@ class UserTestCase(unittest.TestCase):
         data = {'password': 'abc'}
         response = self.client.post(url='/user/create', json=data)
         self.assertEqual(422, response.status_code)
-        self.assertEqual(0, db.user.estimated_document_count())
+        self.user_service_mock.add.assert_not_called()
 
     def test_post_user_no_pwd(self):
         """
@@ -39,4 +29,4 @@ class UserTestCase(unittest.TestCase):
         data = {'username': 'test'}
         response = self.client.post(url='/user/create', json=data)
         self.assertEqual(422, response.status_code)
-        self.assertEqual(0, db.user.estimated_document_count())
+        self.user_service_mock.add.assert_not_called()

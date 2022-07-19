@@ -17,6 +17,5 @@ ENV LANG=C.UTF-8 \
     PYTHONUNBUFFERED=1 \
     DEBIAN_FRONTEND=noninteractive
 COPY --from=build /app/dist/*.whl ./
-RUN apt-get update && apt-get install -y --no-install-recommends cargo && rm -rf /var/lib/apt/lists/*
-RUN pip install --upgrade pip && pip -v install -v *.whl
+RUN pip install --upgrade pip && pip install *.whl
 CMD ["python", "-m", "whist_server", "0.0.0.0", "8080"]

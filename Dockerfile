@@ -11,7 +11,7 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY . .
 RUN poetry build
 
-FROM python:3.10-bullseye
+FROM python:3.10-slim-bullseye
 WORKDIR /app
 ENV LANG=C.UTF-8 \
     PYTHONUNBUFFERED=1 \

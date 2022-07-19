@@ -16,6 +16,7 @@ WORKDIR /app
 ENV LANG=C.UTF-8 \
     PYTHONUNBUFFERED=1
 COPY --from=build /app/dist/*.whl ./
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 RUN pip install *.whl
 CMD ["python", "-m", "whist_server", "0.0.0.0", "8080"]

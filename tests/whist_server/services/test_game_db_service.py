@@ -1,4 +1,4 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 from bson import ObjectId
@@ -6,6 +6,7 @@ from whist_core.session.matcher import RandomMatcher, RoundRobinMatcher
 from whist_core.user.player import Player
 
 from tests.whist_server.base_player_test_case import BasePlayerTestCase
+from whist_server.database import db
 from whist_server.services.error import RoomNotFoundError, RoomNotUpdatedError
 from whist_server.services.room_db_service import RoomDatabaseService
 
@@ -13,16 +14,17 @@ from whist_server.services.room_db_service import RoomDatabaseService
 @pytest.mark.integtest
 class GameDdServiceTestCase(BasePlayerTestCase):
     def setUp(self) -> None:
+        db.room.drop()
         super().setUp()
         self.service = RoomDatabaseService()
+        self.room = self.service.create_with_pwd(room_name='test', hashed_password='abc',
+                                                 creator=self.player)
 
     def test_add(self):
-        self.room_db_mock.find_one = MagicMock(return_value=None)
-        self.room_db_mock.insert_one = MagicMock(return_value=self.id_mock)
         game_id = self.service.add(self.room)
         self.room.id = ObjectId(game_id)
-        self.room_db_mock.find_one = MagicMock(return_value=self.room)
         self.assertEqual(self.room, self.service.get(game_id))
+        self.assertEqual(1, db.room.count_documents({}))
 
     def test_add_duplicate(self):
         game_id_first = self.service.add(self.room)

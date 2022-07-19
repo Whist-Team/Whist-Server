@@ -1,5 +1,6 @@
 /whist_server.egg-info/
 /venv/
+/.venv/
 /tests/
 /dist/
 /.run/
@@ -20,5 +21,3 @@
 /Dockerfile
 
 /LICENSE
-
-/pyproject.toml

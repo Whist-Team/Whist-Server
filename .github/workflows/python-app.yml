@@ -11,38 +11,38 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        python-version: [ 3.9, '3.10']
+        python-version: [ 3.9, '3.10' ]
         mongodb-version: [ 4.4, 5.0 ]
         test-type: [ 'integtest', '"not integtest"' ]
       fail-fast: false
-      
+
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+          cache: 'poetry'
+
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.6.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements/*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip setuptools wheel
-          pip install .[testing]
+        run: poetry install --no-interaction
+
       - name: Test with pytest (${{ matrix.test-type }})
-        run: |
-          python -m pytest -m ${{ matrix.test-type }} --cov=whist --cov-report=xml
+        run: poetry run python -m pytest -m ${{ matrix.test-type }} --cov=whist --cov-report=xml
+
       - name: Upload to codecoverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
           fail_ci_if_error: true

@@ -9,18 +9,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
+          cache: 'poetry'
+
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip setuptools wheel twine build
-      - name: Build and publish
+        run: poetry install --no-interaction
+
+      - name: Build project
+        run: poetry build
+
+      - name: Publish to PyPI
         env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          python -m build --no-isolation --wheel
-          twine upload dist/*
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: poetry publish

@@ -40,6 +40,7 @@ jobs:
         uses: supercharge/mongodb-github-action@1.7.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
+        if: ${{ matrix.test-type }} == 'integtest'
 
       - name: Install dependencies
         run: poetry install --no-interaction

@@ -1,3 +1,5 @@
+from whist_server.services.error import UserExistsError
+
 from tests.whist_server.base_token_case import TestCaseWithToken
 
 
@@ -37,7 +39,7 @@ class UserTestCase(TestCaseWithToken):
         Tests the user can be created only once.
         """
         data = {'username': 'test', 'password': 'abc'}
-        _ = self.client.post(url='/user/create', json=data)
+        self.user_service_mock.add = MagicMock(side_effect=UserExistsError())
         response = self.client.post(url='/user/create', json=data)
         self.assertEqual(response.status_code, 400, msg=response.content)
         self.user_service_mock.add.assert_called_once()

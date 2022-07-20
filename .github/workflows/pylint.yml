@@ -1,4 +1,4 @@
-name: Pylint
+name: Lint
 
 on:
   push:
@@ -8,19 +8,14 @@ on:
 
 jobs:
   lint:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        python-version: [ 3.9 ]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: ./.github/actions/setup-poetry
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.9
 
       - name: Lint sources with flake8
         run: poetry run flake8 whist_server --count --show-source --statistics

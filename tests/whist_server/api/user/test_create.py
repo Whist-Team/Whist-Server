@@ -32,7 +32,7 @@ class UserTestCase(TestCaseWithToken):
         self.assertEqual(422, response.status_code)
         self.user_service_mock.add.assert_not_called()
         
-     def test_post_user_duplicate(self):
+    def test_post_user_duplicate(self):
         """
         Tests the user can be created only once.
         """

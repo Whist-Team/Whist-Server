@@ -12,18 +12,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ '3.9', '3.10']
-  unittest:
-    needs: [ setup ]
-  integrationtest:
-    needs: [ setup ]
-    strategy:
-      matrix:
-        mongodb-version: [ 4.4, 5.0 ]
-        test-type: [ 'integtest', '"not integtest"' ]
       fail-fast: false
-
     runs-on: ${{ matrix.os }}
-
     steps:
       - uses: actions/checkout@v3
 
@@ -41,17 +31,39 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        run: poetry install --no-intetraction
+        
+  unittest:
+    needs: [ setup ]
+    steps:
+      - name: Unittest with pytest
+        run: poetry run python -m pytest -m "not integtest" --cov=whist_server --cov-report=xml
 
+     
+      - name: Upload to codecoverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          
+  integrationtest:
+    needs: [ setup ]
+    strategy:
+      matrix:
+        mongodb-version: [ 4.4, 5.0 ]
+        test-type: [ 'integtest', '"not integtest"' ]
+      fail-fast: false
+
+    steps:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.7.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
-      - name: Install dependencies
-        run: poetry install --no-interaction
-
-      - name: Test with pytest (${{ matrix.test-type }})
-        run: poetry run python -m pytest -m ${{ matrix.test-type }} --cov=whist_server --cov-report=xml
+      - name: Integrationtest with pytest
+        run: poetry run python -m pytest -m integtest --cov=whist_server --cov-report=xml
 
       - name: Upload to codecoverage
         uses: codecov/codecov-action@v3

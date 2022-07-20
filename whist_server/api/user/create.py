@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from whist_server.database.user import UserInDb
+from whist_server.services.error import UserExistsError
 from whist_server.services.password import PasswordService
 from whist_server.services.user_db_service import UserDatabaseService
 

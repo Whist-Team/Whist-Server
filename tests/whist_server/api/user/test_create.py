@@ -27,6 +27,18 @@ class UserTestCase(TestCaseWithToken):
         Tests the creation of a new user.
         """
         data = {'username': 'test'}
+
         response = self.client.post(url='/user/create', json=data)
         self.assertEqual(422, response.status_code)
         self.user_service_mock.add.assert_not_called()
+        
+     def test_post_user_duplicate(self):
+        """
+        Tests the user can be created only once.
+        """
+        data = {'username': 'test', 'password': 'abc'}
+        _ = self.client.post(url='/user/create', json=data)
+        response = self.client.post(url='/user/create', json=data)
+        self.assertEqual(response.status_code, 400, msg=response.content)
+        self.user_service_mock.add.assert_called_once()
+

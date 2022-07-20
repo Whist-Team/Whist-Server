@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 from whist_server.services.error import UserExistsError
 
 from tests.whist_server.base_token_case import TestCaseWithToken

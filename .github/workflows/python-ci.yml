@@ -1,0 +1,61 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  unittest:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ '3.9', '3.10' ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/setup-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Unittest with pytest
+        run: poetry run python -m pytest -m "not integtest" --cov=whist_server --cov-report=xml
+
+      - name: Upload to codecoverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  integrationtest:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ '3.9', '3.10' ]
+        mongodb-version: [ '4.4', '5.0' ]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/setup-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.7.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+
+      - name: Integrationtest with pytest
+        run: poetry run python -m pytest -m integtest --cov=whist_server --cov-report=xml
+
+      - name: Upload to codecoverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -1,4 +1,4 @@
-name: Docker
+name: Docker Image Build & Publish
 
 on:
   push:
@@ -15,7 +15,7 @@ env:
   IMAGE_NAME_GHCR: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}
 
 jobs:
-  docker_deploy:
+  docker:
     runs-on: ubuntu-latest
 
     steps:

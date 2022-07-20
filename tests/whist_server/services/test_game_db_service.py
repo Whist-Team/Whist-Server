@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+import pytest
 from bson import ObjectId
 from whist_core.session.matcher import RandomMatcher, RoundRobinMatcher
 from whist_core.user.player import Player
@@ -10,6 +11,7 @@ from whist_server.services.error import RoomNotFoundError, RoomNotUpdatedError
 from whist_server.services.room_db_service import RoomDatabaseService
 
 
+@pytest.mark.integtest
 class GameDdServiceTestCase(BasePlayerTestCase):
     def setUp(self) -> None:
         db.room.drop()

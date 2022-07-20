@@ -1,9 +1,11 @@
-from tests.whist_server.base_user_test_case import UserBaseTestCase
+import pytest
 
+from tests.whist_server.base_user_test_case import UserBaseTestCase
 from whist_server.services.ranking_service import RankingService
 from whist_server.services.user_db_service import UserDatabaseService
 
 
+@pytest.mark.integtest
 class LeaderboardTestCase(UserBaseTestCase):
     def setUp(self) -> None:
         super().setUp()

@@ -1,28 +1,26 @@
-import unittest
+from unittest.mock import patch
 
-from starlette.testclient import TestClient
-
-from whist_server import app
-from whist_server.database import db
+from tests.whist_server.base_token_case import TestCaseWithToken
+from whist_server.services.error import UserNotFoundError
 
 
-class AuthTestCase(unittest.TestCase):
+class AuthTestCase(TestCaseWithToken):
     def setUp(self) -> None:
-        self.client = TestClient(app)
+        super().setUp()
         self.login_creds = {'username': 'marcel', 'password': 'abc'}
-        _ = self.client.post(url='/user/create', json=self.login_creds)
-
-    def tearDown(self) -> None:
-        db.user.drop()
 
     def test_auth_user(self):
-        response = self.client.post(url='/user/auth', data=self.login_creds)
+        with patch('whist_server.services.authentication.check_credentials',
+                   return_value=True):
+            response = self.client.post(url='/user/auth', data=self.login_creds)
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.assertTrue('access_token' in response.json())
 
     def test_wrong_password(self):
-        response = self.client.post(url='/user/auth',
-                                    data={'username': 'marcel', 'password': 'abcd'})
+        with patch('whist_server.services.authentication.check_credentials',
+                   return_value=False):
+            response = self.client.post(url='/user/auth',
+                                        data={'username': 'marcel', 'password': 'abcd'})
         self.assertEqual(response.status_code, 401, msg=response.content)
         self.assertFalse('access_token' in response.json())
 
@@ -37,7 +35,9 @@ class AuthTestCase(unittest.TestCase):
         self.assertFalse('access_token' in response.json())
 
     def test_wrong_username(self):
-        response = self.client.post(url='/user/auth',
-                                    data={'username': 'miles', 'password': 'abcd'})
+        with patch('whist_server.services.authentication.check_credentials',
+                   side_effect=UserNotFoundError()):
+            response = self.client.post(url='/user/auth',
+                                        data={'username': 'miles', 'password': 'abcd'})
         self.assertEqual(response.status_code, 403, msg=response.content)
         self.assertFalse('access_token' in response.json())

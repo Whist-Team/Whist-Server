@@ -21,6 +21,7 @@ def _create_user():
     return user
 
 
+@pytest.mark.integtest
 @pytest.mark.asyncio
 async def test_get_current_user():
     user = _create_user()
@@ -29,6 +30,7 @@ async def test_get_current_user():
     assert user.to_user() == result_user
 
 
+@pytest.mark.integtest
 @pytest.mark.asyncio
 async def test_get_current_user_no_user():
     token = create_access_token(data={'sub': 'a'})
@@ -43,6 +45,7 @@ async def test_get_current_user_no_username():
         _ = await get_current_user(token)
 
 
+@pytest.mark.integtest
 @pytest.mark.asyncio
 async def test_get_current_user_with_delta():
     user = _create_user()
@@ -51,7 +54,7 @@ async def test_get_current_user_with_delta():
     result_user = await get_current_user(token, user_db_service=UserDatabaseService())
     assert user.to_user() == result_user
 
-
+@pytest.mark.integtest
 @pytest.mark.asyncio
 async def test_check_credentials():
     _ = _create_user()
@@ -59,6 +62,7 @@ async def test_check_credentials():
     assert is_valid
 
 
+@pytest.mark.integtest
 @pytest.mark.asyncio
 async def test_check_wrong_credentials():
     _ = _create_user()
@@ -66,6 +70,7 @@ async def test_check_wrong_credentials():
     assert not is_valid
 
 
+@pytest.mark.integtest
 @pytest.mark.asyncio
 async def test_check_no_user():
     _ = _create_user()

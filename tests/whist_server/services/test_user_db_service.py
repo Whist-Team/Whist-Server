@@ -1,8 +1,11 @@
+import pytest
+
 from tests.whist_server.base_user_test_case import UserBaseTestCase
 from whist_server.database import db
 from whist_server.services.error import UserNotFoundError, UserExistsError
 
 
+@pytest.mark.integtest
 class UserDbTestCase(UserBaseTestCase):
 
     def test_add_user(self):

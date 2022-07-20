@@ -13,7 +13,7 @@ from whist_server.database.warning import PlayerAlreadyJoinedWarning
 class JoinGameTestCase(BaseCreateGameTestCase):
 
     def test_join(self):
-        headers = self.create_and_auth_user('miles', 'abc')
+        headers = self.create_and_auth_user()
         self.password_service_mock.verify = MagicMock(return_value=True)
 
         response = self.client.post(url=f'/room/join/{self.room_mock.id}',

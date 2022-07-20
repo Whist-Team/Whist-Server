@@ -16,7 +16,7 @@ from whist_server.services.game_info_db_service import GameInfoDatabaseService
 from whist_server.web_socket.entry import router as ws_router
 
 # remember to also update the version in pyproject.toml!
-__version__ = '0.4.0'
+__version__ = '0.4.1'
 
 app = FastAPI()
 app.include_router(api.router)

@@ -36,6 +36,7 @@ jobs:
         
   unittest:
     needs: [ setup ]
+    runs-on: [ ubuntu-latest ]
     steps:
       - name: Unittest with pytest
         run: poetry run python -m pytest -m "not integtest" --cov=whist_server --cov-report=xml
@@ -50,6 +51,7 @@ jobs:
           
   integrationtest:
     needs: [ setup ]
+    runs-on: [ ubuntu-latest ]
     strategy:
       matrix:
         mongodb-version: [ 4.4, 5.0 ]

@@ -18,23 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.python-version }}
-        id: setup-python
-        uses: actions/setup-python@v4
+      - uses: ./.github/actions/setup-poetry
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install poetry
-        uses: snok/install-poetry@v1
-
-      - name: Load cached venv
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install dependencies
-        run: poetry install --no-interaction
 
       - name: Lint sources with flake8
         run: poetry run flake8 whist_server --count --show-source --statistics

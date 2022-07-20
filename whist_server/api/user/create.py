@@ -1,6 +1,6 @@
 """'/user/create api"""
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from whist_server.database.user import UserInDb

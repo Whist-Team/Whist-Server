@@ -26,7 +26,7 @@ python = "^3.9"
 whist-core = "^0.3"
 fastapi = { version = "^0.79", extras = ["all"] }
 pydantic = "^1.9"
-pymongo = "^4.1"
+pymongo = "^4.2"
 python-jose = { version = "^3.3", extras = ["cryptography"] }
 passlib = { version = "^1.7", extras = ["bcrypt"] }
 orjson = "3.7.7"

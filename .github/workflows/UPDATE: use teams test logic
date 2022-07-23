@@ -20,7 +20,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 'Unittest with pytest & coverage'
-        uses: Whist-Team/actions/test-cov@v1
+        uses: Whist-Team/actions/test-cov@v2
         with:
           package: 'whist-server'
           token: ${{ secrets.CODECOV_TOKEN }}

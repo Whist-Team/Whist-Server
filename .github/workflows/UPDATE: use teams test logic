@@ -22,7 +22,7 @@ jobs:
       - name: Unittest with pytest & coverage
         uses: Whist-Team/actions/test-cov@v1
         with:
-         package: 'whist-server'
+          package: 'whist-server'
 
   integrationtest:
     strategy:
@@ -45,7 +45,7 @@ jobs:
       - name: Integrationtest with pytest
         uses: Whist-Team/actions/test-cov@v2
         with:
-         package: 'whist-server'
-         test-type: integtest
+          package: 'whist-server'
+          test-type: integtest
 
         

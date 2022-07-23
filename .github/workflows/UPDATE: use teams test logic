@@ -43,7 +43,7 @@ jobs:
           mongodb-version: ${{ matrix.mongodb-version }}
 
       - name: Integrationtest with pytest
-        uses: Whist-Team/actions/test-cov@v1
+        uses: Whist-Team/actions/test-cov@v2
         with:
          package: 'whist-server'
          test-type: integtest

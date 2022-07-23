@@ -22,7 +22,7 @@ jobs:
       - name: 'Unittest with pytest & coverage'
         uses: Whist-Team/actions/test-cov@v2
         with:
-          package: 'whist-server'
+          package: 'whist_server'
           token: ${{ secrets.CODECOV_TOKEN }}
 
   integrationtest:

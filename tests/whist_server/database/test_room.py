@@ -12,12 +12,12 @@ from whist_server.services.password import PasswordService
 from whist_server.services.room_db_service import RoomDatabaseService
 
 
-class GameInDbTestCase(BasePlayerTestCase):
+class RoomInDbTestCase(BasePlayerTestCase):
     def setUp(self) -> None:
         super().setUp()
         password_service = PasswordService()
-        self.game_service = RoomDatabaseService()
-        self.game: RoomInDb = self.game_service.create_with_pwd(
+        self.room_service = RoomDatabaseService()
+        self.room: RoomInDb = self.room_service.create_with_pwd(
             room_name='test',
             hashed_password=password_service.hash('abc'),
             creator=self.player,
@@ -27,46 +27,46 @@ class GameInDbTestCase(BasePlayerTestCase):
         self.expected_players = [self.player, self.second_player]
 
     def test_verify_pwd(self):
-        self.assertTrue(self.game.verify_password('abc'))
+        self.assertTrue(self.room.verify_password('abc'))
 
     def test_verify_fail(self):
-        self.assertFalse(self.game.verify_password('bac'))
+        self.assertFalse(self.room.verify_password('bac'))
 
     def test_verify_without_password(self):
-        game: RoomInDb = self.game_service.create_with_pwd(room_name='test', creator=self.player)
-        self.assertTrue(game.verify_password(None))
+        room: RoomInDb = self.room_service.create_with_pwd(room_name='test', creator=self.player)
+        self.assertTrue(room.verify_password(None))
 
     def test_join(self):
-        self.assertTrue(self.game.join(self.second_player))
-        self.assertEqual(self.expected_players, self.game.players)
+        self.assertTrue(self.room.join(self.second_player))
+        self.assertEqual(self.expected_players, self.room.players)
 
     def test_join_twice(self):
-        self.assertTrue(self.game.join(self.second_player))
+        self.assertTrue(self.room.join(self.second_player))
         with self.assertRaises(PlayerAlreadyJoinedWarning):
-            self.assertTrue(self.game.join(self.second_player))
-        self.assertEqual(self.expected_players, self.game.players)
+            self.assertTrue(self.room.join(self.second_player))
+        self.assertEqual(self.expected_players, self.room.players)
 
     def test_has_joined(self):
-        self.assertTrue(self.game.has_joined(self.player))
+        self.assertTrue(self.room.has_joined(self.player))
 
     def has_not_joined(self):
-        self.assertFalse(self.game.has_joined(self.second_player))
+        self.assertFalse(self.room.has_joined(self.second_player))
 
     def test_next(self):
-        self.game.table = MagicMock(started=PropertyMock(return_value=True))
-        first_trick = self.game.current_trick()
-        second_trick = self.game.next_trick()
+        self.room.table = MagicMock(started=PropertyMock(return_value=True))
+        first_trick = self.room.current_trick()
+        second_trick = self.room.next_trick()
         self.assertNotEqual(first_trick, second_trick)
 
     def test_start_not_creator(self):
         with self.assertRaises(PlayerNotCreatorError):
-            self.game.start(player=self.second_player, matcher=RandomMatcher())
+            self.room.start(player=self.second_player, matcher=RandomMatcher())
 
     def test_get_player(self):
         play_at_table_mock = MagicMock(player=PropertyMock(return_value=self.player),
                                        hand=UnorderedCardContainer.empty(), team=MagicMock())
         game_mock = MagicMock(get_player=MagicMock(return_value=play_at_table_mock))
-        self.game.table = MagicMock(ready=PropertyMock(return_value=True),
+        self.room.table = MagicMock(ready=PropertyMock(return_value=True),
                                     current_rubber=PropertyMock(games=[game_mock]))
-        player_at_table = self.game.get_player(self.player)
+        player_at_table = self.room.get_player(self.player)
         self.assertEqual(play_at_table_mock, player_at_table)

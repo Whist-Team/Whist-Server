@@ -181,7 +181,7 @@ class RoomInfo(BaseModel):
         :param room: Meta data extracted from
         :return: RoomInfo
         """
-        password_protected = True if room.hashed_password else False
+        password_protected = bool(room.hashed_password)
         rubber_number = len(room.table.current_rubber.games) if room.table.started else 0
         trick_number = len(room.table.current_rubber.current_game().current_hand.tricks) if \
             room.table.started else 0

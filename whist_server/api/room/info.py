@@ -33,7 +33,7 @@ def room_info(room_id: str, room_service=Depends(RoomDatabaseService)) -> RoomIn
     """
     try:
         room = room_service.get(room_id)
-    except RoomNotFoundError() as not_found:
+    except RoomNotFoundError as not_found:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f'Room not found with id: {room_id}',
                             headers={"WWW-Authenticate": "Bearer"}, ) from not_found

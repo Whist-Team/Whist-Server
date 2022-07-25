@@ -404,8 +404,8 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-dev = ["pre-commit", "tox"]
-testing = ["pytest", "pytest-benchmark"]
+testing = ["pytest-benchmark", "pytest"]
+dev = ["tox", "pre-commit"]
 
 [[package]]
 name = "py"
@@ -561,7 +561,7 @@ coverage = {version = ">=5.2.1", extras = ["toml"]}
 pytest = ">=4.6"
 
 [package.extras]
-testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
+testing = ["virtualenv", "pytest-xdist", "six", "process-tests", "hunter", "fields"]
 
 [[package]]
 name = "python-dotenv"
@@ -706,7 +706,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "urllib3"
-version = "1.26.10"
+version = "1.26.11"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
@@ -774,7 +774,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "whist-core"
-version = "0.3.0"
+version = "0.4.0"
 description = "Whist rules implementation"
 category = "main"
 optional = false
@@ -795,7 +795,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "da2510e14ef405c6ed423f384d67197d571547aabe4b1eb66b0ffd0f8aa5f700"
+content-hash = "1e3ad7d5bfa90453957aa87ebeeab4d0451276b50cbad9cac23aa9d8a4541fa7"
 
 [metadata.files]
 anyio = [
@@ -1491,8 +1491,8 @@ ujson = [
     {file = "ujson-5.4.0.tar.gz", hash = "sha256:6b953e09441e307504130755e5bd6b15850178d591f66292bba4608c4f7f9b00"},
 ]
 urllib3 = [
-    {file = "urllib3-1.26.10-py2.py3-none-any.whl", hash = "sha256:8298d6d56d39be0e3bc13c1c97d133f9b45d797169a0e11cdd0e0489d786f7ec"},
-    {file = "urllib3-1.26.10.tar.gz", hash = "sha256:879ba4d1e89654d9769ce13121e0f94310ea32e8d2f8cf587b77c08bbcdb30d6"},
+    { file = "urllib3-1.26.11-py2.py3-none-any.whl", hash = "sha256:c33ccba33c819596124764c23a97d25f32b28433ba0dedeb77d873a38722c9bc" },
+    { file = "urllib3-1.26.11.tar.gz", hash = "sha256:ea6e8fb210b19d950fab93b60c9009226c63a28808bc8386e05301e25883ac0a" },
 ]
 uvicorn = [
     {file = "uvicorn-0.17.6-py3-none-any.whl", hash = "sha256:19e2a0e96c9ac5581c01eb1a79a7d2f72bb479691acd2b8921fce48ed5b961a6"},
@@ -1571,8 +1571,8 @@ websockets = [
     {file = "websockets-10.3.tar.gz", hash = "sha256:fc06cc8073c8e87072138ba1e431300e2d408f054b27047d047b549455066ff4"},
 ]
 whist-core = [
-    {file = "whist-core-0.3.0.tar.gz", hash = "sha256:244e7e41d3d699d41378745b240ee718c94cde8779e9b44db92e9200864c5589"},
-    {file = "whist_core-0.3.0-py3-none-any.whl", hash = "sha256:ecf7eca3bf5d60234624925fdec104872fb554a9defedf59e248415d2d0d6689"},
+    { file = "whist-core-0.4.0.tar.gz", hash = "sha256:afb5ff0c467d29c994fe094d6b17c797c616acc5e2c403021c2978f236e1bc74" },
+    { file = "whist_core-0.4.0-py3-none-any.whl", hash = "sha256:690756428a59eb3bf3a20193176cbeeafb24be657f9db29d4256f741ecddebb0" },
 ]
 wrapt = [
     {file = "wrapt-1.14.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:1b376b3f4896e7930f1f772ac4b064ac12598d1c38d04907e696cc4d794b43d3"},

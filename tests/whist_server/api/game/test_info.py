@@ -55,3 +55,9 @@ class GameInfoTestCase(BaseCreateGameTestCase):
         room_info = RoomInfo(**response.json())
 
         self.assertEqual(expected_info, room_info)
+
+    def test_get_room_info_not_found(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError(
+            game_id=self.room_mock.id))
+        response = self.client.get(f'/room/info/{self.room_mock.id}')
+        self.assertEqual(400, response.status_code, msg=response.content)

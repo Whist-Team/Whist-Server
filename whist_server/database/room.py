@@ -128,9 +128,6 @@ class Room(BaseModel):
         """
         return self.current_rubber.games[-1].get_player(player)
 
-    def get_info(self) -> 'RoomInfo':
-        return RoomInfo(**self)
-
     def _current_hand(self):
         return self._current_game().current_hand
 
@@ -154,6 +151,13 @@ class RoomInDb(Room):
         if self.hashed_password is None and password is None:
             return True
         return PasswordService.verify(password, self.hashed_password)
+
+    def get_info(self) -> 'RoomInfo':
+        """
+        Returns the meta wrapper of the room.
+        :return: RoomInfo
+        """
+        return RoomInfo.from_room(self)
 
 
 class RoomInfo(BaseModel):

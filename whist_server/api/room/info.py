@@ -23,7 +23,7 @@ def all_rooms(room_service=Depends(RoomDatabaseService),
     return {'rooms': [str(room.id) for room in rooms]}
 
 
-@router.get('info/{id}', response_model=RoomInfo, )
+@router.get('/info/{room_id}', response_model=RoomInfo)
 def room_info(room_id: str, room_service=Depends(RoomDatabaseService)) -> RoomInfo:
     """
 

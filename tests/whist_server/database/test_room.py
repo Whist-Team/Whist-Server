@@ -6,7 +6,7 @@ from whist_core.user.player import Player
 
 from tests.whist_server.base_player_test_case import BasePlayerTestCase
 from whist_server.database.error import PlayerNotCreatorError
-from whist_server.database.room import RoomInDb
+from whist_server.database.room import RoomInDb, RoomInfo
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.password import PasswordService
 from whist_server.services.room_db_service import RoomDatabaseService
@@ -70,3 +70,18 @@ class RoomInDbTestCase(BasePlayerTestCase):
                                     current_rubber=PropertyMock(games=[game_mock]))
         player_at_table = self.room.get_player(self.player)
         self.assertEqual(play_at_table_mock, player_at_table)
+
+    def test_room_info(self):
+        room_info = self.room.get_info()
+        expected_info = RoomInfo(name='test', password=True, rubber_number=0,
+                                 game_number=0, hand_number=0, trick_number=0, min_player=2,
+                                 max_player=2, player_number=1)
+        self.assertEqual(expected_info, room_info)
+
+    def test_room_info_no_pwd(self):
+        self.room.hashed_password = None
+        room_info = self.room.get_info()
+        expected_info = RoomInfo(name='test', password=False, rubber_number=0,
+                                 game_number=0, hand_number=0, trick_number=0, min_player=2,
+                                 max_player=2, player_number=1)
+        self.assertEqual(expected_info, room_info)

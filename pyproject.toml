@@ -25,6 +25,7 @@ whist-server = "whist_server.cli:main"
 python = "^3.9"
 whist-core = "^0.4"
 fastapi = { version = "^0.79", extras = ["all"] }
+httpx = "^0.23"
 pydantic = "^1.9"
 pymongo = "^4.2"
 python-jose = { version = "^3.3", extras = ["cryptography"] }
@@ -43,5 +44,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 markers = [
-  "integtest: Integrationtest use 'pytest -m integtest'"
+    "integtest: Integrationtest use 'pytest -m integtest'"
 ]

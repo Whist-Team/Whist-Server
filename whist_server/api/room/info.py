@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from whist_core.user.player import Player
 
-from whist_server.database.room import RoomInDb
+from whist_server.database.room import RoomInDb, RoomInfo
 from whist_server.services.authentication import get_current_user
 from whist_server.services.error import RoomNotFoundError
 from whist_server.services.room_db_service import RoomDatabaseService
@@ -21,6 +21,23 @@ def all_rooms(room_service=Depends(RoomDatabaseService),
     """
     rooms = room_service.all()
     return {'rooms': [str(room.id) for room in rooms]}
+
+
+@router.get('/info/{room_id}', response_model=RoomInfo)
+def room_info(room_id: str, room_service=Depends(RoomDatabaseService)) -> RoomInfo:
+    """
+
+    :param room_id:
+    :param room_service: Dependency injection of the room service
+    :return:
+    """
+    try:
+        room = room_service.get(room_id)
+    except RoomNotFoundError as not_found:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f'Room not found with id: {room_id}',
+                            headers={"WWW-Authenticate": "Bearer"}, ) from not_found
+    return room.get_info()
 
 
 @router.get('/info/id/{room_name}', status_code=200, response_model=dict[str, str])

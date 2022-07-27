@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from whist_server.api import api
+from whist_server.api.oauth2.github import router as github
 from whist_server.api.ranking.leaderboard import router as leaderboard
 from whist_server.api.room.action import router as game_action
 from whist_server.api.room.create import router as game_creation
@@ -20,6 +21,7 @@ __version__ = '0.4.1'
 
 app = FastAPI()
 app.include_router(api.router)
+app.include_router(github)
 app.include_router(game_action)
 app.include_router(game_creation)
 app.include_router(game_info)

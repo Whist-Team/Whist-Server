@@ -1,3 +1,4 @@
+"""Token swap routes for authentication with GitHub"""
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 

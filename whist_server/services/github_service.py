@@ -1,9 +1,13 @@
+"""OAuth2 service for GitHub"""
 import os
 
 import httpx
 
 
 class GitHubAPIService:
+    """
+    Singleton service that provides authentication with GitHub.
+    """
     _instance = None
     _client_id = None
     _client_secret = None
@@ -18,7 +22,12 @@ class GitHubAPIService:
         return cls._instance
 
     @classmethod
-    async def _get_github_token(cls, code: str) -> str:
+    async def get_github_token(cls, code: str) -> str:
+        """
+        Retrieves the access token from GitHub.
+        :param code: temporary code which needs to be provides by the client
+        :return: access token
+        """
         data = {'client_id': cls._client_id, 'client_secret': cls._client_secret, 'code': code,
                 'redirect_url': cls._redirect_url}
         response = httpx.post('https://github.com/login/oauth/access_token', data=data)
@@ -26,7 +35,12 @@ class GitHubAPIService:
         return auth_token
 
     @classmethod
-    async def _get_github_username(cls, auth_token: str) -> str:
+    async def get_github_username(cls, auth_token: str) -> str:
+        """
+        Retrieves the GitHub's username.
+        :param auth_token: the access token to GitHub.
+        :return: username as string
+        """
         response = httpx.get('https://api.github.com/user',
                              headers={'Authorization': f'token {auth_token}'})
         username = response.json()['login']

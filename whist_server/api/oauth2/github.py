@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from whist_server.database.access_token import AccessToken
-from whist_server.services.authentication import create_access_token
+from whist_server.services import authentication
 from whist_server.services.github_service import GitHubAPIService
 from whist_server.services.user_db_service import UserDatabaseService
 
@@ -30,5 +30,5 @@ async def swap_token(data: SwapTokenRequestData, github_service=Depends(GitHubAP
     gh_username = await github_service.get_github_username(auth_token)
     user = user_db_service.get_from_github(gh_username)
     token_request = {'sub': user.username}
-    token = create_access_token(token_request)
+    token = authentication.create_access_token(token_request)
     return AccessToken(access_token=token, token_type='Bearer')  # nosec B106

@@ -35,7 +35,7 @@ passlib = { version = "^1.7", extras = ["bcrypt"] }
 pytest = "^7.1"
 pytest-cov = "^3.0"
 pytest-asyncio = "^0.19"
-flake8 = "^4.0"
+flake8 = "^5.0"
 pylint = "^2.14"
 
 [build-system]

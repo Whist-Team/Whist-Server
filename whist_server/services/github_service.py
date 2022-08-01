@@ -16,9 +16,9 @@ class GitHubAPIService:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(GitHubAPIService, cls).__new__(cls)
-            cls._client_id = os.getenv('CLIENT_ID')
-            cls._client_secret = os.getenv('CLIENT_SECRET')
-            cls._redirect_url = os.getenv('REDIRECT_URL')
+            cls._client_id = os.getenv('GITHUB_CLIENT_ID')
+            cls._client_secret = os.getenv('GITHUB_CLIENT_SECRET')
+            cls._redirect_url = os.getenv('GITHUB_REDIRECT_URL')
         return cls._instance
 
     @classmethod

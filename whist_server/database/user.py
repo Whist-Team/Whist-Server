@@ -1,5 +1,5 @@
 """User models"""
-from typing import Any
+from typing import Any, Optional
 
 from whist_core.user.player import Player
 
@@ -12,6 +12,7 @@ class UserInDb(Player):
     User DO
     """
     hashed_password: str
+    github_username: Optional[str] = None
 
     def __init__(self, rating=INITIAL_RATING, **data: Any):
         super().__init__(rating=rating, **data)

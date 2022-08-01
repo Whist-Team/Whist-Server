@@ -23,3 +23,10 @@ class UserDbTestCase(UserBaseTestCase):
         with(self.assertRaises(UserExistsError)):
             _ = self.user_database_service.add(self.user)
         self.assertEqual(1, db.user.estimated_document_count())
+
+    def test_from_github(self):
+        github_name = 'choco'
+        self.user.github_username = github_name
+        _ = self.user_database_service.add(self.user)
+        return_user = self.user_database_service.get_from_github(github_name)
+        self.assertEqual(self.user, return_user)

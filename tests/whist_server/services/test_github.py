@@ -35,8 +35,11 @@ async def test_token(setup_env):
 async def test_username():
     service = GitHubAPIService()
     expected_username = 'fgh'
-    with patch('httpx.post',
+    token = 'token'
+    with patch('httpx.get',
                MagicMock(return_value=MagicMock(
-                   json=MagicMock(return_value={'access_token': expected_username})))):
-        token = await service.get_github_token('cde')
-    assert expected_username == token
+                   json=MagicMock(return_value={'login': expected_username})))) as route:
+        username = await service.get_github_username(token)
+    assert expected_username == username
+    route.assert_called_once_with('https://api.github.com/user',
+                                  headers={'Authorization': f'token {token}'})

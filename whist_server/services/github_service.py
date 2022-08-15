@@ -3,6 +3,8 @@ import os
 
 import httpx
 
+from whist_server.services.error import GitHubAuthError
+
 
 class GitHubAPIService:
     """
@@ -32,6 +34,25 @@ class GitHubAPIService:
                 'redirect_url': cls._redirect_url}
         response = httpx.post('https://github.com/login/oauth/access_token', data=data)
         auth_token = response.json()['access_token']
+        return auth_token
+
+    @classmethod
+    async def get_github_token_from_device_code(cls, code: str) -> str:
+        """
+        Retrieves the access token from GitHub.
+        :param code: temporary code which needs to be provides by the client
+        :return: access token
+        """
+        data = {'client_id': cls._client_id, 'device_code': code,
+                'grant_type': 'urn:ietf:params:oauth:grant-type:device_code'}
+        response = httpx.post(headers={'Accept': 'application/json'},
+                              url='https://github.com/login/oauth/access_token',
+                              data=data)
+
+        response_json: dict = response.json()
+        if 'error' in response_json.keys():
+            raise GitHubAuthError(**response_json)
+        auth_token = response_json['access_token']
         return auth_token
 
     @classmethod

@@ -17,6 +17,13 @@ class SwapTokenRequestData(BaseModel):
     code: str
 
 
+class SwapDeviceCodeRequestData(BaseModel):
+    """
+    Data wrapper containing the temporary code provided by GitHub.
+    """
+    device_code: str
+
+
 @router.post('', response_model=AccessToken)
 async def swap_token(data: SwapTokenRequestData, github_service=Depends(GitHubAPIService),
                      user_db_service=Depends(UserDatabaseService)):
@@ -28,6 +35,25 @@ async def swap_token(data: SwapTokenRequestData, github_service=Depends(GitHubAP
     :return: Internal application Access Token.
     """
     auth_token = await github_service.get_github_token(data.code)
+    gh_username = await github_service.get_github_username(auth_token)
+    user = user_db_service.get_from_github(gh_username)
+    token_request = {'sub': user.username}
+    token = authentication.create_access_token(token_request)
+    return AccessToken(access_token=token, token_type='Bearer')  # nosec B106
+
+
+@router.post('/device', response_model=AccessToken)
+async def device_code_swap(data: SwapDeviceCodeRequestData,
+                           github_service=Depends(GitHubAPIService),
+                           user_db_service=Depends(UserDatabaseService)):
+    """
+    Swaps the GitHub device code for an Access Token.
+    :param data: Wrapper containing a 'code' which is the temporary code provided by GitHub.
+    :param github_service: API adapter service for GitHub.
+    :param user_db_service: service to handle request to the database storing users.
+    :return: Internal application Access Token.
+    """
+    auth_token = await github_service.get_github_token_from_device_code(data.device_code)
     gh_username = await github_service.get_github_username(auth_token)
     user = user_db_service.get_from_github(gh_username)
     token_request = {'sub': user.username}

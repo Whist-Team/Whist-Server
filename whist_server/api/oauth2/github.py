@@ -3,7 +3,9 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from whist_server.database.access_token import AccessToken
+from whist_server.database.user import UserInDb
 from whist_server.services import authentication
+from whist_server.services.error import UserNotFoundError
 from whist_server.services.github_service import GitHubAPIService
 from whist_server.services.user_db_service import UserDatabaseService
 
@@ -55,7 +57,12 @@ async def device_code_swap(data: SwapDeviceCodeRequestData,
     """
     auth_token = await github_service.get_github_token_from_device_code(data.device_code)
     gh_username = await github_service.get_github_username(auth_token)
-    user = user_db_service.get_from_github(gh_username)
+
+    try:
+        user = user_db_service.get_from_github(gh_username)
+    except UserNotFoundError:
+        user = UserInDb(github_username=gh_username, username=gh_username)
+        _ = user_db_service.add(user)
     token_request = {'sub': user.username}
     token = authentication.create_access_token(token_request)
     return AccessToken(access_token=token, token_type='Bearer')  # nosec B106

@@ -30,3 +30,8 @@ class UserDbTestCase(UserBaseTestCase):
         _ = self.user_database_service.add(self.user)
         return_user = self.user_database_service.get_from_github(github_name)
         self.assertEqual(self.user, return_user)
+
+    def test_from_github_nouser(self):
+        github_name = 'not'
+        with self.assertRaises(UserNotFoundError):
+            return_user = self.user_database_service.get_from_github(github_name)

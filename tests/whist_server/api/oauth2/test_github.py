@@ -26,3 +26,11 @@ class GithubAuthTestCase(TestCase):
             response = self.client.post(url='/oauth2/github', json={'code': 'cde'})
         token = AccessToken(**response.json())
         self.assertEqual(expected_token, token)
+
+    def test_device_swap(self):
+        expected_token = AccessToken(access_token='abc', token_type='Bearer')
+        with patch('whist_server.services.authentication.create_access_token',
+                   MagicMock(return_value=expected_token.access_token)):
+            response = self.client.post(url='/oauth2/github/device', json={'device_code': 'cde'})
+        token = AccessToken(**response.json())
+        self.assertEqual(expected_token, token)

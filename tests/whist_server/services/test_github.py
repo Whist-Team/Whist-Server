@@ -32,6 +32,22 @@ async def test_token(setup_env):
 
 
 @pytest.mark.asyncio
+async def test_device_token(setup_env):
+    service = GitHubAPIService()
+    expected_token = 'fgh'
+    expected_data = {'client_id': CLIENT_ID, 'device_code': CODE,
+                     'grant_type': 'urn:ietf:params:oauth:grant-type:device_code'}
+    with patch('httpx.post',
+               MagicMock(return_value=MagicMock(
+                   json=MagicMock(return_value={'access_token': expected_token})))) as route:
+        token = await service.get_github_token_from_device_code(CODE)
+    assert expected_token == token
+    route.assert_called_once_with(headers={'Accept': 'application/json'},
+                                  url='https://github.com/login/oauth/access_token',
+                                  data=expected_data)
+
+
+@pytest.mark.asyncio
 async def test_username():
     service = GitHubAPIService()
     expected_username = 'fgh'

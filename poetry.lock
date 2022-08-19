@@ -774,7 +774,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "whist-core"
-version = "0.4.0"
+version = "0.4.1"
 description = "Whist rules implementation"
 category = "main"
 optional = false
@@ -1580,8 +1580,8 @@ websockets = [
     {file = "websockets-10.3.tar.gz", hash = "sha256:fc06cc8073c8e87072138ba1e431300e2d408f054b27047d047b549455066ff4"},
 ]
 whist-core = [
-    {file = "whist-core-0.4.0.tar.gz", hash = "sha256:afb5ff0c467d29c994fe094d6b17c797c616acc5e2c403021c2978f236e1bc74"},
-    {file = "whist_core-0.4.0-py3-none-any.whl", hash = "sha256:690756428a59eb3bf3a20193176cbeeafb24be657f9db29d4256f741ecddebb0"},
+    {file = "whist-core-0.4.1.tar.gz", hash = "sha256:83c6f9dc9dae6340499545e7a65e1ad8cf17bf9b01f0c3225e26758979b38aef"},
+    {file = "whist_core-0.4.1-py3-none-any.whl", hash = "sha256:f224de17c15d8aa787611d078ab10898b6e289aa6f076bd8f35651b8da43a348"},
 ]
 wrapt = [
     {file = "wrapt-1.14.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:1b376b3f4896e7930f1f772ac4b064ac12598d1c38d04907e696cc4d794b43d3"},

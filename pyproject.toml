@@ -23,7 +23,7 @@ whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-whist-core = "^0.3"
+whist-core = "^0.4"
 fastapi = { version = "^0.79", extras = ["all"] }
 pydantic = "^1.9"
 pymongo = "^4.2"
@@ -34,7 +34,7 @@ passlib = { version = "^1.7", extras = ["bcrypt"] }
 pytest = "^7.1"
 pytest-cov = "^3.0"
 pytest-asyncio = "^0.19"
-flake8 = "^4.0"
+flake8 = "^5.0"
 pylint = "^2.14"
 
 [build-system]

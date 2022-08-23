@@ -151,3 +151,46 @@ class RoomInDb(Room):
         if self.hashed_password is None and password is None:
             return True
         return PasswordService.verify(password, self.hashed_password)
+
+    def get_info(self) -> 'RoomInfo':
+        """
+        Returns the meta wrapper of the room.
+        :return: RoomInfo
+        """
+        return RoomInfo.from_room(self)
+
+
+class RoomInfo(BaseModel):
+    """
+    Meta info wrapper for rooms.
+    """
+    name: str
+    password: bool
+    rubber_number: int
+    game_number: int
+    hand_number: int
+    trick_number: int
+    min_player: int
+    max_player: int
+    player_number: int
+
+    @staticmethod
+    def from_room(room: RoomInDb) -> 'RoomInfo':
+        """
+        Creates a room info object from a room.
+        :param room: Meta data extracted from
+        :return: RoomInfo
+        """
+        password_protected = bool(room.hashed_password)
+        rubber_number = len(room.table.current_rubber.games) if room.table.started else 0
+        trick_number = len(room.table.current_rubber.current_game().current_hand.tricks) if \
+            room.table.started else 0
+        return RoomInfo(name=room.room_name,
+                        password=password_protected,
+                        rubber_number=len(room.table.rubbers),
+                        game_number=rubber_number,
+                        hand_number=0,
+                        trick_number=trick_number,
+                        min_player=room.table.min_player,
+                        max_player=room.table.max_player,
+                        player_number=len(room.table.users))

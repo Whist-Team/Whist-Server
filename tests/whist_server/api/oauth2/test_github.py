@@ -12,7 +12,8 @@ from whist_server.services.user_db_service import UserDatabaseService
 
 class GithubAuthTestCase(TestCase):
     def setUp(self) -> None:
-        self.gh_service = AsyncMock(get_github_username=AsyncMock(return_value='test'))
+        self.gh_service = AsyncMock(get_github_username=AsyncMock(return_value='test'),
+                                    get_github_id=AsyncMock(return_value='123'))
         user_mock = MagicMock(username='test')
         self.user_service = AsyncMock(get_from_github=MagicMock(return_value=user_mock))
         app.dependency_overrides[GitHubAPIService] = lambda: self.gh_service

@@ -37,8 +37,8 @@ async def swap_token(data: SwapTokenRequestData, github_service=Depends(GitHubAP
     :return: Internal application Access Token.
     """
     auth_token = await github_service.get_github_token(data.code)
-    gh_username = await github_service.get_github_username(auth_token)
-    user = user_db_service.get_from_github(gh_username)
+    gh_id = await github_service.get_github_id(auth_token)
+    user = user_db_service.get_from_github(gh_id)
     token_request = {'sub': user.username}
     token = authentication.create_access_token(token_request)
     return AccessToken(access_token=token, token_type='Bearer')  # nosec B106

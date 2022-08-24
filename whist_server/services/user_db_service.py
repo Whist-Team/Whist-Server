@@ -46,13 +46,13 @@ class UserDatabaseService:
         return UserInDb(**user)
 
     @classmethod
-    def get_from_github(cls, username: str) -> UserInDb:
+    def get_from_github(cls, github_id: str) -> UserInDb:
         """
         Similar to 'get(username)', but queries by github username instead of application username.
-        :param username: github username of the user
+        :param github_id: GitHub id of the user
         :return: the user database object
         """
-        user = cls._users.find_one({'github_username': username})
+        user = cls._users.find_one({'github_id': github_id})
         if user is None:
-            raise UserNotFoundError(username=username)
+            raise UserNotFoundError()
         return UserInDb(**user)

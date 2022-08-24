@@ -13,6 +13,7 @@ class UserInDb(Player):
     User DO
     """
     hashed_password: Optional[str] = None
+    github_id: Optional[str] = None
     github_username: Optional[str] = None
 
     # pylint: disable=no-self-argument

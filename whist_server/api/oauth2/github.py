@@ -56,12 +56,13 @@ async def device_code_swap(data: SwapDeviceCodeRequestData,
     :return: Internal application Access Token.
     """
     auth_token = await github_service.get_github_token_from_device_code(data.device_code)
-    gh_username = await github_service.get_github_username(auth_token)
+    github_id = await github_service.get_github_id(auth_token)
 
     try:
-        user = user_db_service.get_from_github(gh_username)
+        user = user_db_service.get_from_github(github_id)
     except UserNotFoundError:
-        user = UserInDb(github_username=gh_username, username=gh_username)
+        gh_username = await github_service.get_github_username(auth_token)
+        user = UserInDb(github_id=github_id, github_username=gh_username, username=gh_username)
         _ = user_db_service.add(user)
     token_request = {'sub': user.username}
     token = authentication.create_access_token(token_request)

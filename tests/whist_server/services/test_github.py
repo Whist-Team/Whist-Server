@@ -76,3 +76,16 @@ async def test_username():
     assert expected_username == username
     route.assert_called_once_with('https://api.github.com/user',
                                   headers={'Authorization': f'token {token}'})
+
+@pytest.mark.asyncio
+async def test_username():
+    service = GitHubAPIService()
+    expected_id = 'fgh'
+    token = 'token'
+    with patch('httpx.get',
+               MagicMock(return_value=MagicMock(
+                   json=MagicMock(return_value={'id': expected_id})))) as route:
+        user_id = await service.get_github_id(token)
+    assert expected_id == user_id
+    route.assert_called_once_with('https://api.github.com/user',
+                                  headers={'Authorization': f'token {token}'})

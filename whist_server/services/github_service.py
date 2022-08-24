@@ -56,6 +56,18 @@ class GitHubAPIService:
         return auth_token
 
     @classmethod
+    async def get_github_id(cls, auth_token: str) -> str:
+        """
+        Retrieves the GitHub's user id.
+        :param auth_token: the access token to GitHub.
+        :return: GitHubs's user_id as string
+        """
+        response = httpx.get('https://api.github.com/user',
+                             headers={'Authorization': f'token {auth_token}'})
+        github_id = response.json()['id']
+        return github_id
+
+    @classmethod
     async def get_github_username(cls, auth_token: str) -> str:
         """
         Retrieves the GitHub's username.

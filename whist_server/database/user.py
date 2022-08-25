@@ -1,6 +1,7 @@
 """User models"""
-from typing import Any
+from typing import Any, Optional
 
+from pydantic import root_validator
 from whist_core.user.player import Player
 
 from whist_server.const import INITIAL_RATING
@@ -11,7 +12,21 @@ class UserInDb(Player):
     """
     User DO
     """
-    hashed_password: str
+    hashed_password: Optional[str] = None
+    github_id: Optional[str] = None
+    github_username: Optional[str] = None
+
+    # pylint: disable=no-self-argument
+    @root_validator(pre=True)
+    def validate_password_sso(cls, values):
+        """
+        Checks if the user is SSO or password based.
+        :param values:
+        :return:
+        """
+        if values.get('hashed_password') is None and values.get('github_username') is None:
+            raise ValueError('User must be either SSO or have a password.')
+        return values
 
     def __init__(self, rating=INITIAL_RATING, **data: Any):
         super().__init__(rating=rating, **data)

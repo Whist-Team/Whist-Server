@@ -39,10 +39,31 @@ poetry build
 ```
 
 ### Publish
+
 You need the environment variable `POETRY_PYPI_TOKEN_PYPI` filled with a PyPI token.
+
 ```bash
 poetry build
 poetry publish
 # OR
 poetry publish --build
 ```
+
+### Run
+
+In order to use GitHub SSO you need to set two environment variables. At the moment they are
+mandatory.
+
+```dotenv
+GITHUB_CLIENT_ID # This is the GitHub Identifier
+GITHUB_CLIENT_SECRET # During creation this secret is generated.
+GITHUB_REDIRECT_URL=http://HOST:PORT/oauth2/github/ # Only required for Browser Application with the ability to redirect.
+```
+
+In order to run the application it must be started like this:
+
+```shell
+python -m whist_server --reload --admin_name=root --admin_pwd=password 0.0.0.0 8080
+```
+
+:warning: A mongodb instance is required to run before launching the `Whist-Server`.

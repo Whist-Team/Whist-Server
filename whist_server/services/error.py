@@ -5,6 +5,16 @@ from fastapi import HTTPException
 from starlette import status
 
 
+class GitHubAuthError(Exception):
+    """
+    Is raised when authentication with GitHub fails.
+    """
+
+    def __init__(self, error: str, error_description: str, error_uri: str):
+        message = f'{error}: Details: {error_description}, Help: {error_uri}'
+        super().__init__(message)
+
+
 class UserExistsError(Exception):
     """
     Is raised when an user already exists.

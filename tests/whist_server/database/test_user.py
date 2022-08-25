@@ -1,5 +1,6 @@
 import unittest
 
+from pydantic import ValidationError
 from whist_core.user.player import Player
 
 from whist_server.const import INITIAL_RATING
@@ -23,3 +24,11 @@ class UserInDbTestCase(unittest.TestCase):
     def test_user(self):
         user = Player(username=self.user.username, rating=INITIAL_RATING)
         self.assertEqual(user, self.user.to_user())
+
+    def test_github_user(self):
+        user = UserInDb(github_username='abc', username='abc')
+        self.assertIsNotNone(user)
+
+    def test_no_password_user(self):
+        with self.assertRaises(ValidationError):
+            user = UserInDb(username='abc')

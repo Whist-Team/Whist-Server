@@ -28,6 +28,6 @@ class GameInfoService:
     def get(cls):
         """
         Retrieves the game info object.
-        :return: Game info object if it is exists. Else raises GameInfoNotSetError.
+        :return: Game info object if it is exists. Else None.
         """
         return cls._info

@@ -13,7 +13,7 @@ from whist_server.api.room.join import router as game_join
 from whist_server.api.room.trick import router as game_trick
 from whist_server.api.user import auth
 from whist_server.api.user.create import router as user_creation
-from whist_server.services.game_info_db_service import GameInfoDatabaseService
+from whist_server.services.game_info_service import GameInfoService
 from whist_server.web_socket.entry import router as ws_router
 
 # remember to also update the version in pyproject.toml!
@@ -36,7 +36,7 @@ app.add_middleware(CORSMiddleware,
                    allow_credentials=True,
                    allow_methods=['*'],
                    allow_headers=['*'])
-game_info_db_service = GameInfoDatabaseService()
+game_info_db_service = GameInfoService()
 
 game_info = {
     'game': 'whist',

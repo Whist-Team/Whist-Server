@@ -1,16 +1,16 @@
-"""Game Info database connector"""
+"""Game Info provider"""
 
 
-class GameInfoDatabaseService:
+class GameInfoService:
     """
-    Handles interaction with the game info database.
+    Provides information on supported games.
     """
     _instance = None
     _info: dict = None
 
     def __new__(cls):
         if cls._instance is None:
-            cls._instance = super(GameInfoDatabaseService, cls).__new__(cls)
+            cls._instance = super(GameInfoService, cls).__new__(cls)
             cls._info = {}
 
         return cls._instance
@@ -18,7 +18,7 @@ class GameInfoDatabaseService:
     @classmethod
     def add(cls, info: dict) -> None:
         """
-        Adds game info to the database. It can only contains one at a time.
+        Adds game info to the list of supported games.
         :param info: to be added
         :return: None
         """
@@ -27,7 +27,7 @@ class GameInfoDatabaseService:
     @classmethod
     def get(cls):
         """
-        Retrieves the game info object. There is only one.
-        :return: Game info object if it is exists. Else raises GameInfoNotSetError.
+        Retrieves the game info object.
+        :return: Game info object if it is exists. Else None.
         """
         return cls._info

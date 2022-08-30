@@ -23,7 +23,7 @@ def next_hand(room_id: str, background_tasks: BackgroundTasks,
     """
     room: RoomInDb = room_service.get(room_id)
 
-    room.next_hand()
+    _ = room.next_hand()
     room_service.save(room)
     background_tasks.add_task(channel_service.notify(room_id, NextHandEvent()))
     return {'status': 'Success'}

@@ -4,7 +4,7 @@ import os.path
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from whist_server.services.game_info_db_service import GameInfoDatabaseService
+from whist_server.services.game_info_service import GameInfoService
 
 router = APIRouter()
 
@@ -15,7 +15,7 @@ def read_root():
     Index route of the server.
     :return: The game the server can host.
     """
-    game_info_db_service = GameInfoDatabaseService()
+    game_info_db_service = GameInfoService()
     return {'info': game_info_db_service.get()}
 
 

@@ -19,7 +19,7 @@ def next_hand(room_id: str, background_tasks: BackgroundTasks,
     :param channel_service: Injection of the websocket channel manager.
     :param room_service: Injection of the room database service. Requires to interact with the
     database.
-    :return:Status: 'Success' or 'Failed'
+    :return: Status: 'Success' or 'Failed'
     """
     room: RoomInDb = room_service.get(room_id)
 

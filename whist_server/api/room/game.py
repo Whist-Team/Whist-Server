@@ -1,3 +1,4 @@
+"""Route of /room/game"""
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from whist_core.game.errors import HandNotDoneError
 

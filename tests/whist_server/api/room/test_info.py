@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock
 
-from tests.whist_server.api.game.base_created_case import BaseCreateGameTestCase
-
+from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
 from whist_server.database.room import RoomInfo
 from whist_server.services.error import RoomNotFoundError
 

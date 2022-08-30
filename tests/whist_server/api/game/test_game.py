@@ -19,5 +19,4 @@ class GameTestCase(BaseCreateGameTestCase):
     def test_next_hand_not_done(self):
         self.room_mock.next_hand = MagicMock(side_effect=HandNotDoneError())
         response = self.client.post(url=f'/room/next_hand/{self.room_mock.id}')
-        self.assertEqual('Failed', response.json()['status'])
         self.assertEqual(400, response.status_code)

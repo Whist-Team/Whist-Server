@@ -1,4 +1,5 @@
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from whist_core.game.errors import HandNotDoneError
 
 from whist_server.database.room import RoomInDb
 from whist_server.services.channel_service import ChannelService
@@ -19,11 +20,19 @@ def next_hand(room_id: str, background_tasks: BackgroundTasks,
     :param channel_service: Injection of the websocket channel manager.
     :param room_service: Injection of the room database service. Requires to interact with the
     database.
-    :return: Status: 'Success' or 'Failed'
+    :return: Status: 'Success' if next hand is created else raises error.
     """
     room: RoomInDb = room_service.get(room_id)
 
-    _ = room.next_hand()
-    room_service.save(room)
-    background_tasks.add_task(channel_service.notify(room_id, NextHandEvent()))
+    try:
+        _ = room.next_hand()
+        room_service.save(room)
+        background_tasks.add_task(channel_service.notify(room_id, NextHandEvent()))
+    except HandNotDoneError as ready_error:
+        message = 'The hand is not done yet.'
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=message,
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from ready_error
     return {'status': 'Success'}

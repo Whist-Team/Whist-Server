@@ -1,7 +1,8 @@
 """Route of /room/game"""
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 from whist_core.game.errors import HandNotDoneError
 
+from whist_server.api.util import create_http_error
 from whist_server.database.room import RoomInDb
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.room_db_service import RoomDatabaseService
@@ -31,9 +32,5 @@ def next_hand(room_id: str, background_tasks: BackgroundTasks,
         background_tasks.add_task(channel_service.notify(room_id, NextHandEvent()))
     except HandNotDoneError as ready_error:
         message = 'The hand is not done yet.'
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=message,
-            headers={"WWW-Authenticate": "Bearer"},
-        ) from ready_error
+        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from ready_error
     return {'status': 'Success'}

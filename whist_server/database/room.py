@@ -2,6 +2,7 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
+from whist_core.game.hand import Hand
 from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.rubber import Rubber
 from whist_core.game.trick import Trick
@@ -68,6 +69,12 @@ class Room(BaseModel):
         Returns the current trick if it exists regardless of being done.
         """
         return self._current_hand().current_trick
+
+    def next_hand(self) -> Hand:
+        """
+        Creates the next hand.
+        """
+        return self._current_game().next_hand()
 
     def next_trick(self) -> Trick:
         """

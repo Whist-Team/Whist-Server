@@ -1,7 +1,8 @@
 """Collection of general room information getter."""
-from fastapi import APIRouter, Depends, HTTPException, Security, status
+from fastapi import APIRouter, Depends, Security, status
 from whist_core.user.player import Player
 
+from whist_server.api.util import create_http_error
 from whist_server.database.room import RoomInDb, RoomInfo
 from whist_server.services.authentication import get_current_user
 from whist_server.services.error import RoomNotFoundError
@@ -34,9 +35,8 @@ def room_info(room_id: str, room_service=Depends(RoomDatabaseService)) -> RoomIn
     try:
         room = room_service.get(room_id)
     except RoomNotFoundError as not_found:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f'Room not found with id: {room_id}',
-                            headers={"WWW-Authenticate": "Bearer"}, ) from not_found
+        message = f'Room not found with id: {room_id}'
+        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from not_found
     return room.get_info()
 
 
@@ -55,12 +55,9 @@ def room_id_from_name(room_name: str, room_service=Depends(RoomDatabaseService),
     try:
         room: RoomInDb = room_service.get_by_name(room_name)
         if not room.has_joined(user):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                                detail='User has not access.',
-                                headers={"WWW-Authenticate": "Bearer"},
-                                )
+            message = 'User has not access.'
+            raise create_http_error(message, status.HTTP_403_FORBIDDEN)
     except RoomNotFoundError as not_found:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f'Room not found with name: {room_name}',
-                            headers={"WWW-Authenticate": "Bearer"}, ) from not_found
+        message = f'Room not found with name: {room_name}'
+        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from not_found
     return {'id': str(room.id)}

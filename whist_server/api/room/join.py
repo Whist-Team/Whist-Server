@@ -3,10 +3,11 @@ Route to join a room.
 """
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Security, status, Depends
+from fastapi import APIRouter, BackgroundTasks, Security, status, Depends
 from pydantic import BaseModel
 from whist_core.user.player import Player
 
+from whist_server.api.util import create_http_error
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
@@ -47,11 +48,8 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
     if room.hashed_password is not None and (
             request.password is None or not pwd_service.verify(request.password,
                                                                room.hashed_password)):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Wrong room password.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        message = "Wrong room password."
+        raise create_http_error(message, status.HTTP_401_UNAUTHORIZED)
     try:
         room.join(user)
         room_service.save(room)

@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 from whist_core.error.table_error import TableNotReadyError, PlayerNotJoinedError
 
-from tests.whist_server.api.game.base_created_case import BaseCreateGameTestCase
+from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
 from whist_server.database.error import PlayerNotCreatorError
 from whist_server.services.error import RoomNotFoundError
 from whist_server.services.error import UserNotReadyError

@@ -1,8 +1,9 @@
 """'/user/create api"""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from whist_server.api.util import create_http_error
 from whist_server.database.user import UserInDb
 from whist_server.services.error import UserExistsError
 from whist_server.services.password import PasswordService
@@ -35,9 +36,5 @@ def create_user(request: CreateUserArgs, pwd_service=Depends(PasswordService),
         user_id = user_db_service.add(user)
     except UserExistsError as user_error:
         message = 'User already exists.'
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=message,
-            headers={"WWW-Authenticate": "Bearer"},
-        ) from user_error
+        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from user_error
     return {'user_id': user_id}

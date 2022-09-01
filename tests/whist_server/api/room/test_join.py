@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 from starlette.testclient import TestClient
 
-from tests.whist_server.api.game.base_created_case import BaseCreateGameTestCase
+from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
 from whist_server import app
 from whist_server.database import db
 from whist_server.database.warning import PlayerAlreadyJoinedWarning

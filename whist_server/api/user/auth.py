@@ -1,8 +1,9 @@
 """User authentication."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 
+from whist_server.api.util import create_http_error
 from whist_server.database.access_token import AccessToken
 from whist_server.services import authentication
 from whist_server.services.authentication import create_access_token
@@ -24,16 +25,9 @@ async def auth(request: OAuth2PasswordRequestForm = Depends()):
 
     try:
         if not await authentication.check_credentials(username, password):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='Incorrect password.',
-                headers={'WWW-Authenticate': 'Bearer'})
+            raise create_http_error('Incorrect password', status.HTTP_401_UNAUTHORIZED)
     except UserNotFoundError as error:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Incorrect username',
-            headers={'WWW-Authenticate': 'Bearer'}
-        ) from error
+        raise create_http_error('Incorrect username', status.HTTP_403_FORBIDDEN) from error
     token_request = {'sub': username}
     token = create_access_token(token_request)
     return AccessToken(access_token=token, token_type='Bearer')  # nosec B106

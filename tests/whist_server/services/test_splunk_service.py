@@ -18,8 +18,9 @@ class SplunkServiceTestCase(unittest.TestCase):
         SplunkService._instance = None
         SplunkService._service = None
 
-    @patch.dict(os.environ, {'SPLUNK_HOST': 'localhost', 'SPLUNK_PORT': '1234',
-                             'SPLUNK_TOKEN': 'abc'})
+    def test_creation(self):
+        self.connect_mock.assert_called_once_with(host='localhost', port=1234, splunkToken='abc')
+
     def test_write_event(self):
         event = SplunkEvent(event='Start', source='Test', source_type='testing')
         self.service.write_event(event)

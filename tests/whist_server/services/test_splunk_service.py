@@ -1,3 +1,4 @@
+import os
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -9,6 +10,8 @@ class SplunkServiceTestCase(unittest.TestCase):
         self.index_mock = MagicMock()
         self.service_mock = MagicMock(indexes={'whist_monitor': self.index_mock})
 
+    @patch.dict(os.environ, {'SPLUNK_HOST': 'localhost', 'SPLUNK_PORT': '1234',
+                             'SPLUNK_TOKEN': 'abc'})
     def test_write_event(self):
         event = SplunkEvent(event='Start', source='Test', source_type='testing')
         with patch('splunklib.client.connect', return_value=self.service_mock):

@@ -27,7 +27,8 @@ def main():
     parser.add_argument('--splunk_port', type=int, help='The port of Splunk Instance.')
     args = parser.parse_args()
     _main(host=args.host_addr, port=args.host_port, admin_name=args.admin_name,
-          admin_pwd=args.admin_pwd, reload=args.reload)
+          admin_pwd=args.admin_pwd, reload=args.reload, splunk_host=args.splunk_host,
+          splunk_port=args.splunk_port)
 
 
 def _main(host=HOST_ADDR, port=HOST_PORT, admin_name=ADMIN_NAME, admin_pwd=ADMIN_PASSWORD,

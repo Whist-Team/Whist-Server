@@ -9,6 +9,7 @@ from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.password import PasswordService
 from whist_server.services.room_db_service import RoomDatabaseService
+from whist_server.services.splunk_service import SplunkEvent, SplunkService
 from whist_server.web_socket.side_channel import SideChannel
 
 router = APIRouter(prefix='/room')
@@ -45,6 +46,9 @@ def create_game(request: CreateRoomArgs, user: Player = Security(get_current_use
                                         min_player=request.min_player,
                                         max_player=request.max_player)
     room_id = room_service.add(room)
+    event = SplunkEvent(f'Username: {user.username}', source='Whist Server',
+                        source_type='User Created')
+    SplunkService.write_event(event)
     channel = SideChannel()
     channel_service.add(room_id, channel)
     return {'room_id': room_id}

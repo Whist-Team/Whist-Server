@@ -25,6 +25,8 @@ class CreateRoomArgs(BaseModel):
     max_player: Optional[int] = None
 
 
+# Most of them are injections.
+# pylint: disable=too-many-arguments
 @router.post('/create', status_code=200)
 def create_game(request: CreateRoomArgs, user: Player = Security(get_current_user),
                 room_service=Depends(RoomDatabaseService), pwd_service=Depends(PasswordService),

@@ -713,6 +713,14 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "splunk-sdk"
+version = "1.7.1"
+description = "The Splunk Software Development Kit for Python."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "starlette"
 version = "0.19.1"
 description = "The little ASGI library that shines."
@@ -850,7 +858,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "8993b35e5b76e0f36bf3674eac5f888f80318b334ad0214fb67e626d1ccc85b6"
+content-hash = "7f1f2dd8df09e4c02a5f817c8a7cbdde8ac5e18ad0d6a2f76ee8a250279586e9"
 
 [metadata.files]
 anyio = [
@@ -1498,6 +1506,9 @@ six = [
 sniffio = [
     {file = "sniffio-1.2.0-py3-none-any.whl", hash = "sha256:471b71698eac1c2112a40ce2752bb2f4a4814c22a54a3eed3676bc0f5ca9f663"},
     {file = "sniffio-1.2.0.tar.gz", hash = "sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de"},
+]
+splunk-sdk = [
+    {file = "splunk-sdk-1.7.1.tar.gz", hash = "sha256:4d0de12a87395f28f2a0c90b179882072a39a1f09a3ec9e79ce0de7a16220fe1"},
 ]
 starlette = [
     {file = "starlette-0.19.1-py3-none-any.whl", hash = "sha256:5a60c5c2d051f3a8eb546136aa0c9399773a689595e099e0877704d5888279bf"},

@@ -30,6 +30,7 @@ pydantic = "^1.9"
 pymongo = "^4.2"
 python-jose = { version = "^3.3", extras = ["cryptography"] }
 passlib = { version = "^1.7", extras = ["bcrypt"] }
+splunk-sdk = "^1.7.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"

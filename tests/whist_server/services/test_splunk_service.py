@@ -12,7 +12,7 @@ class SplunkServiceTestCase(unittest.TestCase):
     def test_write_event(self):
         event = SplunkEvent(event='Start', source='Test', source_type='testing')
         with patch('splunklib.client.connect', return_value=self.service_mock):
-            service = SplunkService('localhost', 7000)
+            service = SplunkService()
             service.write_event(event)
             self.index_mock.submit.assert_called_once_with(event=event.event, source=event.source,
                                                            sourcetype=event.source_type)

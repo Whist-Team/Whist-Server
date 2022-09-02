@@ -9,6 +9,7 @@ class SplunkEvent:
     """
     Wrapper for splunk events.
     """
+
     def __init__(self, event: str, source: Optional[str] = None, source_type: Optional[str] = None):
         self._event = event
         self._source = source
@@ -36,6 +37,12 @@ class SplunkEvent:
         return self._source_type
 
 
+class SplunkWarning(Warning):
+    """
+    Is raised when something is not working with Splunk.
+    """
+
+
 class SplunkService:
     """
     Service for Splunk Integration.
@@ -43,13 +50,17 @@ class SplunkService:
     _instance = None
     _service: client.Service = None
 
-    def __new__(cls, host: str, port: int):
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super(SplunkService, cls).__new__(cls)
-            cls._service = client.connect(
-                host=host,
-                port=port,
-                splunkToken=os.getenv('SPLUNK_TOKEN'))
+
+            host = os.getenv('SPLUNK_HOST')
+            port = os.getenv('SPLUNK_PORT')
+            token = os.getenv('SPLUNK_TOKEN')
+            if host is not None and port is not None and token is not None:
+                cls._service = client.connect(host=host, port=port, splunkToken=token)
+            else:
+                raise SplunkWarning('No Splunk parameters setup.')
         return cls._instance
 
     @classmethod

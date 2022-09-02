@@ -25,3 +25,12 @@ class SplunkServiceTestCase(unittest.TestCase):
         self.service.write_event(event)
         self.index_mock.submit.assert_called_once_with(event=event.event, source=event.source,
                                                        sourcetype=event.source_type)
+
+    def test_available(self):
+        self.assertTrue(self.service.available)
+
+    def test_not_available(self):
+        SplunkService._instance = None
+        SplunkService._service = None
+        service = SplunkService()
+        self.assertFalse(service.available)

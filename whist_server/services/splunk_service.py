@@ -1,4 +1,5 @@
 """Splunk Integration"""
+import os
 from typing import Optional
 
 from splunklib import client
@@ -42,13 +43,13 @@ class SplunkService:
     _instance = None
     _service: client.Service = None
 
-    def __new__(cls, host: str, port: int, token: str):
+    def __new__(cls, host: str, port: int):
         if cls._instance is None:
             cls._instance = super(SplunkService, cls).__new__(cls)
             cls._service = client.connect(
                 host=host,
                 port=port,
-                splunkToken=token)
+                splunkToken=os.getenv('SPLUNK_TOKEN'))
         return cls._instance
 
     @classmethod

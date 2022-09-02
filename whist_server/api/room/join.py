@@ -14,7 +14,7 @@ from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.password import PasswordService
 from whist_server.services.room_db_service import RoomDatabaseService
-from whist_server.web_socket.events.event import PlayerJoinedEvent
+from whist_server.web_socket.events.event import PlayerJoinedEvent, PlayerLeftEvent
 
 router = APIRouter(prefix='/room')
 
@@ -81,7 +81,7 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     try:
         room.leave(user)
         room_service.save(room)
-        background_tasks.add_task(channel_service.notify, room_id, PlayerJoinedEvent(player=user))
-    except PlayerNotJoinedError:
-        return {'status': 'not joined'}
+        background_tasks.add_task(channel_service.notify, room_id, PlayerLeftEvent(player=user))
+    except PlayerNotJoinedError as joined_error:
+        raise create_http_error('Player not joined', status.HTTP_403_FORBIDDEN) from joined_error
     return {'status': 'left'}

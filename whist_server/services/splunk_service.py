@@ -28,7 +28,7 @@ class SplunkEvent:
         return self._source
 
     @property
-    def sourcetype(self):
+    def source_type(self):
         """
         The type of the event.
         """
@@ -59,4 +59,4 @@ class SplunkService:
         :return: None
         """
         index = cls._service.indexes['whist_monitor']
-        index.submit(event=event.event, source=event.source, sourcetype=event.sourcetype)
+        index.submit(event=event.event, source=event.source, sourcetype=event.source_type)

@@ -15,4 +15,4 @@ class SplunkServiceTestCase(unittest.TestCase):
             service = SplunkService('localhost', 7000, 'abc')
             service.write_event(event)
             self.index_mock.submit.assert_called_once_with(event=event.event, source=event.source,
-                                                           sourcetype=event.sourcetype)
+                                                           sourcetype=event.source_type)

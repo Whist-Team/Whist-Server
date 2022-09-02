@@ -14,6 +14,7 @@ from whist_server.api.room.join import router as game_join
 from whist_server.api.room.trick import router as game_trick
 from whist_server.api.user import auth
 from whist_server.api.user.create import router as user_creation
+from whist_server.api.user.info import router as user_info
 from whist_server.services.game_info_service import GameInfoService
 from whist_server.web_socket.entry import router as ws_router
 
@@ -31,6 +32,7 @@ app.include_router(game_join)
 app.include_router(game_trick)
 app.include_router(leaderboard)
 app.include_router(user_creation)
+app.include_router(user_info)
 app.include_router(auth.router)
 app.include_router(ws_router)
 app.add_middleware(CORSMiddleware,

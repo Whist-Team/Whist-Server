@@ -7,7 +7,7 @@ from whist_server.const import HOST_ADDR, HOST_PORT, ADMIN_NAME, ADMIN_PASSWORD
 from whist_server.database.user import UserInDb
 from whist_server.services.error import UserExistsError
 from whist_server.services.password import PasswordService
-from whist_server.services.splunk_service import SplunkService
+from whist_server.services.splunk_service import SplunkService, SplunkEvent
 from whist_server.services.user_db_service import UserDatabaseService
 
 
@@ -42,7 +42,10 @@ def _main(host=HOST_ADDR, port=HOST_PORT, admin_name=ADMIN_NAME, admin_pwd=ADMIN
         except UserExistsError:
             pass
     if splunk_host is not None and splunk_port is not None:
-        _ = SplunkService(splunk_host, splunk_port)
+        splunk_service = SplunkService(splunk_host, splunk_port)
+        event = SplunkEvent(f'Host: {host}, Port:{port}', source='Whist-Server',
+                            source_type='Server Start')
+        splunk_service.write_event(event)
 
     uvicorn.run('whist_server:app', host=host, port=port, debug=reload is not None and reload,
                 reload=reload is not None and reload)

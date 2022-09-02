@@ -59,4 +59,4 @@ class SplunkService:
         :return: None
         """
         index = cls._service.indexes['whist_monitor']
-        index.submit(event=event.event, source=event.source, sourcetype=None)
+        index.submit(event=event.event, source=event.source, sourcetype=event.sourcetype)

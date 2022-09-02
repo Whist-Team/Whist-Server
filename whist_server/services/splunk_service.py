@@ -57,6 +57,13 @@ class SplunkService:
                 print('Splunk parameter are not set.')
         return cls._instance
 
+    @property
+    def available(self):
+        """
+        Splunk connection is available.
+        """
+        return self._service is not None
+
     @classmethod
     def write_event(cls, event: SplunkEvent) -> None:
         """

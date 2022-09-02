@@ -50,10 +50,11 @@ def create_game(request: CreateRoomArgs, user: Player = Security(get_current_use
                                         min_player=request.min_player,
                                         max_player=request.max_player)
     room_id = room_service.add(room)
-    event = SplunkEvent(f'Room: {room.room_name}', source='Whist Server',
-                        source_type='Room Created')
+    if splunk_service.available:
+        event = SplunkEvent(f'Room: {room.room_name}', source='Whist Server',
+                            source_type='Room Created')
 
-    splunk_service.write_event(event)
+        splunk_service.write_event(event)
     channel = SideChannel()
     channel_service.add(room_id, channel)
     return {'room_id': room_id}

@@ -37,9 +37,10 @@ def create_user(request: CreateUserArgs, pwd_service=Depends(PasswordService),
     user = UserInDb(username=request.username, hashed_password=pwd_service.hash(request.password))
     try:
         user_id = user_db_service.add(user)
-        event = SplunkEvent(f'Username: {user.username}', source='Whist Server',
-                            source_type='User Created')
-        splunk_service.write_event(event)
+        if splunk_service.available:
+            event = SplunkEvent(f'Username: {user.username}', source='Whist Server',
+                                source_type='User Created')
+            splunk_service.write_event(event)
     except UserExistsError as user_error:
         message = 'User already exists.'
         raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from user_error

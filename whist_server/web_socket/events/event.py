@@ -40,6 +40,13 @@ class PlayerJoinedEvent(Event):
     player: Player
 
 
+class PlayerLeftEvent(Event):
+    """
+    It is sent when a player leaves a room.
+    """
+    player: Player
+
+
 class RoomStartedEvent(Event):
     """
     It is sent when a room has been started.

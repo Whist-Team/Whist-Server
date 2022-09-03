@@ -5,7 +5,7 @@ from whist_core.session.matcher import RandomMatcher
 from whist_core.user.player import Player
 
 from tests.whist_server.base_player_test_case import BasePlayerTestCase
-from whist_server.database.error import PlayerNotCreatorError
+from whist_server.database.error import PlayerNotCreatorError, PlayerNotJoinedError
 from whist_server.database.room import RoomInDb, RoomInfo
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.password import PasswordService
@@ -51,6 +51,13 @@ class RoomInDbTestCase(BasePlayerTestCase):
 
     def has_not_joined(self):
         self.assertFalse(self.room.has_joined(self.second_player))
+
+    def test_leave(self):
+        self.assertTrue(self.room.leave(self.player))
+
+    def test_leave_not_joined(self):
+        with self.assertRaises(PlayerNotJoinedError):
+            self.room.leave(self.second_player)
 
     def test_next(self):
         self.room.table = MagicMock(started=PropertyMock(return_value=True))

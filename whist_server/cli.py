@@ -40,9 +40,10 @@ def _main(host=HOST_ADDR, port=HOST_PORT, admin_name=ADMIN_NAME, admin_pwd=ADMIN
             pass
 
         splunk_service = SplunkService()
-        event = SplunkEvent(f'Host: {host}, Port:{port}', source='Whist-Server',
-                            source_type='Server Start')
-        splunk_service.write_event(event)
+        if splunk_service.available:
+            event = SplunkEvent(f'Host: {host}, Port:{port}', source='Whist-Server',
+                                source_type='Server Start')
+            splunk_service.write_event(event)
 
     uvicorn.run('whist_server:app', host=host, port=port, debug=reload is not None and reload,
                 reload=reload is not None and reload)

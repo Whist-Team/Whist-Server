@@ -2,7 +2,7 @@
 from typing import Union
 
 from fastapi import APIRouter, BackgroundTasks, Security, Depends
-from fastapi import HTTPException, status
+from fastapi import status
 from whist_core.cards.card import Card
 from whist_core.cards.card_container import OrderedCardContainer
 from whist_core.cards.card_container import UnorderedCardContainer
@@ -11,6 +11,7 @@ from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.warnings import TrickNotDoneWarning
 from whist_core.user.player import Player
 
+from whist_server.api.util import create_http_error
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.room_db_service import RoomDatabaseService
@@ -67,9 +68,8 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
             background_tasks.add_task(channel_service.notify, room_id,
                                       TrickDoneEvent(winner=trick.winner))
     except NotPlayersTurnError as turn_error:
-        raise HTTPException(detail=f'It is not {user.username}\'s turn',
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            headers={"WWW-Authenticate": "Bearer"}) from turn_error
+        message = f'It is not {user.username}\'s turn'
+        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from turn_error
     return trick.stack
 
 
@@ -88,9 +88,8 @@ def get_winner(room_id: str, user: Player = Security(get_current_user),
     """
     room = room_service.get(room_id)
     if user not in room.players:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            headers={'WWW-Authenticate': 'Bearer'},
-                            detail='You have not joined the table.')
+        message = 'You have not joined the table.'
+        raise create_http_error(message, status.HTTP_403_FORBIDDEN)
 
     trick = room.current_trick()
     try:

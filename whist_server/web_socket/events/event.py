@@ -27,9 +27,22 @@ class CardPlayedEvent(Event):
     player: Player
 
 
+class NextHandEvent(Event):
+    """
+    It is send when the next hand has been started.
+    """
+
+
 class PlayerJoinedEvent(Event):
     """
     It is sent when a player joins a room.
+    """
+    player: Player
+
+
+class PlayerLeftEvent(Event):
+    """
+    It is sent when a player leaves a room.
     """
     player: Player
 

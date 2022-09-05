@@ -2,6 +2,7 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
+from whist_core.game.hand import Hand
 from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.rubber import Rubber
 from whist_core.game.trick import Trick
@@ -9,7 +10,7 @@ from whist_core.session.matcher import Matcher
 from whist_core.session.table import Table
 from whist_core.user.player import Player
 
-from whist_server.database.error import PlayerNotCreatorError
+from whist_server.database.error import PlayerNotCreatorError, PlayerNotJoinedError
 from whist_server.database.id_wrapper import PyObjectId
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.password import PasswordService
@@ -69,6 +70,12 @@ class Room(BaseModel):
         """
         return self._current_hand().current_trick
 
+    def next_hand(self) -> Hand:
+        """
+        Creates the next hand.
+        """
+        return self._current_game().next_hand()
+
     def next_trick(self) -> Trick:
         """
         Creates the next trick.
@@ -86,6 +93,18 @@ class Room(BaseModel):
             raise PlayerAlreadyJoinedWarning(
                 f'User with name "{user.username}" has already joined.')
         self.table.join(user)
+        return True
+
+    def leave(self, user: Player) -> bool:
+        """
+        Removes the user to this room.
+        :param user: user that wants to leave.
+        :return: True if successful else an error or warning is raised.
+        """
+        if not self.has_joined(user):
+            raise PlayerNotJoinedError(
+                f'User with name "{user.username}" has joined yet.')
+        self.table.leave(user)
         return True
 
     def has_joined(self, player: Player) -> bool:

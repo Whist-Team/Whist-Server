@@ -6,7 +6,7 @@ from whist_core.cards.card_container import UnorderedCardContainer
 from whist_core.game.errors import NotPlayersTurnError
 from whist_core.game.warnings import TrickNotDoneWarning
 
-from tests.whist_server.api.game.base_created_case import BaseCreateGameTestCase
+from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
 
 
 class TrickTestCase(BaseCreateGameTestCase):

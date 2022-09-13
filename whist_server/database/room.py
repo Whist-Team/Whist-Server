@@ -191,7 +191,7 @@ class RoomInfo(BaseModel):
     trick_number: int
     min_player: int
     max_player: int
-    player_number: int
+    players: list[Player]
 
     @staticmethod
     def from_room(room: RoomInDb) -> 'RoomInfo':
@@ -212,4 +212,4 @@ class RoomInfo(BaseModel):
                         trick_number=trick_number,
                         min_player=room.table.min_player,
                         max_player=room.table.max_player,
-                        player_number=len(room.table.users))
+                        players=room.table.users.players)

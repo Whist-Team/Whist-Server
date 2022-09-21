@@ -87,6 +87,13 @@ class RoomDatabaseService:
         return RoomInDb(**room)
 
     @classmethod
+    def get_by_username(cls, username: str) -> RoomInDb:
+        room = cls._rooms.find_one({f'table.users.users.{username}': {'$exists': True}})
+        if room is None:
+            raise RoomNotFoundError()
+        return RoomInDb(**room)
+
+    @classmethod
     def save(cls, room: RoomInDb) -> None:
         """
         Saves an updated room object to the database.

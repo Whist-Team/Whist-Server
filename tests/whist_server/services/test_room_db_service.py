@@ -101,3 +101,8 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         all_games = self.service.all()
         self.assertEqual(1, len(all_games))
         self.assertEqual(game_id, str(all_games[0].id))
+
+    def test_get_room_by_user(self):
+        room_id = self.service.add(self.room)
+        self.room.id = ObjectId(room_id)
+        self.assertEqual(self.room, self.service.get_by_username(self.player.username))

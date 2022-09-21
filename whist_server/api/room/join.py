@@ -85,3 +85,16 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     except PlayerNotJoinedError as joined_error:
         raise create_http_error('Player not joined', status.HTTP_403_FORBIDDEN) from joined_error
     return {'status': 'left'}
+
+
+@router.post('/reconnect/', status_code=200)
+def reconnect(user: Player = Security(get_current_user), room_service=Depends(RoomDatabaseService)):
+    """
+    Finds the room a player has joined.
+    :param user: requesting their room
+    :param room_service: Injection of the room database service. Requires to interact with the
+    database.
+    :return: dictionary containing the room id
+    """
+    room = room_service.get_by_username(user.username)
+    return {'room_id': str(room.id)}

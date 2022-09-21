@@ -12,7 +12,7 @@ from whist_server.services.room_db_service import RoomDatabaseService
 
 
 @pytest.mark.integtest
-class GameDdServiceTestCase(BasePlayerTestCase):
+class RoomDdServiceTestCase(BasePlayerTestCase):
     def setUp(self) -> None:
         db.room.drop()
         super().setUp()

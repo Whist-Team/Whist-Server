@@ -38,6 +38,16 @@ class JoinGameTestCase(BaseCreateGameTestCase):
                                     json={'password': 'abc'})
         self.assertEqual(401, response.status_code, msg=response.content)
 
+    def test_reconnect(self):
+        self.room_mock.has_password = True
+        self.room_service_mock.get_by_username = MagicMock(return_value=self.room_mock)
+        response = self.client.post(url='/room/reconnect/',
+                                    headers=self.headers)
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('joined', response.json()['status'])
+        self.assertEqual(True, response.json()['password'])
+        self.assertEqual(self.room_mock.id, response.json()['room_id'])
+
     def test_host_join(self):
         self.room_mock.join = MagicMock(side_effect=PlayerAlreadyJoinedWarning)
         response = self.client.post(url=f'/room/join/{self.room_mock.id}',

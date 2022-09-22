@@ -12,6 +12,7 @@ from whist_server.database.error import PlayerNotJoinedError
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
+from whist_server.services.error import RoomNotFoundError
 from whist_server.services.password import PasswordService
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import PlayerJoinedEvent, PlayerLeftEvent
@@ -94,7 +95,11 @@ def reconnect(user: Player = Security(get_current_user), room_service=Depends(Ro
     :param user: requesting their room
     :param room_service: Injection of the room database service. Requires to interact with the
     database.
-    :return: dictionary containing the room id
+    :return: dictionary containing the room id and the status either 'joined' or 'not joined'.
+    For the later no room id is sent.
     """
-    room = room_service.get_by_username(user.username)
-    return {'room_id': str(room.id)}
+    try:
+        room = room_service.get_by_username(user.username)
+    except RoomNotFoundError:
+        return {'status': 'not joined'}
+    return {'status': 'joined', 'room_id': str(room.id), 'password': room.has_password}

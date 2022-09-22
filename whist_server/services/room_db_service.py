@@ -88,6 +88,11 @@ class RoomDatabaseService:
 
     @classmethod
     def get_by_username(cls, username: str) -> RoomInDb:
+        """
+        Retrieves the room a user has joined.
+        :param username: of the user for which the room should be retrieved
+        :return: The room if user has joined one, else RoomNotFoundError
+        """
         room = cls._rooms.find_one({f'table.users.users.{username}': {'$exists': True}})
         if room is None:
             raise RoomNotFoundError()

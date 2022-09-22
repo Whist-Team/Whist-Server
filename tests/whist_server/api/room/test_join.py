@@ -9,6 +9,7 @@ from whist_server import app
 from whist_server.database import db
 from whist_server.database.error import PlayerNotJoinedError
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
+from whist_server.services.error import RoomNotFoundError
 
 
 class JoinGameTestCase(BaseCreateGameTestCase):
@@ -47,6 +48,16 @@ class JoinGameTestCase(BaseCreateGameTestCase):
         self.assertEqual('joined', response.json()['status'])
         self.assertEqual(True, response.json()['password'])
         self.assertEqual(self.room_mock.id, response.json()['room_id'])
+
+    def test_reconnect_not_joined(self):
+        self.room_mock.has_password = True
+        self.room_service_mock.get_by_username = MagicMock(side_effect=RoomNotFoundError())
+        response = self.client.post(url='/room/reconnect/',
+                                    headers=self.headers)
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('not joined', response.json()['status'])
+        self.assertNotIn('password', response.json().keys())
+        self.assertNotIn('room_id', response.json().keys())
 
     def test_host_join(self):
         self.room_mock.join = MagicMock(side_effect=PlayerAlreadyJoinedWarning)

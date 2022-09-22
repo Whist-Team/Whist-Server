@@ -160,6 +160,13 @@ class RoomInDb(Room):
     """
     hashed_password: Optional[str]
 
+    @property
+    def has_password(self) -> bool:
+        """
+        Returns if the room is password protected.
+        """
+        return bool(self.hashed_password)
+
     def verify_password(self, password: Optional[str]):
         """
         Verifies the password for a specific user.
@@ -200,7 +207,7 @@ class RoomInfo(BaseModel):
         :param room: Meta data extracted from
         :return: RoomInfo
         """
-        password_protected = bool(room.hashed_password)
+        password_protected = room.has_password
         rubber_number = len(room.table.current_rubber.games) if room.table.started else 0
         trick_number = len(room.table.current_rubber.current_game().current_hand.tricks) if \
             room.table.started else 0

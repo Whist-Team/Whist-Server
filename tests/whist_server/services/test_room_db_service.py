@@ -106,3 +106,9 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         room_id = self.service.add(self.room)
         self.room.id = ObjectId(room_id)
         self.assertEqual(self.room, self.service.get_by_username(self.player.username))
+
+    def test_get_room_by_user_not_joined(self):
+        room_id = self.service.add(self.room)
+        self.room.id = ObjectId(room_id)
+        with self.assertRaises(RoomNotFoundError):
+            self.service.get_by_username('fake')

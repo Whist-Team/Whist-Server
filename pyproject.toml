@@ -33,7 +33,7 @@ passlib = { version = "^1.7", extras = ["bcrypt"] }
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
-pytest-cov = "^3.0"
+pytest-cov = "^4.0"
 pytest-asyncio = "^0.19"
 flake8 = "^5.0"
 pylint = "^2.15"

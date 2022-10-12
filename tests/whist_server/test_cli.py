@@ -18,4 +18,5 @@ class CliTestCase(TestCase):
         sleep(1)
         response = httpx.get('http://0.0.0.0:8080')
         thread_start.terminate()
+        thread_start.join()
         self.assertEqual(200, response.status_code)

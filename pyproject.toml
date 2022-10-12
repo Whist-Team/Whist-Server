@@ -46,3 +46,7 @@ build-backend = "poetry.core.masonry.api"
 markers = [
     "integtest: Integrationtest use 'pytest -m integtest'"
 ]
+[tool.coverage.run]
+concurrency = multiprocessing
+parallel = true
+sigterm = true

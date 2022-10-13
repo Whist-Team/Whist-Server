@@ -60,6 +60,10 @@ GITHUB_CLIENT_SECRET # During creation this secret is generated.
 GITHUB_REDIRECT_URL=http://HOST:PORT/oauth2/github/ # Only required for Browser Application with the ability to redirect.
 ```
 
+If you want to use Splunk you require an environment variable with the authentication token: 
+`SPLUNK_TOKEN` and you have to start the server with optional arguments `--splunk_host` and 
+`--splunk-port`-
+
 In order to run the application it must be started like this:
 
 ```shell

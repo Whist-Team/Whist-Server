@@ -11,6 +11,12 @@ class GitHubAuthError(Exception):
     """
 
     def __init__(self, error: str, error_description: str, error_uri: str):
+        """
+        Creates a new GitHub Authentication error. Wraps the HTTP error returned from GitHub.
+        :param error: Type of the error.
+        :param error_description: Detailed description.
+        :param error_uri: The URL for help.
+        """
         message = f'{error}: Details: {error_description}, Help: {error_uri}'
         super().__init__(message)
 
@@ -23,16 +29,20 @@ class UserExistsError(Exception):
 
 class UserNotReadyError(Exception):
     """
-    Is raised when an user is not to start.
+    Is raised when a user is not to start.
     """
 
 
 class UserNotFoundError(Exception):
     """
-    Is raised when an user is not found in the database.
+    Is raised when a user is not found in the database.
     """
 
     def __init__(self, username: Optional[str] = None):
+        """
+        Constructor.
+        :param username: OPTIONAL. name of the user not found.
+        """
         if username:
             message = f'User with name "{username}" not found.'
         else:
@@ -46,6 +56,11 @@ class RoomNotFoundError(Exception):
     """
 
     def __init__(self, game_id: Optional[str] = None, game_name: Optional[str] = None):
+        """
+        Constructor.
+        :param game_id: ID of the room.
+        :param game_name: Name of the room.
+        """
         if game_id:
             message = f'Room with id "{game_id}" not found.'
         elif game_name:
@@ -61,6 +76,10 @@ class RoomNotUpdatedError(Exception):
     """
 
     def __init__(self, game_id: str):
+        """
+        Constructor.
+        :param game_id: ID of the room.
+        """
         message = f'Room with id "{game_id}" could not be updated.'
         super().__init__(message)
 
@@ -71,6 +90,9 @@ class CredentialsException(HTTPException):
     """
 
     def __init__(self):
+        """
+        Constructor.
+        """
         super().__init__(status_code=status.HTTP_401_UNAUTHORIZED,
                          detail="Could not validate credentials",
                          headers={"WWW-Authenticate": "Bearer"})

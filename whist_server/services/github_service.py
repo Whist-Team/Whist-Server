@@ -16,6 +16,7 @@ class GitHubAPIService:
     _redirect_url = None
 
     def __new__(cls):
+        """Creates a new instance of this service singleton."""
         if cls._instance is None:
             cls._instance = super(GitHubAPIService, cls).__new__(cls)
             cls._client_id = os.getenv('GITHUB_CLIENT_ID')

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, PropertyMock
 from whist_core.cards.card import Card, Suit, Rank
 from whist_core.cards.card_container import OrderedCardContainer
 from whist_core.cards.card_container import UnorderedCardContainer
-from whist_core.game.errors import NotPlayersTurnError
+from whist_core.game.errors import NotPlayersTurnError, HandDoneError
 from whist_core.game.warnings import TrickNotDoneWarning
 
 from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
@@ -88,3 +88,10 @@ class TrickTestCase(BaseCreateGameTestCase):
                                     headers=self.headers)
         self.room_mock.next_trick.assert_not_called()
         self.assertEqual(403, response.status_code)
+
+    def test_next_trick_last_trick(self):
+        self.room_mock.next_trick = MagicMock(side_effect=HandDoneError)
+        response = self.client.post(url=f'/room/next_trick/{self.room_mock.id}',
+                                    headers=self.headers)
+        self.room_mock.next_trick.assert_called_once()
+        self.assertEqual(400, response.status_code)

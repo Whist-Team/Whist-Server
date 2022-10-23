@@ -1,6 +1,7 @@
 """Room database connector"""
 from typing import Optional
 
+import bson.errors
 from bson import ObjectId
 from whist_core.user.player import Player
 
@@ -70,7 +71,10 @@ class RoomDatabaseService:
         :param room_id: of the room
         :return: the room database object
         """
-        room = cls._rooms.find_one(ObjectId(room_id))
+        try:
+            room = cls._rooms.find_one(ObjectId(room_id))
+        except bson.errors.InvalidId as id_error:
+            raise RoomNotFoundError(room_id) from id_error
         if room is None:
             raise RoomNotFoundError(room_id)
         return RoomInDb(**room)

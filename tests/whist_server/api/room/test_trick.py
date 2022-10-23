@@ -7,6 +7,7 @@ from whist_core.game.errors import NotPlayersTurnError
 from whist_core.game.warnings import TrickNotDoneWarning
 
 from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
+from whist_server import app
 
 
 class TrickTestCase(BaseCreateGameTestCase):
@@ -74,3 +75,9 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.room_mock.next_trick.assert_called_once()
         self.assertEqual('Success', response.json()['status'])
         self.assertEqual(200, response.status_code)
+
+    def test_next_trick_without_user(self):
+        app.dependency_overrides = {}
+        response = self.client.post(url=f'/room/next_trick/{self.room_mock.id}')
+        self.room_mock.next_trick.assert_not_called()
+        self.assertEqual(401, response.status_code)

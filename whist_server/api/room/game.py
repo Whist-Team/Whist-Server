@@ -1,6 +1,6 @@
 """Route of /room/game"""
 from fastapi import APIRouter, BackgroundTasks, Depends, Security, status
-from whist_core.game.errors import HandNotDoneError
+from whist_core.game.errors import HandNotDoneError, HandDoneError
 from whist_core.game.warnings import TrickNotDoneWarning
 from whist_core.user.player import Player
 
@@ -68,4 +68,8 @@ def next_trick(room_id: str, background_tasks: BackgroundTasks,
     except TrickNotDoneWarning as trick_not_done_warning:
         message = 'The trick is not done yet.'
         raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from trick_not_done_warning
+    except HandDoneError as hand_error:
+        message = 'The hand is already done.'
+        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from hand_error
+
     return {'status': 'Success'}

@@ -1,10 +1,12 @@
 """Route of /room/game"""
-from fastapi import APIRouter, BackgroundTasks, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Security, status
 from whist_core.game.errors import HandNotDoneError
 from whist_core.game.warnings import TrickNotDoneWarning
+from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
 from whist_server.database.room import RoomInDb
+from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import NextHandEvent, NextTrickEvent
@@ -39,18 +41,23 @@ def next_hand(room_id: str, background_tasks: BackgroundTasks,
 
 @router.post('/next_trick/{room_id}', status_code=200)
 def next_trick(room_id: str, background_tasks: BackgroundTasks,
+               user: Player = Security(get_current_user),
                channel_service: ChannelService = Depends(ChannelService),
                room_service=Depends(RoomDatabaseService)) -> dict:
     """
      Request to start the next trick.
      :param room_id: at which table the card is requested to be played
      :param background_tasks: asynchronous handler
+     :param user: for which the hand is requested
      :param channel_service: Injection of the websocket channel manager.
      :param room_service: Injection of the room database service. Requires to interact with the
      database.
      :return: Status: 'Success' if next hand is created else raises error.
      """
     room: RoomInDb = room_service.get(room_id)
+    if user not in room.players:
+        message = f'Player: {user} has not joined {room}, yet.'
+        raise create_http_error(message, status.HTTP_403_FORBIDDEN)
     try:
         _ = room.next_trick()
         room_service.save(room)

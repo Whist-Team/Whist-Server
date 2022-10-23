@@ -67,3 +67,10 @@ class TrickTestCase(BaseCreateGameTestCase):
         response = self.client.get(url=f'/room/trick/winner/{self.room_mock.id}',
                                    headers=self.headers)
         self.assertEqual(403, response.status_code, msg=response.content)
+
+    def test_next_trick(self):
+        response = self.client.post(url=f'/room/next_trick/{self.room_mock.id}',
+                                    headers=self.headers)
+        self.room_mock.next_trick.assert_called_once()
+        self.assertEqual('Success', response.json()['status'])
+        self.assertEqual(200, response.status_code)

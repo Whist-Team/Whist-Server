@@ -95,3 +95,10 @@ class TrickTestCase(BaseCreateGameTestCase):
                                     headers=self.headers)
         self.room_mock.next_trick.assert_called_once()
         self.assertEqual(400, response.status_code)
+
+    def test_next_trick_not_done(self):
+        self.room_mock.next_trick = MagicMock(side_effect=TrickNotDoneWarning())
+        response = self.client.post(url=f'/room/next_trick/{self.room_mock.id}',
+                                    headers=self.headers)
+        self.room_mock.next_trick.assert_called_once()
+        self.assertEqual(400, response.status_code)

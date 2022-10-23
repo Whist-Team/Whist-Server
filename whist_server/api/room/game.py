@@ -48,15 +48,15 @@ def next_trick(room_id: str, background_tasks: BackgroundTasks,
                channel_service: ChannelService = Depends(ChannelService),
                room_service=Depends(RoomDatabaseService)) -> dict:
     """
-     Request to start the next trick.
-     :param room_id: at which table the card is requested to be played
-     :param background_tasks: asynchronous handler
-     :param user: for which the hand is requested
-     :param channel_service: Injection of the websocket channel manager.
-     :param room_service: Injection of the room database service. Requires to interact with the
-     database.
-     :return: Status: 'Success' if next hand is created else raises error.
-     """
+    Request to start the next trick.
+    :param room_id: at which table the card is requested to be played
+    :param background_tasks: asynchronous handler
+    :param user: for which the hand is requested
+    :param channel_service: Injection of the websocket channel manager.
+    :param room_service: Injection of the room database service. Requires to interact with the
+    database.
+    :return: Status: 'Success' if next hand is created else raises error.
+    """
     room: RoomInDb = room_service.get(room_id)
     if user not in room.players:
         message = f'Player: {user} has not joined {room}, yet.'

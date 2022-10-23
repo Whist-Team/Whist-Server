@@ -16,6 +16,7 @@ router = APIRouter(prefix='/room')
 
 @router.post('/next_hand/{room_id}', status_code=200)
 def next_hand(room_id: str, background_tasks: BackgroundTasks,
+              user: Player = Security(get_current_user),
               channel_service: ChannelService = Depends(ChannelService),
               room_service=Depends(RoomDatabaseService)) -> dict:
     """
@@ -28,7 +29,9 @@ def next_hand(room_id: str, background_tasks: BackgroundTasks,
     :return: Status: 'Success' if next hand is created else raises error.
     """
     room: RoomInDb = room_service.get(room_id)
-
+    if user not in room.players:
+        message = f'Player: {user} has not joined {room}, yet.'
+        raise create_http_error(message, status.HTTP_403_FORBIDDEN)
     try:
         _ = room.next_hand()
         room_service.save(room)

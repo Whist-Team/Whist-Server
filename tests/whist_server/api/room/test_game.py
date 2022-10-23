@@ -13,10 +13,12 @@ class GameTestCase(BaseCreateGameTestCase):
 
     def test_next_hand_success(self):
         response = self.client.post(url=f'/room/next_hand/{self.room_mock.id}')
+        self.room_mock.next_hand.assert_called_once()
         self.assertEqual('Success', response.json()['status'])
         self.assertEqual(200, response.status_code)
 
     def test_next_hand_not_done(self):
         self.room_mock.next_hand = MagicMock(side_effect=HandNotDoneError())
         response = self.client.post(url=f'/room/next_hand/{self.room_mock.id}')
+        self.room_mock.next_hand.assert_called_once()
         self.assertEqual(400, response.status_code)

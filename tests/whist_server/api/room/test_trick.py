@@ -81,3 +81,11 @@ class TrickTestCase(BaseCreateGameTestCase):
         response = self.client.post(url=f'/room/next_trick/{self.room_mock.id}')
         self.room_mock.next_trick.assert_not_called()
         self.assertEqual(401, response.status_code)
+
+    def test_next_trick_user_not_joined(self):
+        self.room_mock.players = []
+        response = self.client.post(url=f'/room/next_trick/{self.room_mock.id}',
+                                    headers=self.headers)
+        self.room_mock.next_trick.assert_not_called()
+        self.room_mock.next_trick.assert_not_called()
+        self.assertEqual(403, response.status_code)

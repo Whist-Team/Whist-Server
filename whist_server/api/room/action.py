@@ -90,7 +90,6 @@ def ready_player(room_id: str, user: Player = Security(get_current_user),
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
     """
-
     room = room_service.get(room_id)
 
     try:
@@ -116,7 +115,6 @@ def unready_player(room_id: str, user: Player = Security(get_current_user),
     Raises 404 exception if room_id is not found
     Raises 400 exception if player is not ready
     """
-
     room = room_service.get(room_id)
 
     try:

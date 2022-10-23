@@ -29,6 +29,11 @@ class UserInDb(Player):
         return values
 
     def __init__(self, rating=INITIAL_RATING, **data: Any):
+        """
+        Constructor.
+        :param rating: The start value of the player's rating.
+        :param data: dict with 'games' key for amount of games already played
+        """
         super().__init__(rating=rating, **data)
 
     def verify_password(self, password) -> bool:

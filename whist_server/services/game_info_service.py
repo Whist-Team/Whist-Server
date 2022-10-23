@@ -9,6 +9,7 @@ class GameInfoService:
     _info: dict = None
 
     def __new__(cls):
+        """Creates a new instance of this service singleton."""
         if cls._instance is None:
             cls._instance = super(GameInfoService, cls).__new__(cls)
             cls._info = {}

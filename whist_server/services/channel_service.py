@@ -13,6 +13,7 @@ class ChannelService:
     _channels: dict[str, SideChannel] = None
 
     def __new__(cls):
+        """Creates a new instance of this service singleton."""
         if cls._instance is None:
             cls._instance = super(ChannelService, cls).__new__(cls)
             cls._channels = {}

@@ -11,6 +11,12 @@ class SplunkEvent:
     """
 
     def __init__(self, event: str, source: Optional[str] = None, source_type: Optional[str] = None):
+        """
+        Constructor.
+        :param event: Name of the event.
+        :param source: Origin of the event.
+        :param source_type: Type of the origin.
+        """
         self._event = event
         self._source = source
         self._source_type = source_type
@@ -45,6 +51,7 @@ class SplunkService:
     _service: client.Service = None
 
     def __new__(cls):
+        """Creates a new instance of this service singleton."""
         if cls._instance is None:
             cls._instance = super(SplunkService, cls).__new__(cls)
 

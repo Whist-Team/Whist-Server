@@ -1,6 +1,7 @@
 """Room database connector"""
 from typing import Optional
 
+import bson.errors
 from bson import ObjectId
 from whist_core.user.player import Player
 
@@ -17,6 +18,7 @@ class RoomDatabaseService:
     _rooms = None
 
     def __new__(cls):
+        """Creates a new instance of this service singleton."""
         if cls._instance is None:
             cls._instance = super(RoomDatabaseService, cls).__new__(cls)
             cls._rooms = db.room
@@ -69,7 +71,10 @@ class RoomDatabaseService:
         :param room_id: of the room
         :return: the room database object
         """
-        room = cls._rooms.find_one(ObjectId(room_id))
+        try:
+            room = cls._rooms.find_one(ObjectId(room_id))
+        except bson.errors.InvalidId as id_error:
+            raise RoomNotFoundError(room_id) from id_error
         if room is None:
             raise RoomNotFoundError(room_id)
         return RoomInDb(**room)

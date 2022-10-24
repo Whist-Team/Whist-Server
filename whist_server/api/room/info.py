@@ -27,7 +27,6 @@ def all_rooms(room_service=Depends(RoomDatabaseService),
 @router.get('/info/{room_id}', response_model=RoomInfo)
 def room_info(room_id: str, room_service=Depends(RoomDatabaseService)) -> RoomInfo:
     """
-
     :param room_id:
     :param room_service: Dependency injection of the room service
     :return:

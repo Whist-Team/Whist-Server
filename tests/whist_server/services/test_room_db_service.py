@@ -37,6 +37,11 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         with self.assertRaisesRegex(RoomNotFoundError, error_msg):
             self.service.get(game_id)
 
+    def test_get_invalid_room_id(self):
+        room_id = '1'
+        error_msg = f'Room with id "{room_id}" not found.'
+        with self.assertRaisesRegex(RoomNotFoundError, error_msg):
+            self.service.get(room_id)
     def test_get_by_name(self):
         game_id = self.service.add(self.room)
         self.room.id = ObjectId(game_id)

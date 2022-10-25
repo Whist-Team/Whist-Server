@@ -47,6 +47,18 @@ class UserDatabaseService:
         return UserInDb(**user)
 
     @classmethod
+    def get_by_id(cls, user_id: str) -> UserInDb:
+        """
+        Gets the user querying the username.
+        :param user_id: of the user
+        :return: the user database object
+        """
+        user = cls._users.find_one({'id': user_id})
+        if user is None:
+            raise UserNotFoundError()
+        return UserInDb(**user)
+
+    @classmethod
     def get_from_github(cls, github_id: str) -> UserInDb:
         """
         Similar to 'get(username)', but queries by github username instead of application username.

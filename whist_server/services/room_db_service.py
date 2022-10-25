@@ -7,7 +7,9 @@ from whist_core.user.player import Player
 
 from whist_server.database import db
 from whist_server.database.room import RoomInDb
+from whist_server.database.user import UserInDb
 from whist_server.services.error import RoomNotFoundError, RoomNotUpdatedError
+from whist_server.services.user_db_service import UserDatabaseService
 
 
 class RoomDatabaseService:
@@ -92,13 +94,15 @@ class RoomDatabaseService:
         return RoomInDb(**room)
 
     @classmethod
-    def get_by_username(cls, username: str) -> RoomInDb:
+    def get_by_user_id(cls, user_id: str) -> RoomInDb:
         """
         Retrieves the room a user has joined.
-        :param username: of the user for which the room should be retrieved
+        :param user_id: of the user for which the room should be retrieved
         :return: The room if user has joined one, else RoomNotFoundError
         """
-        room = cls._rooms.find_one({f'table.users.users.{username}': {'$exists': True}})
+        user_service = UserDatabaseService()
+        user: UserInDb = user_service.get_by_id(user_id)
+        room = cls._rooms.find_one({f'table.users.users.{user.username}': {'$exists': True}})
         if room is None:
             raise RoomNotFoundError()
         return RoomInDb(**room)

@@ -24,6 +24,7 @@ jobs:
         with:
           package: whist_server
           token: ${{ secrets.CODECOV_TOKEN }}
+          test-type: 'not integtest and not clitest'
 
   integrationtest:
     strategy:
@@ -50,4 +51,11 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           test-type: integtest
 
+      - name: Commandline test with pytest
+        uses: Whist-Team/actions/test-cov@v2
+        with:
+          package: whist_server
+          token: ${{ secrets.CODECOV_TOKEN }}
+          test-type: clitest
+          coverage-file: .cli_coveragerc
         

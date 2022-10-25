@@ -90,7 +90,8 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
 
 
 @router.post('/reconnect/', status_code=200)
-def reconnect(user: UserInDb = Security(get_current_user), room_service=Depends(RoomDatabaseService)):
+def reconnect(user: UserInDb = Security(get_current_user),
+              room_service=Depends(RoomDatabaseService)):
     """
     Finds the room a player has joined.
     :param user: requesting their room

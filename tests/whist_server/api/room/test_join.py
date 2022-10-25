@@ -41,7 +41,7 @@ class JoinGameTestCase(BaseCreateGameTestCase):
 
     def test_reconnect(self):
         self.room_mock.has_password = True
-        self.room_service_mock.get_by_user_id = MagicMock(return_value=self.room_mock)
+        self.room_service_mock.get_by_username = MagicMock(return_value=self.room_mock)
         response = self.client.post(url='/room/reconnect/',
                                     headers=self.headers)
         self.assertEqual(200, response.status_code, msg=response.content)
@@ -51,7 +51,7 @@ class JoinGameTestCase(BaseCreateGameTestCase):
 
     def test_reconnect_not_joined(self):
         self.room_mock.has_password = True
-        self.room_service_mock.get_by_user_id = MagicMock(side_effect=RoomNotFoundError())
+        self.room_service_mock.get_by_username = MagicMock(side_effect=RoomNotFoundError())
         response = self.client.post(url='/room/reconnect/',
                                     headers=self.headers)
         self.assertEqual(200, response.status_code, msg=response.content)

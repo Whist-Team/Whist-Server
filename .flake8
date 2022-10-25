@@ -10,5 +10,6 @@ exclude =
     build
     dist
     venv
+ignore = D200, D204, D205, D400, D401
 max-line-length = 100
 max-complexity = 10

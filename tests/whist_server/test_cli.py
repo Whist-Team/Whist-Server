@@ -26,7 +26,7 @@ class CliTestCase(TestCase):
                              'SPLUNK_TOKEN': 'abc'})
     @patch('sys.argv', ['--reload', '--admin_name=root', '--admin_pwd=password', '0.0.0.0', '8080'])
     @patch('splunklib.client.Service.indexes', return_value={'whist_monitor': MagicMock()})
-    def test_cli(self, _):
+    def test_cli_splunk(self, _):
         thread_start = Process(target=main, daemon=True)
         thread_start.start()
         sleep(1)

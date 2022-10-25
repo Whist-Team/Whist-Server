@@ -9,6 +9,7 @@ from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
 from whist_server.database.error import PlayerNotJoinedError
+from whist_server.database.user import UserInDb
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
@@ -89,7 +90,7 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
 
 
 @router.post('/reconnect/', status_code=200)
-def reconnect(user: Player = Security(get_current_user), room_service=Depends(RoomDatabaseService)):
+def reconnect(user: UserInDb = Security(get_current_user), room_service=Depends(RoomDatabaseService)):
     """
     Finds the room a player has joined.
     :param user: requesting their room
@@ -99,7 +100,7 @@ def reconnect(user: Player = Security(get_current_user), room_service=Depends(Ro
     For the later no room id is sent.
     """
     try:
-        room = room_service.get_by_user_id(user.username)
+        room = room_service.get_by_user_id(user.id)
     except RoomNotFoundError:
         return {'status': 'not joined'}
     return {'status': 'joined', 'room_id': str(room.id), 'password': room.has_password}

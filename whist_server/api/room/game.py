@@ -11,6 +11,31 @@ from whist_server.web_socket.events.event import NextHandEvent
 router = APIRouter(prefix='/room')
 
 
+@router.post('/next_rubber/{room_id}', status_code=200)
+def next_rubber(room_id: str, background_tasks: BackgroundTasks,
+                channel_service: ChannelService = Depends(ChannelService),
+                room_service=Depends(RoomDatabaseService)) -> dict:
+    """
+    Request to start the next rubber.
+    :param room_id: at which table the card is requested to be played
+    :param background_tasks: asynchronous rubberler
+    :param channel_service: Injection of the websocket channel manager.
+    :param room_service: Injection of the room database service. Requires to interact with the
+    database.
+    :return: Status: 'Success' if next rubber is created else raises error.
+    """
+    room: RoomInDb = room_service.get(room_id)
+
+    try:
+        _ = room.next_rubber()
+        room_service.save(room)
+        background_tasks.add_task(channel_service.notify(room_id, NextRubberEvent()))
+    except RubberNotDoneError as ready_error:
+        message = 'The rubber is not done yet.'
+        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from ready_error
+    return {'status': 'Success'}
+
+
 @router.post('/next_hand/{room_id}', status_code=200)
 def next_hand(room_id: str, background_tasks: BackgroundTasks,
               channel_service: ChannelService = Depends(ChannelService),

@@ -38,7 +38,7 @@ class EntryTestCase(TestCaseWithToken):
 
     @skip('Probably bug in Test Client')
     def test_subscribe_room_not_exists(self):
-        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError)
+        self.room_service_mock.get_by_username = MagicMock(side_effect=RoomNotFoundError)
         app.dependency_overrides[RoomDatabaseService] = lambda: self.room_service_mock
         with self.client.websocket_connect(f'/room/{self.room_id}1') as websocket:
             websocket.send_text(self.token)

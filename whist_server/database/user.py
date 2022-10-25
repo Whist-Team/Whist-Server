@@ -1,10 +1,11 @@
 """User models"""
 from typing import Any, Optional
 
-from pydantic import root_validator
+from pydantic import Field, root_validator
 from whist_core.user.player import Player
 
 from whist_server.const import INITIAL_RATING
+from whist_server.database.id_wrapper import PyObjectId
 from whist_server.services.password import PasswordService
 
 
@@ -12,6 +13,7 @@ class UserInDb(Player):
     """
     User DO
     """
+    id: Optional[PyObjectId] = Field(alias='_id')
     hashed_password: Optional[str] = None
     github_id: Optional[str] = None
     github_username: Optional[str] = None

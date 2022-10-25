@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 import pytest
 from bson import ObjectId
+from whist_core.error.table_error import TableSettingsError
 from whist_core.session.matcher import RandomMatcher, RoundRobinMatcher
 from whist_core.user.player import Player
 
@@ -19,6 +20,11 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.service = RoomDatabaseService()
         self.room = self.service.create_with_pwd(room_name='test', hashed_password='abc',
                                                  creator=self.player)
+
+    def test_create_min_max_wrong(self):
+        with self.assertRaises(TableSettingsError):
+            _ = self.service.create_with_pwd(room_name='fail', min_player=2, max_player=1,
+                                             creator=self.player)
 
     def test_add(self):
         game_id = self.service.add(self.room)
@@ -42,6 +48,7 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         error_msg = f'Room with id "{room_id}" not found.'
         with self.assertRaisesRegex(RoomNotFoundError, error_msg):
             self.service.get(room_id)
+
     def test_get_by_name(self):
         game_id = self.service.add(self.room)
         self.room.id = ObjectId(game_id)

@@ -15,6 +15,7 @@ from whist_server.services.channel_service import ChannelService
 from whist_server.services.error import RoomNotFoundError
 from whist_server.services.error import UserNotReadyError
 from whist_server.services.room_db_service import RoomDatabaseService
+from whist_server.services.splunk_service import SplunkService, SplunkEvent
 from whist_server.web_socket.events.event import RoomStartedEvent
 
 router = APIRouter(prefix='/room')
@@ -40,7 +41,8 @@ class StartModel(BaseModel):
 def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTasks,
                user: Player = Security(get_current_user),
                room_service=Depends(RoomDatabaseService),
-               channel_service: ChannelService = Depends(ChannelService)) -> dict:
+               channel_service: ChannelService = Depends(ChannelService),
+               splunk_service: SplunkService = Depends(SplunkService)) -> dict:
     """
     Allows the creator of the table to start it.
     :param room_id: unique identifier of the room
@@ -50,6 +52,7 @@ def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTask
     :param room_service: Injection of the room database service. Requires to interact with the
     database.
     :param channel_service: Injection of the websocket channel manager.
+    :param splunk_service: Injection of the Splunk Service.
     :return: dictionary containing the status of whether the table has been started or not.
     Raises 403 exception if the user has not the appropriate privileges.
     """
@@ -59,6 +62,11 @@ def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTask
         room.start(user, model.matcher)
         room.current_rubber.current_game().next_hand()
         room_service.save(room)
+        if splunk_service.available:
+            event = SplunkEvent(f'Room: {room.room_name}', source='Whist Server',
+                                source_type='Room Started')
+
+            splunk_service.write_event(event)
         background_tasks.add_task(channel_service.notify, room_id, RoomStartedEvent())
     except PlayerNotCreatorError as start_exception:
         message = 'Player has not administrator rights at this table.'
@@ -82,7 +90,6 @@ def ready_player(room_id: str, user: Player = Security(get_current_user),
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
     """
-
     room = room_service.get(room_id)
 
     try:
@@ -108,7 +115,6 @@ def unready_player(room_id: str, user: Player = Security(get_current_user),
     Raises 404 exception if room_id is not found
     Raises 400 exception if player is not ready
     """
-
     room = room_service.get(room_id)
 
     try:

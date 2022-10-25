@@ -9,6 +9,7 @@ class PyObjectId(ObjectId):
 
     @classmethod
     def __get_validators__(cls):
+        """Returns the class' validators."""
         yield cls.validate
 
     @classmethod
@@ -24,4 +25,5 @@ class PyObjectId(ObjectId):
 
     @classmethod
     def __modify_schema__(cls, field_schema):
+        """Changes the type to a string."""
         field_schema.update(type='string')

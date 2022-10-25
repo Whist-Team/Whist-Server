@@ -23,6 +23,7 @@ class UserDbTestCase(UserBaseTestCase):
         error_msg = f'User with name "{username}" not found.'
         with self.assertRaisesRegex(UserNotFoundError, error_msg):
             self.user_database_service.get_by_username(username)
+
     def test_unique_user(self):
         _ = self.user_database_service.add(self.user)
         with(self.assertRaises(UserExistsError)):

@@ -99,7 +99,7 @@ def reconnect(user: Player = Security(get_current_user), room_service=Depends(Ro
     For the later no room id is sent.
     """
     try:
-        room = room_service.get_by_username(user.username)
+        room = room_service.get_by_user_id(user.username)
     except RoomNotFoundError:
         return {'status': 'not joined'}
     return {'status': 'joined', 'room_id': str(room.id), 'password': room.has_password}

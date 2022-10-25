@@ -101,7 +101,7 @@ class RoomDatabaseService:
         :return: The room if user has joined one, else RoomNotFoundError
         """
         user_service = UserDatabaseService()
-        user: UserInDb = user_service.get_by_id(user_id)
+        user: UserInDb = user_service.get(user_id)
         room = cls._rooms.find_one({f'table.users.users.{user.username}': {'$exists': True}})
         if room is None:
             raise RoomNotFoundError()

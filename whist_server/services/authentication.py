@@ -5,10 +5,10 @@ from typing import Optional
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
-from whist_core.user.player import Player
 
 from whist_server.const import SECRET_KEY, ALGORITHM
 from whist_server.database.token import TokenData
+from whist_server.database.user import UserInDb
 from whist_server.services.error import CredentialsException
 from whist_server.services.password import PasswordService
 from whist_server.services.user_db_service import UserDatabaseService
@@ -34,7 +34,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme),
-                           user_db_service=Depends(UserDatabaseService)) -> Player:
+                           user_db_service=Depends(UserDatabaseService)) -> UserInDb:
     """
     Retrieves the user from a token.
     :param token: access token
@@ -43,7 +43,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     """
     token_data = await _get_token_data(token)
     user = user_db_service.get_by_username(token_data.username)
-    return user.to_user()
+    return user
 
 
 async def check_credentials(username: str, password: str) -> bool:

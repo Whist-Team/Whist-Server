@@ -48,7 +48,7 @@ class GameInfoTestCase(BaseCreateGameTestCase):
     def test_get_room_info(self):
         expected_info = RoomInfo(name='test', password=True, rubber_number=0,
                                  game_number=0, hand_number=0, trick_number=0, min_player=2,
-                                 max_player=2, players=[self.player_mock])
+                                 max_player=2, players=[self.player_mock.to_user()])
         self.room_mock.get_info = MagicMock(return_value=expected_info)
         self.room_service_mock.get = MagicMock(return_value=self.room_mock)
         response = self.client.get(f'/room/info/{self.room_mock.id}')

@@ -114,3 +114,15 @@ class IntegrationTestJoinGame(TestCase):
                                     headers=headers_joiner, json={})
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('joined', response.json()['status'])
+
+    @pytest.mark.integtest
+    def test_rejoin(self):
+        headers_creator = self.create_and_auth_user('miles', 'abc')
+        data = {'room_name': 'test'}
+        response = self.client.post(url='/room/create', json=data, headers=headers_creator)
+        room_id = response.json()['room_id']
+        response = self.client.post(url='/room/reconnect/',
+                                    headers=headers_creator, json={})
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('joined', response.json()['status'])
+        self.assertEqual(room_id, response.json()['room_id'])

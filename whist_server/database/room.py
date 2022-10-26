@@ -70,6 +70,11 @@ class Room(BaseModel):
         """
         return self._current_hand().current_trick
 
+    def next_rubber(self) -> Rubber:
+        """
+        Creates the next rubber.
+        """
+        return self.table.next_rubber()
     def next_hand(self) -> Hand:
         """
         Creates the next hand.

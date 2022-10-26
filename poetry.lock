@@ -235,7 +235,7 @@ test = ["anyio[trio] (>=3.2.1,<4.0.0)", "black (==22.8.0)", "databases[sqlite] (
 name = "flake8"
 version = "5.0.4"
 description = "the modular source code checker: pep8 pyflakes and co"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.1"
 
@@ -248,7 +248,7 @@ pyflakes = ">=2.5.0,<2.6.0"
 name = "flake8-docstrings"
 version = "1.6.0"
 description = "Extension for flake8 which uses pydocstyle to check docstrings"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -385,7 +385,7 @@ python-versions = ">=3.7"
 name = "mccabe"
 version = "0.7.0"
 description = "McCabe checker, plugin for flake8"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -461,7 +461,7 @@ python-versions = "*"
 name = "pycodestyle"
 version = "2.9.1"
 description = "Python style guide checker"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -492,7 +492,7 @@ email = ["email-validator (>=1.0.3)"]
 name = "pydocstyle"
 version = "6.1.1"
 description = "Python docstring style checker"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -506,7 +506,7 @@ toml = ["toml"]
 name = "pyflakes"
 version = "2.5.0"
 description = "passive checker of Python programs"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -724,7 +724,7 @@ python-versions = ">=3.7"
 name = "snowballstemmer"
 version = "2.2.0"
 description = "This package provides 29 stemmers for 28 languages generated from Snowball algorithms."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -852,14 +852,15 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "whist-core"
-version = "0.4.1"
+version = "0.5.0"
 description = "Whist rules implementation"
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 
 [package.dependencies]
-pydantic = ">=1.9,<2.0"
+flake8-docstrings = ">=1.6.0,<2.0.0"
+pydantic = ">=1.10,<2.0"
 python-jose = {version = ">=3.3,<4.0", extras = ["cryptography"]}
 
 [[package]]
@@ -873,7 +874,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d7de3f8775c4a66fbe597ece48ebbfa85529c23c46346165f4433c21b3346c89"
+content-hash = "3cbec2a761de84001f6ed1cafdc0f193390c367ebf5bff88bf5f638f44fbbb20"
 
 [metadata.files]
 anyio = [
@@ -1276,7 +1277,10 @@ orjson = [
     {file = "orjson-3.8.0-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:b68a42a31f8429728183c21fb440c21de1b62e5378d0d73f280e2d894ef8942e"},
     {file = "orjson-3.8.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:ff13410ddbdda5d4197a4a4c09969cb78c722a67550f0a63c02c07aadc624833"},
     {file = "orjson-3.8.0-cp310-none-win_amd64.whl", hash = "sha256:2d81e6e56bbea44be0222fb53f7b255b4e7426290516771592738ca01dbd053b"},
+    {file = "orjson-3.8.0-cp311-cp311-macosx_10_7_x86_64.whl", hash = "sha256:200eae21c33f1f8b02a11f5d88d76950cd6fd986d88f1afe497a8ae2627c49aa"},
+    {file = "orjson-3.8.0-cp311-cp311-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:9529990f3eab54b976d327360aa1ff244a4b12cb5e4c5b3712fcdd96e8fe56d4"},
     {file = "orjson-3.8.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:e2defd9527651ad39ec20ae03c812adf47ef7662bdd6bc07dabb10888d70dc62"},
+    {file = "orjson-3.8.0-cp311-none-win_amd64.whl", hash = "sha256:b21c7af0ff6228ca7105f54f0800636eb49201133e15ddb80ac20c1ce973ef07"},
     {file = "orjson-3.8.0-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:9e6ac22cec72d5b39035b566e4b86c74b84866f12b5b0b6541506a080fb67d6d"},
     {file = "orjson-3.8.0-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:e2f4a5542f50e3d336a18cb224fc757245ca66b1fd0b70b5dd4471b8ff5f2b0e"},
     {file = "orjson-3.8.0-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e1418feeb8b698b9224b1f024555895169d481604d5d884498c1838d7412794c"},
@@ -1753,8 +1757,8 @@ websockets = [
     {file = "websockets-10.3.tar.gz", hash = "sha256:fc06cc8073c8e87072138ba1e431300e2d408f054b27047d047b549455066ff4"},
 ]
 whist-core = [
-    {file = "whist-core-0.4.1.tar.gz", hash = "sha256:83c6f9dc9dae6340499545e7a65e1ad8cf17bf9b01f0c3225e26758979b38aef"},
-    {file = "whist_core-0.4.1-py3-none-any.whl", hash = "sha256:f224de17c15d8aa787611d078ab10898b6e289aa6f076bd8f35651b8da43a348"},
+    {file = "whist_core-0.5.0-py3-none-any.whl", hash = "sha256:ac1d2d20def68221aa2bee6e6607c04a057db00e78f9369cbd0eea2a9e2c3cb4"},
+    {file = "whist_core-0.5.0.tar.gz", hash = "sha256:2f27493ffc89558f3518e6a0893b6368dc59898f486ec241069b7c220b08369e"},
 ]
 wrapt = [
     {file = "wrapt-1.14.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:1b376b3f4896e7930f1f772ac4b064ac12598d1c38d04907e696cc4d794b43d3"},

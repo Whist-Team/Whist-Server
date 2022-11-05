@@ -158,7 +158,7 @@ class RoomInDb(Room):
     """
     room DO
     """
-    hashed_password: Optional[str]
+    hashed_password: Optional[bytes]
 
     def verify_password(self, password: Optional[str]):
         """

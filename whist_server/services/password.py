@@ -18,7 +18,7 @@ class PasswordService:
         return cls._instance
 
     @classmethod
-    def verify(cls, plain_password, hashed_password):
+    def verify(cls, plain_password, hashed_password: bytes):
         """
         Verifies a password by a hash.
         :param plain_password: The password sent in the request in plain text

@@ -1,6 +1,7 @@
 """Service for passwords."""
 from bcrypt import checkpw, gensalt, hashpw
 
+
 class PasswordService:
     """
     Handles verification and hashing of passwords.
@@ -27,7 +28,6 @@ class PasswordService:
         password_bytes = plain_password.encode(cls._encode_type)
         hashed_password_bytes = hashed_password.encode(cls._encode_type)
         return checkpw(password_bytes, hashed_password_bytes)
-
 
     @classmethod
     def hash(cls, password):

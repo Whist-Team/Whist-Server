@@ -26,8 +26,10 @@ class PasswordService:
         :return: True if verified else False.
         """
         password_bytes = plain_password.encode(cls._encode_type)
-        hashed_password_bytes = hashed_password.encode(cls._encode_type)
-        return checkpw(password_bytes, hashed_password_bytes)
+        try:
+            return checkpw(password_bytes, hashed_password)
+        except ValueError:
+            return False
 
     @classmethod
     def hash(cls, password):

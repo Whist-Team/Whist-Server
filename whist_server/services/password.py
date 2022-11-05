@@ -6,6 +6,8 @@ class PasswordService:
     Handles verification and hashing of passwords.
     """
     _instance = None
+    _salt = None
+    _encode_type = 'utf-8'
 
     def __new__(cls):
         """Creates a new instance of this service singleton."""
@@ -22,8 +24,8 @@ class PasswordService:
         :param hashed_password: The saved password hash
         :return: True if verified else False.
         """
-        password_bytes = plain_password.encode('utf-8')
-        hashed_password_bytes = hashed_password.encode('utf-8')
+        password_bytes = plain_password.encode(cls._encode_type)
+        hashed_password_bytes = hashed_password.encode(cls._encode_type)
         return checkpw(password_bytes, hashed_password_bytes)
 
 
@@ -34,5 +36,5 @@ class PasswordService:
         :param password: in plain text
         :return: hash of the password
         """
-        password_bytes = password.encode('utf-8')
+        password_bytes = password.encode(cls._encode_type)
         return hashpw(password_bytes, cls._salt)

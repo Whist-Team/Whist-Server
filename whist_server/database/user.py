@@ -46,7 +46,7 @@ class UserInDb(Player):
         """
         return PasswordService.verify(password, self.hashed_password)
 
-    def to_user(self) -> Player:
+    def to_player(self) -> Player:
         """
         Converts the DO to DAO.
         :return: User with no password saved in object.

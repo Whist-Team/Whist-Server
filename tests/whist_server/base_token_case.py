@@ -16,7 +16,7 @@ from whist_server.services.user_db_service import UserDatabaseService
 class TestCaseWithToken(unittest.TestCase):
     def setUp(self) -> None:
         self.player_mock = Player(username='marcel', rating=2000)
-        user_mock = MagicMock(name='user', to_user=self.player_mock)
+        user_mock = MagicMock(name='user', to_player=self.player_mock)
         self.user_service_mock = MagicMock(get=MagicMock(return_value=user_mock))
         self.room_service_mock = MagicMock(save=MagicMock(), add=MagicMock(return_value='1'))
         self.password_service_mock = MagicMock(verify=MagicMock(),

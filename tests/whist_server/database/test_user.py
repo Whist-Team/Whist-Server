@@ -23,7 +23,7 @@ class UserInDbTestCase(unittest.TestCase):
 
     def test_user(self):
         user = Player(username=self.user.username, rating=INITIAL_RATING)
-        self.assertEqual(user, self.user.to_user())
+        self.assertEqual(user, self.user.to_player())
 
     def test_github_user(self):
         user = UserInDb(github_username='abc', username='abc')

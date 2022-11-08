@@ -9,14 +9,20 @@ from whist_server.services.error import UserNotFoundError, UserExistsError
 class UserDbTestCase(UserBaseTestCase):
 
     def test_add_user(self):
-        self.assertTrue(self.user_database_service.add(self.user))
-        self.assertEqual(self.user, self.user_database_service.get(self.user.username))
+        user_id = self.user_database_service.add(self.user)
+        self.assertTrue(user_id)
+        self.assertEqual(self.user, self.user_database_service.get(user_id))
 
     def test_user_not_existing(self):
-        username = '1'
+        user_id = '5' * 24
+        with self.assertRaises(UserNotFoundError):
+            self.user_database_service.get(user_id)
+
+    def test_get_name_user_not_existing(self):
+        username = 'fake'
         error_msg = f'User with name "{username}" not found.'
         with self.assertRaisesRegex(UserNotFoundError, error_msg):
-            self.user_database_service.get(username)
+            self.user_database_service.get_by_username(username)
 
     def test_unique_user(self):
         _ = self.user_database_service.add(self.user)

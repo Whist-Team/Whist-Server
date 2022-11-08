@@ -41,7 +41,8 @@ class RoomDatabaseService:
         min_player = 4 if min_player is None else int(min_player)
         max_player = 4 if max_player is None else int(max_player)
         room = RoomInDb.create(room_name, creator, min_player, max_player)
-        return RoomInDb(**room.dict(exclude={'table': {'matcher'}}), hashed_password=hashed_password)
+        return RoomInDb(**room.dict(exclude={'table': {'matcher'}}),
+                        hashed_password=hashed_password)
 
     @classmethod
     def add(cls, room: RoomInDb) -> str:

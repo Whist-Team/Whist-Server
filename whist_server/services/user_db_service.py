@@ -1,4 +1,5 @@
 """User database connector."""
+from bson import ObjectId
 
 from whist_server.database import db
 from whist_server.database.user import UserInDb
@@ -22,12 +23,12 @@ class UserDatabaseService:
     @classmethod
     def add(cls, user: UserInDb) -> str:
         """
-        Adds an user to the database.
+        Adds a user to the database.
         :param user: to be added
         :return: The id of the successful added user.
         """
         try:
-            _ = cls.get(user.username)
+            _ = cls.get_by_username(user.username)
         except UserNotFoundError:
             user_id = cls._users.insert_one(user.dict(exclude={'id'}))
             return str(user_id.inserted_id)
@@ -35,7 +36,19 @@ class UserDatabaseService:
             raise UserExistsError(f'User with username: "{user.username}" already exists.')
 
     @classmethod
-    def get(cls, username: str) -> UserInDb:
+    def get(cls, user_id: str) -> UserInDb:
+        """
+        Gets the user querying the user ID.
+        :param user_id: of the user
+        :return: the user database object
+        """
+        user = cls._users.find_one({'_id': ObjectId(user_id)})
+        if user is None:
+            raise UserNotFoundError()
+        return UserInDb(**user)
+
+    @classmethod
+    def get_by_username(cls, username: str) -> UserInDb:
         """
         Gets the user querying the username.
         :param username: of the user

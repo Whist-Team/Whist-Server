@@ -24,7 +24,7 @@ whist-server = "whist_server.cli:main"
 [tool.poetry.dependencies]
 python = "^3.9"
 whist-core = ">=0.4,<0.6"
-fastapi = { version = "^0.85", extras = ["all"] }
+fastapi = { version = ">=0.85,<0.87", extras = ["all"] }
 httpx = "^0.23"
 pydantic = "^1.10"
 pymongo = "^4.2"

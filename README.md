@@ -62,7 +62,7 @@ GITHUB_REDIRECT_URL=http://HOST:PORT/oauth2/github/ # Only required for Browser 
 
 If you want to use Splunk you require an environment variable with the authentication token: 
 `SPLUNK_TOKEN` and you have to start the server with optional arguments `--splunk_host` and 
-`--splunk-port`-
+`--splunk-port`.
 
 In order to run the application it must be started like this:
 

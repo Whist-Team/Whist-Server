@@ -19,8 +19,8 @@ class LeaderboardTestCase(TestCaseWithToken):
         self.user: UserInDb = UserInDb(username='test', hashed_password='abc')
         self.second_user = UserInDb(username='lower_ranking', rating=INITIAL_RATING - 10,
                                     hashed_password='abc')
-        self.users_asc = [self.user.to_user(), self.second_user.to_user()]
-        self.users_desc = [self.second_user.to_user(), self.user.to_user()]
+        self.users_asc = [self.user.to_player(), self.second_user.to_player()]
+        self.users_desc = [self.second_user.to_player(), self.user.to_player()]
         self.ranking_service_mock = MagicMock()
         app.dependency_overrides[RankingService] = lambda: self.ranking_service_mock
 
@@ -61,19 +61,19 @@ class LeaderboardTestCase(TestCaseWithToken):
         self.assertEqual(self.users_asc, players)
 
     def test_correct_asc_order_limited(self):
-        self.ranking_service_mock.select = MagicMock(return_value=[self.user.to_user()])
+        self.ranking_service_mock.select = MagicMock(return_value=[self.user.to_player()])
         response = self.client.get(url='/leaderboard/?order=ascending&start=0&amount=1',
                                    headers=self.headers)
         players = [Player(**player) for player in response.json()]
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.ranking_service_mock.select.assert_called_with('ascending', 1, 0)
-        self.assertEqual([self.user.to_user()], players)
+        self.assertEqual([self.user.to_player()], players)
 
     def test_correct_asc_order_index(self):
-        self.ranking_service_mock.select = MagicMock(return_value=[self.second_user.to_user()])
+        self.ranking_service_mock.select = MagicMock(return_value=[self.second_user.to_player()])
         response = self.client.get(url='/leaderboard/?order=ascending&start=1&amount=0',
                                    headers=self.headers)
         players = [Player(**player) for player in response.json()]
         self.assertEqual(response.status_code, 200, msg=response.content)
         self.ranking_service_mock.select.assert_called_with('ascending', 0, 1)
-        self.assertEqual([self.second_user.to_user()], players)
+        self.assertEqual([self.second_user.to_player()], players)

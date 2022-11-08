@@ -14,4 +14,4 @@ class PasswordServiceTestCase(unittest.TestCase):
         self.assertTrue(self.pwd_service.verify(PASSWORD, self.hashed_password))
 
     def test_verify_false(self):
-        self.assertFalse(self.pwd_service.verify(PASSWORD, 'a'))
+        self.assertFalse(self.pwd_service.verify(PASSWORD, 'a'.encode('utf-8')))

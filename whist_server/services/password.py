@@ -1,6 +1,5 @@
 """Service for passwords."""
-from passlib.context import CryptContext
-from passlib.exc import UnknownHashError
+from bcrypt import checkpw, gensalt, hashpw
 
 
 class PasswordService:
@@ -8,25 +7,28 @@ class PasswordService:
     Handles verification and hashing of passwords.
     """
     _instance = None
+    _salt = None
+    _encode_type = 'utf-8'
 
     def __new__(cls):
         """Creates a new instance of this service singleton."""
         if cls._instance is None:
             cls._instance = super(PasswordService, cls).__new__(cls)
-            cls._password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            cls._salt = gensalt()
         return cls._instance
 
     @classmethod
-    def verify(cls, plain_password, hashed_password):
+    def verify(cls, plain_password, hashed_password: bytes):
         """
         Verifies a password by a hash.
         :param plain_password: The password sent in the request in plain text
         :param hashed_password: The saved password hash
         :return: True if verified else False.
         """
+        password_bytes = plain_password.encode(cls._encode_type)
         try:
-            return cls._password_context.verify(plain_password, hashed_password)
-        except UnknownHashError:
+            return checkpw(password_bytes, hashed_password)
+        except ValueError:
             return False
 
     @classmethod
@@ -36,4 +38,5 @@ class PasswordService:
         :param password: in plain text
         :return: hash of the password
         """
-        return cls._password_context.hash(password)
+        password_bytes = password.encode(cls._encode_type)
+        return hashpw(password_bytes, cls._salt)

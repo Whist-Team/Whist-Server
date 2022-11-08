@@ -29,7 +29,13 @@ class CardPlayedEvent(Event):
 
 class NextHandEvent(Event):
     """
-    It is send when the next hand has been started.
+    It is sent when the next hand has been started.
+    """
+
+
+class NextTrickEvent(Event):
+    """
+    It is sent when the next hand has been started.
     """
 
 

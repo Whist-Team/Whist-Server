@@ -42,8 +42,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     :return: DO of User
     """
     token_data = await _get_token_data(token)
-    user = user_db_service.get(token_data.username)
-    return user.to_user()
+    user = user_db_service.get_by_username(token_data.username)
+    return user.to_player()
 
 
 async def check_credentials(username: str, password: str) -> bool:
@@ -55,7 +55,7 @@ async def check_credentials(username: str, password: str) -> bool:
     UserNotFoundError.
     """
     user_db_service = UserDatabaseService()
-    user = user_db_service.get(username)
+    user = user_db_service.get_by_username(username)
     password_db_service = PasswordService()
     return password_db_service.verify(password, user.hashed_password)
 

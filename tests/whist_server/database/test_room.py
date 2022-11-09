@@ -67,7 +67,7 @@ class RoomInDbTestCase(BasePlayerTestCase):
 
     def test_start_not_creator(self):
         with self.assertRaises(PlayerNotCreatorError):
-            self.room.start(player=self.second_player, matcher=RandomMatcher())
+            self.room.start(player=self.second_player)
 
     def test_get_player(self):
         play_at_table_mock = MagicMock(player=PropertyMock(return_value=self.player),

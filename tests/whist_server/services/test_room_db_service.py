@@ -82,10 +82,11 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.room.id = game_id
         self.room.table.min_player = 2
         self.room.ready_player(self.player)
+        self.room.table.matcher = RandomMatcher()
         second_player = Player(username='miles', rating=3000)
         self.room.join(second_player)
         self.room.ready_player(second_player)
-        self.room.start(self.player, RandomMatcher)
+        self.room.start(self.player)
         self.service.save(self.room)
         db_game = self.service.get(game_id)
         self.assertTrue(self.room.table.started)
@@ -96,10 +97,11 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.room.id = game_id
         self.room.table.min_player = 2
         self.room.ready_player(self.player)
+        self.room.table.matcher = RoundRobinMatcher()
         second_player = Player(username='miles', rating=3000)
         self.room.join(second_player)
         self.room.ready_player(second_player)
-        self.room.start(self.player, RoundRobinMatcher)
+        self.room.start(self.player)
         self.service.save(self.room)
         game = self.room.table.current_rubber.current_game()
         player = game.get_player(self.player)

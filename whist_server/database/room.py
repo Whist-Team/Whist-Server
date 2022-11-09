@@ -30,16 +30,19 @@ class Room(BaseModel):
 
     @classmethod
     def create(cls, room_name: str, creator: Player,
-               min_player: int, max_player: int) -> 'Room':
+               min_player: int, max_player: int, matcher: Optional[Matcher] = None) -> 'Room':
         """
         Factory method to create a Room object.
         :param room_name: name of the session
         :param creator: player object of the host
         :param min_player: the minimum amount of player to start a room
         :param max_player: the maximum amount of player that can join this session
+        :param matcher: Algorithm to reassign players to teams.
         :return: the room object
         """
         table = Table(name=room_name, min_player=min_player, max_player=max_player)
+        if matcher is not None:
+            table.matcher = matcher
         table.join(creator)
         return Room(creator=creator, table=table)
 
@@ -124,17 +127,16 @@ class Room(BaseModel):
         """
         self.table.player_ready(player)
 
-    def start(self, player: Player, matcher: Matcher) -> bool:
+    def start(self, player: Player) -> bool:
         """
         Starts the current table, if the player is the creator.
         :param player: who tries to start the table
-        :param matcher: distributor of players to teams.
         :return: True if successful else False.
         """
         if player != self.creator:
             raise PlayerNotCreatorError()
         if not self.table.started:
-            self.table.start(matcher)
+            self.table.start()
         started = self.table.started
         self.table.current_rubber.next_game()
         return started

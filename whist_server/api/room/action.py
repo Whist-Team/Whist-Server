@@ -59,7 +59,7 @@ def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTask
     room: RoomInDb = room_service.get(room_id)
 
     try:
-        room.start(user, model.matcher)
+        room.start(user)
         room.current_rubber.current_game().next_hand()
         room_service.save(room)
         if splunk_service.available:

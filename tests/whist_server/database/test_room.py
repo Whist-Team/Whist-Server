@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock, PropertyMock
 
 from whist_core.cards.card_container import UnorderedCardContainer
-from whist_core.session.matcher import RandomMatcher
 from whist_core.user.player import Player
 
 from tests.whist_server.base_player_test_case import BasePlayerTestCase
@@ -25,6 +24,9 @@ class RoomInDbTestCase(BasePlayerTestCase):
             min_player=2)
         self.second_player = Player(username='2', rating=1200)
         self.expected_players = [self.player, self.second_player]
+
+    def test_empty_matcher_form_dict(self):
+        self.assertEqual(RoomInDb(**self.room.dict()), self.room)
 
     def test_verify_pwd(self):
         self.assertTrue(self.room.verify_password('abc'))

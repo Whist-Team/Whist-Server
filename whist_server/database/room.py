@@ -1,5 +1,5 @@
 """Room models"""
-from typing import Optional
+from typing import Optional, Any
 
 from pydantic import BaseModel, Field
 from whist_core.game.hand import Hand
@@ -159,6 +159,11 @@ class RoomInDb(Room):
     room DO
     """
     hashed_password: Optional[bytes]
+
+    def __init__(self, **data: Any):
+        if 'matcher' in data['table'] and len(data['table']['matcher']) == 0:
+            _ = data['table'].pop('matcher')
+        super().__init__(**data)
 
     def verify_password(self, password: Optional[str]):
         """

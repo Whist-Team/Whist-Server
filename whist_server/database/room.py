@@ -28,6 +28,7 @@ class Room(BaseModel):
     creator: Player
     table: Table = None
 
+    # pylint: disable=too-many-arguments
     @classmethod
     def create(cls, room_name: str, creator: Player,
                min_player: int, max_player: int, matcher: Optional[Matcher] = None) -> 'Room':

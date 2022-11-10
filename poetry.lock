@@ -835,7 +835,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "whist-core"
-version = "0.6.0"
+version = "0.6.1"
 description = "Whist rules implementation"
 category = "main"
 optional = false
@@ -857,7 +857,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "441bf78fd19e58f4cbc008e4dabebc345cd647f4578c3f2abe195abaa6e43e2e"
+content-hash = "0c51500a1eadb723ab14ed89e27436e5e432b5376b7d4945f802f53ae4a31199"
 
 [metadata.files]
 anyio = [
@@ -1747,8 +1747,8 @@ websockets = [
     {file = "websockets-10.4.tar.gz", hash = "sha256:eef610b23933c54d5d921c92578ae5f89813438fded840c2e9809d378dc765d3"},
 ]
 whist-core = [
-    {file = "whist_core-0.6.0-py3-none-any.whl", hash = "sha256:596fda1f6bd86876e98a6c04f14ec7abbe833e73e83989251ab72a6a4e5036ff"},
-    {file = "whist_core-0.6.0.tar.gz", hash = "sha256:05bf2631670a8de8c37511433808043722a5979ece5874d7e0e943cdaa7b81a1"},
+    {file = "whist_core-0.6.1-py3-none-any.whl", hash = "sha256:27be190cb471cd661e3afc1d6da3540a74c7d37a95c9628ff9785a92d5a5acf2"},
+    {file = "whist_core-0.6.1.tar.gz", hash = "sha256:1857e67a189c90007f3efbca9298c67258679a7c35e5e8120795aec1255a7455"},
 ]
 wrapt = [
     {file = "wrapt-1.14.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:1b376b3f4896e7930f1f772ac4b064ac12598d1c38d04907e696cc4d794b43d3"},

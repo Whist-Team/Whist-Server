@@ -1,10 +1,7 @@
 """Route to interaction with a table."""
-from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Security, status
-from pydantic import BaseModel
 from whist_core.error.table_error import PlayerNotJoinedError, TableNotReadyError
-from whist_core.session.matcher import RandomMatcher, RoundRobinMatcher, Matcher
 from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
@@ -21,24 +18,10 @@ from whist_server.web_socket.events.event import RoomStartedEvent
 router = APIRouter(prefix='/room')
 
 
-class StartModel(BaseModel):
-    """
-    A model to ease data posting to start a room.
-    """
-    matcher_type: Optional[str] = None
-
-    @property
-    def matcher(self) -> Matcher:
-        """
-        Gets the matcher posted to start the route.
-        """
-        return RoundRobinMatcher if self.matcher_type == 'robin' else RandomMatcher
-
-
 # Most of them are injections.
 # pylint: disable=too-many-arguments
 @router.post('/action/start/{room_id}', status_code=200)
-def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTasks,
+def start_room(room_id: str, background_tasks: BackgroundTasks,
                user: Player = Security(get_current_user),
                room_service=Depends(RoomDatabaseService),
                channel_service: ChannelService = Depends(ChannelService),
@@ -46,7 +29,6 @@ def start_room(room_id: str, model: StartModel, background_tasks: BackgroundTask
     """
     Allows the creator of the table to start it.
     :param room_id: unique identifier of the room
-    :param model: model containing configuration of the room.
     :param background_tasks: asynchronous handler
     :param user: Required to identify if the user is the creator.
     :param room_service: Injection of the room database service. Requires to interact with the

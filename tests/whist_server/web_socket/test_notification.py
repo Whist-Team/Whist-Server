@@ -30,7 +30,7 @@ class NotificationTestCase(TestCase):
     def create_and_auth_user(cls, user: str, password):
         login_creds = {'username': user, 'password': password}
         _ = cls.client.post(url='/user/create', json=login_creds)
-        token = cls.client.post(url='/user/auth', json=login_creds).json()['access_token']
+        token = cls.client.post(url='/user/auth', data=login_creds).json()['access_token']
         return {'Authorization': f'Bearer {token}'}
 
     def setUp(self) -> None:

@@ -33,7 +33,7 @@ class GitHubAPIService:
         """
         data = {'client_id': cls._client_id, 'client_secret': cls._client_secret, 'code': code,
                 'redirect_url': cls._redirect_url}
-        response = httpx.post('https://github.com/login/oauth/access_token', data=data)
+        response = httpx.post('https://github.com/login/oauth/access_token', json=data)
         auth_token = response.json()['access_token']
         return auth_token
 
@@ -48,7 +48,7 @@ class GitHubAPIService:
                 'grant_type': 'urn:ietf:params:oauth:grant-type:device_code'}
         response = httpx.post(headers={'Accept': 'application/json'},
                               url='https://github.com/login/oauth/access_token',
-                              data=data)
+                              json=data)
 
         response_json: dict = response.json()
         if 'error' in response_json.keys():

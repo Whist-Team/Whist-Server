@@ -29,7 +29,7 @@ async def test_token(setup_env):
                    json=MagicMock(return_value={'access_token': expected_token})))) as route:
         token = await service.get_github_token(CODE)
     assert expected_token == token
-    route.assert_called_once_with('https://github.com/login/oauth/access_token', data=expected_data)
+    route.assert_called_once_with('https://github.com/login/oauth/access_token', json=expected_data)
 
 
 @pytest.mark.asyncio
@@ -45,7 +45,7 @@ async def test_device_token(setup_env):
     assert expected_token == token
     route.assert_called_once_with(headers={'Accept': 'application/json'},
                                   url='https://github.com/login/oauth/access_token',
-                                  data=expected_data)
+                                  json=expected_data)
 
 
 @pytest.mark.asyncio
@@ -62,7 +62,7 @@ async def test_device_token_error(setup_env):
             _ = await service.get_github_token_from_device_code(CODE)
     route.assert_called_once_with(headers={'Accept': 'application/json'},
                                   url='https://github.com/login/oauth/access_token',
-                                  data=expected_data)
+                                  json=expected_data)
 
 @pytest.mark.asyncio
 async def test_username():

@@ -23,7 +23,7 @@ whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-whist-core = "^0.5"
+whist-core = ">=0.5,<0.7"
 fastapi = { version = "^0.86", extras = ["all"] }
 httpx = "^0.23"
 pydantic = "^1.10"

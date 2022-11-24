@@ -4,7 +4,7 @@ from typing import Optional
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
+from jwt import encode, decode
 from whist_core.user.player import Player
 
 from whist_server.const import SECRET_KEY, ALGORITHM
@@ -29,7 +29,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
@@ -61,12 +61,10 @@ async def check_credentials(username: str, password: str) -> bool:
 
 
 async def _get_token_data(token):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise CredentialsException
-        token_data = TokenData(username=username)
-    except JWTError as token_error:
-        raise CredentialsException() from token_error
+    payload = decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    username: str = payload.get("sub")
+    if username is None:
+        raise CredentialsException
+    token_data = TokenData(username=username)
+
     return token_data

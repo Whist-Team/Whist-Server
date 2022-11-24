@@ -6,7 +6,7 @@ from whist_core.game.hand import Hand
 from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.rubber import Rubber
 from whist_core.game.trick import Trick
-from whist_core.session.matcher import Matcher
+from whist_core.session.matcher import Matcher, RandomMatcher
 from whist_core.session.table import Table
 from whist_core.user.player import Player
 
@@ -41,7 +41,9 @@ class Room(BaseModel):
         :param matcher: Algorithm to reassign players to teams.
         :return: the room object
         """
-        table = Table(name=room_name, min_player=min_player, max_player=max_player)
+        matcher = matcher if isinstance(matcher, Matcher) else RandomMatcher(number_teams=2,
+                                                                             team_size=max_player / 2)
+        table = Table(name=room_name, min_player=min_player, max_player=max_player, matcher=matcher)
         if matcher is not None:
             table.matcher = matcher
         table.join(creator)

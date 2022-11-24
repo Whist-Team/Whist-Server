@@ -28,7 +28,7 @@ fastapi = { version = "^0.87", extras = ["all"] }
 httpx = "^0.23"
 pydantic = "^1.10"
 pymongo = "^4.3"
-python-jose = { version = "^3.3", extras = ["cryptography"] }
+PyJWT = "^2.6"
 splunk-sdk = "^1.7"
 bcrypt = "^4.0"
 

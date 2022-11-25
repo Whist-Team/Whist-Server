@@ -41,8 +41,7 @@ class Room(BaseModel):
         :param matcher: Algorithm to reassign players to teams.
         :return: the room object
         """
-        matcher = matcher if isinstance(matcher, Matcher) else RandomMatcher(number_teams=2,
-                                                                             team_size=max_player / 2)
+        matcher = matcher if isinstance(matcher, Matcher) else RandomMatcher(number_teams=2)
         table = Table(name=room_name, min_player=min_player, max_player=max_player, matcher=matcher)
         if matcher is not None:
             table.matcher = matcher

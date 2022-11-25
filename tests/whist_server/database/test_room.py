@@ -94,3 +94,11 @@ class RoomInDbTestCase(BasePlayerTestCase):
                                  game_number=0, hand_number=0, trick_number=0, min_player=2,
                                  max_player=2, players=[self.player])
         self.assertEqual(expected_info, room_info)
+
+    def test_start_early(self):
+        room = self.room_service.create_with_pwd(room_name='Early Birds', creator=self.player,
+                                                 max_player=4, min_player=2)
+        room.join(self.second_player)
+        room.ready_player(self.player)
+        room.ready_player(self.second_player)
+        self.assertTrue(room.start(self.player))

@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock, PropertyMock
 
 from whist_core.cards.card_container import UnorderedCardContainer
-from whist_core.session.matcher import RandomMatcher
 from whist_core.user.player import Player
 
 from tests.whist_server.base_player_test_case import BasePlayerTestCase
@@ -25,6 +24,9 @@ class RoomInDbTestCase(BasePlayerTestCase):
             min_player=2)
         self.second_player = Player(username='2', rating=1200)
         self.expected_players = [self.player, self.second_player]
+
+    def test_empty_matcher_form_dict(self):
+        self.assertEqual(RoomInDb(**self.room.dict()), self.room)
 
     def test_verify_pwd(self):
         self.assertTrue(self.room.verify_password('abc'))
@@ -67,7 +69,7 @@ class RoomInDbTestCase(BasePlayerTestCase):
 
     def test_start_not_creator(self):
         with self.assertRaises(PlayerNotCreatorError):
-            self.room.start(player=self.second_player, matcher=RandomMatcher())
+            self.room.start(player=self.second_player)
 
     def test_get_player(self):
         play_at_table_mock = MagicMock(player=PropertyMock(return_value=self.player),
@@ -92,3 +94,11 @@ class RoomInDbTestCase(BasePlayerTestCase):
                                  game_number=0, hand_number=0, trick_number=0, min_player=2,
                                  max_player=2, players=[self.player])
         self.assertEqual(expected_info, room_info)
+
+    def test_start_early(self):
+        room = self.room_service.create_with_pwd(room_name='Early Birds', creator=self.player,
+                                                 max_player=4, min_player=2)
+        room.join(self.second_player)
+        room.ready_player(self.player)
+        room.ready_player(self.second_player)
+        self.assertTrue(room.start(self.player))

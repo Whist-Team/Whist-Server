@@ -6,7 +6,7 @@ from whist_core.game.hand import Hand
 from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.rubber import Rubber
 from whist_core.game.trick import Trick
-from whist_core.session.matcher import Matcher
+from whist_core.session.matcher import Matcher, RandomMatcher
 from whist_core.session.table import Table
 from whist_core.user.player import Player
 
@@ -28,18 +28,23 @@ class Room(BaseModel):
     creator: Player
     table: Table = None
 
+    # pylint: disable=too-many-arguments
     @classmethod
     def create(cls, room_name: str, creator: Player,
-               min_player: int, max_player: int) -> 'Room':
+               min_player: int, max_player: int, matcher: Optional[Matcher] = None) -> 'Room':
         """
         Factory method to create a Room object.
         :param room_name: name of the session
         :param creator: player object of the host
         :param min_player: the minimum amount of player to start a room
         :param max_player: the maximum amount of player that can join this session
+        :param matcher: Algorithm to reassign players to teams.
         :return: the room object
         """
-        table = Table(name=room_name, min_player=min_player, max_player=max_player)
+        matcher = matcher if isinstance(matcher, Matcher) else RandomMatcher(number_teams=2)
+        table = Table(name=room_name, min_player=min_player, max_player=max_player, matcher=matcher)
+        if matcher is not None:
+            table.matcher = matcher
         table.join(creator)
         return Room(creator=creator, table=table)
 
@@ -124,17 +129,16 @@ class Room(BaseModel):
         """
         self.table.player_ready(player)
 
-    def start(self, player: Player, matcher: Matcher) -> bool:
+    def start(self, player: Player) -> bool:
         """
         Starts the current table, if the player is the creator.
         :param player: who tries to start the table
-        :param matcher: distributor of players to teams.
         :return: True if successful else False.
         """
         if player != self.creator:
             raise PlayerNotCreatorError()
         if not self.table.started:
-            self.table.start(matcher)
+            self.table.start()
         started = self.table.started
         self.table.current_rubber.next_game()
         return started
@@ -158,7 +162,7 @@ class RoomInDb(Room):
     """
     room DO
     """
-    hashed_password: Optional[str]
+    hashed_password: Optional[bytes]
 
     @property
     def has_password(self) -> bool:

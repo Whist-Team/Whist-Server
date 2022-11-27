@@ -14,7 +14,7 @@ class UserInDb(Player):
     User DO
     """
     id: Optional[PyObjectId] = Field(alias='_id')
-    hashed_password: Optional[str] = None
+    hashed_password: Optional[bytes] = None
     github_id: Optional[str] = None
     github_username: Optional[str] = None
 
@@ -46,7 +46,7 @@ class UserInDb(Player):
         """
         return PasswordService.verify(password, self.hashed_password)
 
-    def to_user(self) -> Player:
+    def to_player(self) -> Player:
         """
         Converts the DO to DAO.
         :return: User with no password saved in object.

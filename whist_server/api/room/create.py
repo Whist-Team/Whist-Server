@@ -3,8 +3,10 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Security
 from pydantic import BaseModel
+from whist_core.error.table_error import TableSettingsError
 from whist_core.user.player import Player
 
+from whist_server.api.util import create_http_error
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.password import PasswordService
@@ -45,10 +47,13 @@ def create_game(request: CreateRoomArgs, user: Player = Security(get_current_use
     :return: the ID of the room instance.
     """
     hashed_password = None if request.password is None else pwd_service.hash(request.password)
-    room = room_service.create_with_pwd(room_name=request.room_name, creator=user,
-                                        hashed_password=hashed_password,
-                                        min_player=request.min_player,
-                                        max_player=request.max_player)
+    try:
+        room = room_service.create_with_pwd(room_name=request.room_name, creator=user,
+                                            hashed_password=hashed_password,
+                                            min_player=request.min_player,
+                                            max_player=request.max_player)
+    except TableSettingsError as table_error:
+        raise create_http_error('Table setting was not correct.', 400) from table_error
     room_id = room_service.add(room)
     if splunk_service.available:
         event = SplunkEvent(f'Room: {room.room_name}', source='Whist Server',

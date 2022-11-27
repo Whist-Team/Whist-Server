@@ -45,5 +45,6 @@ def _main(host=HOST_ADDR, port=HOST_PORT, admin_name=ADMIN_NAME, admin_pwd=ADMIN
                                 source_type='Server Start')
             splunk_service.write_event(event)
 
-    uvicorn.run('whist_server:app', host=host, port=port, debug=reload is not None and reload,
-                reload=reload is not None and reload)
+    debug_mode = reload is not None and reload
+    uvicorn.run('whist_server:app', host=host, port=port, reload=debug_mode,
+                log_level='debug' if debug_mode else 'info')

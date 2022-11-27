@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock
 
+from whist_core.error.table_error import TableSettingsError
+
 from tests.whist_server.base_token_case import TestCaseWithToken
 from whist_server.database.room import RoomInDb
 from whist_server.services.password import PasswordService
@@ -51,3 +53,16 @@ class CreateGameTestCase(TestCaseWithToken):
                                                                        hashed_password='abc',
                                                                        creator=self.player_mock,
                                                                        min_player=1, max_player=1)
+
+    def test_post_game_with_settings_false_min_max(self):
+        data = {'room_name': 'test', 'password': 'abc', 'min_player': 2, 'max_player': 1}
+        self.room_service_mock.create_with_pwd = MagicMock(side_effect=TableSettingsError)
+        response = self.client.post(url=f'/{self.prefix}/create', json=data,
+                                    headers=self.headers)
+        self.assertEqual(response.status_code, 400, msg=response.content)
+        self.assertNotIn('room_id', response.json())
+        self.room_service_mock.create_with_pwd.assert_called_once_with(room_name='test',
+                                                                       hashed_password='abc',
+                                                                       creator=self.player_mock,
+                                                                       min_player=2,
+                                                                       max_player=1)

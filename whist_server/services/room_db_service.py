@@ -30,7 +30,7 @@ class RoomDatabaseService:
     @classmethod
     def create_with_pwd(cls, room_name: str, creator: Player, hashed_password: Optional[str] = None,
                         min_player: Optional[int] = None,
-                        max_player: Optional[int] = None) -> 'RoomInDb':
+                        max_player: Optional[int] = None) -> RoomInDb:
         """
         Factory method to create a Room in database object.
         :param room_name: name of this session
@@ -60,7 +60,7 @@ class RoomDatabaseService:
             return str(room_id.inserted_id)
 
     @classmethod
-    def all(cls) -> [RoomInDb]:
+    def all(cls) -> list[RoomInDb]:
         """
         Returns all rooms in the database.
         """

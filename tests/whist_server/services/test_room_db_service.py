@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 import pytest
 from bson import ObjectId
+from whist_core.error.table_error import TableSettingsError
 from whist_core.session.matcher import RandomMatcher, RoundRobinMatcher
 from whist_core.user.player import Player
 
@@ -19,6 +20,11 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.service = RoomDatabaseService()
         self.room = self.service.create_with_pwd(room_name='test', hashed_password='abc',
                                                  creator=self.player)
+
+    def test_create_min_max_wrong(self):
+        with self.assertRaises(TableSettingsError):
+            _ = self.service.create_with_pwd(room_name='fail', min_player=2, max_player=1,
+                                             creator=self.player)
 
     def test_add(self):
         game_id = self.service.add(self.room)
@@ -42,6 +48,7 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         error_msg = f'Room with id "{room_id}" not found.'
         with self.assertRaisesRegex(RoomNotFoundError, error_msg):
             self.service.get(room_id)
+
     def test_get_by_name(self):
         game_id = self.service.add(self.room)
         self.room.id = ObjectId(game_id)
@@ -75,10 +82,11 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.room.id = game_id
         self.room.table.min_player = 2
         self.room.ready_player(self.player)
+        self.room.table.matcher = RandomMatcher(number_teams=2)
         second_player = Player(username='miles', rating=3000)
         self.room.join(second_player)
         self.room.ready_player(second_player)
-        self.room.start(self.player, RandomMatcher)
+        self.room.start(self.player)
         self.service.save(self.room)
         db_game = self.service.get(game_id)
         self.assertTrue(self.room.table.started)
@@ -89,10 +97,11 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.room.id = game_id
         self.room.table.min_player = 2
         self.room.ready_player(self.player)
+        self.room.table.matcher = RoundRobinMatcher(number_teams=2)
         second_player = Player(username='miles', rating=3000)
         self.room.join(second_player)
         self.room.ready_player(second_player)
-        self.room.start(self.player, RoundRobinMatcher)
+        self.room.start(self.player)
         self.service.save(self.room)
         game = self.room.table.current_rubber.current_game()
         player = game.get_player(self.player)

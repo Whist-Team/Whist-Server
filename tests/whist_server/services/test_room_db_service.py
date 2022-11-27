@@ -121,7 +121,7 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         user = UserInDb(hashed_password='abc', **self.player.dict())
         room_id = self.service.add(self.room)
         self.room.id = ObjectId(room_id)
-        with patch('whist_server.services.user_db_service.UserDatabaseService.get_by_id',
+        with patch('whist_server.services.user_db_service.UserDatabaseService.get',
                    return_value=user):
             self.assertEqual(self.room, self.service.get_by_user_id('1'))
 
@@ -130,6 +130,6 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         room_id = self.service.add(self.room)
         self.room.id = ObjectId(room_id)
         with self.assertRaises(RoomNotFoundError):
-            with patch('whist_server.services.user_db_service.UserDatabaseService.get_by_id',
+            with patch('whist_server.services.user_db_service.UserDatabaseService.get',
                        return_value=user):
                 self.service.get_by_user_id('fake')

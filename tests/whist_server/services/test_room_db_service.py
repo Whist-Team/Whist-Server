@@ -82,7 +82,7 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.room.id = game_id
         self.room.table.min_player = 2
         self.room.ready_player(self.player)
-        self.room.table.matcher = RandomMatcher()
+        self.room.table.matcher = RandomMatcher(number_teams=2)
         second_player = Player(username='miles', rating=3000)
         self.room.join(second_player)
         self.room.ready_player(second_player)
@@ -97,7 +97,7 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.room.id = game_id
         self.room.table.min_player = 2
         self.room.ready_player(self.player)
-        self.room.table.matcher = RoundRobinMatcher()
+        self.room.table.matcher = RoundRobinMatcher(number_teams=2)
         second_player = Player(username='miles', rating=3000)
         self.room.join(second_player)
         self.room.ready_player(second_player)

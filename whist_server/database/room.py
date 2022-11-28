@@ -196,6 +196,7 @@ class RoomInfo(BaseModel):
     """
     name: str
     password: bool
+    started: bool
     rubber_number: int
     game_number: int
     hand_number: int
@@ -217,6 +218,7 @@ class RoomInfo(BaseModel):
             room.table.started else 0
         return RoomInfo(name=room.room_name,
                         password=password_protected,
+                        started=room.table.started,
                         rubber_number=len(room.table.rubbers),
                         game_number=rubber_number,
                         hand_number=0,

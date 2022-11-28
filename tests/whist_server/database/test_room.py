@@ -82,7 +82,7 @@ class RoomInDbTestCase(BasePlayerTestCase):
 
     def test_room_info(self):
         room_info = self.room.get_info()
-        expected_info = RoomInfo(name='test', password=True, rubber_number=0,
+        expected_info = RoomInfo(name='test', password=True, started=False, rubber_number=0,
                                  game_number=0, hand_number=0, trick_number=0, min_player=2,
                                  max_player=2, players=[self.player])
         self.assertEqual(expected_info, room_info)
@@ -90,7 +90,7 @@ class RoomInDbTestCase(BasePlayerTestCase):
     def test_room_info_no_pwd(self):
         self.room.hashed_password = None
         room_info = self.room.get_info()
-        expected_info = RoomInfo(name='test', password=False, rubber_number=0,
+        expected_info = RoomInfo(name='test', password=False, started=False, rubber_number=0,
                                  game_number=0, hand_number=0, trick_number=0, min_player=2,
                                  max_player=2, players=[self.player])
         self.assertEqual(expected_info, room_info)

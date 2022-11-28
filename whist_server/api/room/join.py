@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from whist_server.api.util import create_http_error
 from whist_server.database.error import PlayerNotJoinedError
+from whist_server.database.room import RoomInfo
 from whist_server.database.user import UserInDb
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.authentication import get_current_user
@@ -106,4 +107,4 @@ def reconnect(user: UserInDb = Security(get_current_user),
         room = room_service.get_by_user_id(user.id)
     except RoomNotFoundError:
         return {'status': 'not joined'}
-    return {'status': 'joined', 'room_id': str(room.id), 'password': room.has_password}
+    return {'status': 'joined', 'room_id': str(room.id), 'room_info': RoomInfo.from_room(room)}

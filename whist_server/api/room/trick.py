@@ -63,7 +63,7 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
         trick.play_card(player=player, card=card)
         room_service.save(room)
         background_tasks.add_task(channel_service.notify, room_id,
-                                  CardPlayedEvent(card=card, player=user))
+                                  CardPlayedEvent(card=card, player=user.to_player()))
         if trick.done:
             background_tasks.add_task(channel_service.notify, room_id,
                                       TrickDoneEvent(winner=trick.winner))

@@ -55,7 +55,8 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
     try:
         room.join(user)
         room_service.save(room)
-        background_tasks.add_task(channel_service.notify, room_id, PlayerJoinedEvent(player=user))
+        background_tasks.add_task(channel_service.notify, room_id,
+                                  PlayerJoinedEvent(player=user.to_player()))
     except PlayerAlreadyJoinedWarning:
         return {'status': 'already joined'}
     return {'status': 'joined'}
@@ -83,7 +84,8 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     try:
         room.leave(user)
         room_service.save(room)
-        background_tasks.add_task(channel_service.notify, room_id, PlayerLeftEvent(player=user))
+        background_tasks.add_task(channel_service.notify, room_id,
+                                  PlayerLeftEvent(player=user.to_player()))
     except PlayerNotJoinedError as joined_error:
         raise create_http_error('Player not joined', status.HTTP_403_FORBIDDEN) from joined_error
     return {'status': 'left'}

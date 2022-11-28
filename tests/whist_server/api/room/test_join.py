@@ -58,7 +58,7 @@ class JoinGameTestCase(BaseCreateGameTestCase):
                                     headers=self.headers)
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('not joined', response.json()['status'])
-        self.assertNotIn('password', response.json().keys())
+        self.assertNotIn('room_info', response.json().keys())
         self.assertNotIn('room_id', response.json().keys())
 
     def test_host_join(self):

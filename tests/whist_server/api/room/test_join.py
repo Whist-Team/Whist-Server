@@ -1,11 +1,14 @@
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, PropertyMock
 
 import pytest
 from starlette.testclient import TestClient
+from whist_core.cards.card import Card, Suit, Rank
+from whist_core.cards.card_container import OrderedCardContainer
 
 from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
 from whist_server import app
+from whist_server.api.room.join import ReconnectArguments
 from whist_server.database import db
 from whist_server.database.error import PlayerNotJoinedError
 from whist_server.database.room import RoomInfo
@@ -50,6 +53,20 @@ class JoinGameTestCase(BaseCreateGameTestCase):
         self.assertEqual('joined', response.json()['status'])
         self.assertEqual(room_info, RoomInfo(**response.json()['room_info']))
         self.assertEqual(self.room_mock.id, response.json()['room_id'])
+
+    def test_reconnect_with_stack(self):
+        self.room_mock.has_password = True
+        expected_stack = OrderedCardContainer.with_cards((Card(rank=Rank.A, suit=Suit.CLUBS)))
+        self.room_mock.current_trick = MagicMock(return_value=PropertyMock(stack=expected_stack))
+        room_info = RoomInfo.from_room(self.room_mock)
+        self.room_service_mock.get_by_user_id = MagicMock(return_value=self.room_mock)
+        response = self.client.post(url='/room/reconnect/', headers=self.headers,
+                                    json=ReconnectArguments(stack=True).dict())
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('joined', response.json()['status'])
+        self.assertEqual(room_info, RoomInfo(**response.json()['room_info']))
+        self.assertEqual(self.room_mock.id, response.json()['room_id'])
+        self.assertEqual(expected_stack, OrderedCardContainer(**response.json()['stack']))
 
     def test_reconnect_not_joined(self):
         self.room_mock.has_password = True

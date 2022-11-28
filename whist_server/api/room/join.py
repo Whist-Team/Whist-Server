@@ -92,11 +92,20 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     return {'status': 'left'}
 
 
+class ReconnectArguments(BaseModel):
+    """
+    Sets flags for extra response fields.
+    """
+    stack: bool = False
+
+
 @router.post('/reconnect/', status_code=200)
-def reconnect(user: UserInDb = Security(get_current_user),
+def reconnect(args: ReconnectArguments = ReconnectArguments(stack=False),
+              user: UserInDb = Security(get_current_user),
               room_service=Depends(RoomDatabaseService)):
     """
     Finds the room a player has joined.
+    :param args: Request extra fields.
     :param user: requesting their room
     :param room_service: Injection of the room database service. Requires to interact with the
     database.
@@ -107,4 +116,7 @@ def reconnect(user: UserInDb = Security(get_current_user),
         room = room_service.get_by_user_id(user.id)
     except RoomNotFoundError:
         return {'status': 'not joined'}
-    return {'status': 'joined', 'room_id': str(room.id), 'room_info': RoomInfo.from_room(room)}
+    response = {'status': 'joined', 'room_id': str(room.id), 'room_info': RoomInfo.from_room(room)}
+    if args.stack:
+        response.update({'stack': room.current_trick().stack})
+    return response

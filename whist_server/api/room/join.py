@@ -5,7 +5,6 @@ from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Security, status, Depends
 from pydantic import BaseModel
-from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
 from whist_server.database.error import PlayerNotJoinedError
@@ -32,7 +31,7 @@ class JoinRoomArgs(BaseModel):
 # pylint: disable=too-many-arguments
 @router.post('/join/{room_id}', status_code=200)
 def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundTasks,
-              user: Player = Security(get_current_user),
+              user: UserInDb = Security(get_current_user),
               pwd_service=Depends(PasswordService), room_service=Depends(RoomDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)):
     """
@@ -66,7 +65,8 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
 # pylint: disable=too-many-arguments
 @router.post('/leave/{room_id}', status_code=200)
 def leave_game(room_id: str, background_tasks: BackgroundTasks,
-               user: Player = Security(get_current_user), room_service=Depends(RoomDatabaseService),
+               user: UserInDb = Security(get_current_user),
+               room_service=Depends(RoomDatabaseService),
                channel_service: ChannelService = Depends(ChannelService)):
     """
     User requests to leave a room.
@@ -90,7 +90,7 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
 
 
 @router.post('/reconnect/', status_code=200)
-def reconnect(user: Player = Security(get_current_user),
+def reconnect(user: UserInDb = Security(get_current_user),
               room_service=Depends(RoomDatabaseService)):
     """
     Finds the room a player has joined.

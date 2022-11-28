@@ -43,7 +43,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     """
     token_data = await _get_token_data(token)
     user = user_db_service.get_by_username(token_data.username)
-    return user.to_player()
+    return user
 
 
 async def check_credentials(username: str, password: str) -> bool:

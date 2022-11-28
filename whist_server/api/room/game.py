@@ -2,10 +2,10 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, Security, status
 from whist_core.game.errors import HandNotDoneError, HandDoneError
 from whist_core.game.warnings import TrickNotDoneWarning
-from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
 from whist_server.database.room import RoomInDb
+from whist_server.database.user import UserInDb
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.room_db_service import RoomDatabaseService
@@ -16,13 +16,14 @@ router = APIRouter(prefix='/room')
 
 @router.post('/next_hand/{room_id}', status_code=200)
 def next_hand(room_id: str, background_tasks: BackgroundTasks,
-              user: Player = Security(get_current_user),
+              user: UserInDb = Security(get_current_user),
               channel_service: ChannelService = Depends(ChannelService),
               room_service=Depends(RoomDatabaseService)) -> dict:
     """
     Request to start the next hand.
     :param room_id: at which table the card is requested to be played
     :param background_tasks: asynchronous handler
+    :param user: requesting the next hand
     :param channel_service: Injection of the websocket channel manager.
     :param room_service: Injection of the room database service. Requires to interact with the
     database.
@@ -44,7 +45,7 @@ def next_hand(room_id: str, background_tasks: BackgroundTasks,
 
 @router.post('/next_trick/{room_id}', status_code=200)
 def next_trick(room_id: str, background_tasks: BackgroundTasks,
-               user: Player = Security(get_current_user),
+               user: UserInDb = Security(get_current_user),
                channel_service: ChannelService = Depends(ChannelService),
                room_service=Depends(RoomDatabaseService)) -> dict:
     """

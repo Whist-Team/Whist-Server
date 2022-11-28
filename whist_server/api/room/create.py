@@ -4,9 +4,9 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Security
 from pydantic import BaseModel
 from whist_core.error.table_error import TableSettingsError
-from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
+from whist_server.database.user import UserInDb
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.password import PasswordService
@@ -30,7 +30,7 @@ class CreateRoomArgs(BaseModel):
 # Most of them are injections.
 # pylint: disable=too-many-arguments
 @router.post('/create', status_code=200)
-def create_game(request: CreateRoomArgs, user: Player = Security(get_current_user),
+def create_game(request: CreateRoomArgs, user: UserInDb = Security(get_current_user),
                 room_service=Depends(RoomDatabaseService), pwd_service=Depends(PasswordService),
                 channel_service: ChannelService = Depends(ChannelService),
                 splunk_service: SplunkService = Depends(SplunkService)):

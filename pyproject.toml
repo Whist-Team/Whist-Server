@@ -22,7 +22,7 @@ include = ["static"]
 whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<3.11"
 whist-core = "^0.8"
 fastapi = { version = "^0.88", extras = ["all"] }
 httpx = "^0.23"

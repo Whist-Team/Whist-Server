@@ -32,8 +32,8 @@ class UserDatabaseService:
         except UserNotFoundError:
             user_id = cls._users.insert_one(user.dict(exclude={'id'}))
             return str(user_id.inserted_id)
-        else:
-            raise UserExistsError(f'User with username: "{user.username}" already exists.')
+
+        raise UserExistsError(f'User with username: "{user.username}" already exists.')
 
     @classmethod
     def get(cls, user_id: str) -> UserInDb:

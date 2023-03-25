@@ -45,6 +45,7 @@ class JoinGameTestCase(BaseCreateGameTestCase):
 
     def test_reconnect(self):
         self.room_mock.has_password = True
+        self.room_mock.table.started = True
         room_info = RoomInfo.from_room(self.room_mock)
         self.room_service_mock.get_by_user_id = MagicMock(return_value=self.room_mock)
         response = self.client.post(url='/room/reconnect/',
@@ -56,6 +57,7 @@ class JoinGameTestCase(BaseCreateGameTestCase):
 
     def test_reconnect_with_stack(self):
         self.room_mock.has_password = True
+        self.room_mock.table.started = True
         expected_stack = OrderedCardContainer.with_cards((Card(rank=Rank.A, suit=Suit.CLUBS)))
         self.room_mock.current_trick = MagicMock(return_value=PropertyMock(stack=expected_stack))
         room_info = RoomInfo.from_room(self.room_mock)

@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
-from whist_server.database.room import RoomInfo
+from whist_server.database.room import RoomInfo, RoomPhase
 from whist_server.services.error import RoomNotFoundError
 
 
@@ -46,7 +46,7 @@ class GameInfoTestCase(BaseCreateGameTestCase):
         self.assertEqual(401, response.status_code, msg=response.content)
 
     def test_get_room_info(self):
-        expected_info = RoomInfo(name='test', password=True, started=False, rubber_number=0,
+        expected_info = RoomInfo(name='test', password=True, phase=RoomPhase.LOBBY, rubber_number=0,
                                  game_number=0, hand_number=0, trick_number=0, min_player=2,
                                  max_player=2, players=[self.player_mock.to_player()])
         self.room_mock.get_info = MagicMock(return_value=expected_info)

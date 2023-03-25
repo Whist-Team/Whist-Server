@@ -92,6 +92,7 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     return {'status': 'left'}
 
 
+
 class ReconnectArguments(BaseModel):
     """
     Sets flags for extra response fields.
@@ -116,7 +117,8 @@ def reconnect(args: ReconnectArguments = ReconnectArguments(stack=False),
         room = room_service.get_by_user_id(user.id)
     except RoomNotFoundError:
         return {'status': 'not joined'}
-    response = {'status': 'joined', 'room_id': str(room.id), 'room_info': RoomInfo.from_room(room)}
+    response = {'status': 'joined', 'room_id': str(room.id),
+                'room_info': RoomInfo.from_room(room)}
     if args.stack:
         response.update({'stack': room.current_trick().stack})
     return response

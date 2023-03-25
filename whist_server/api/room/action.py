@@ -56,8 +56,8 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
     except TableNotReadyError as ready_error:
         message = 'At least one player is not ready and therefore the table cannot be started'
         raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from ready_error
-    else:
-        return {'status': 'started'}
+
+    return {'status': 'started'}
 
 
 @router.post('/action/ready/{room_id}', status_code=200)

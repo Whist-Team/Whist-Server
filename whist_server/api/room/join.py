@@ -92,7 +92,6 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     return {'status': 'left'}
 
 
-
 class ReconnectArguments(BaseModel):
     """
     Sets flags for extra response fields.

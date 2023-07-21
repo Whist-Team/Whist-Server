@@ -1,7 +1,7 @@
 """User models"""
 from typing import Any, Optional
 
-from pydantic import Field, root_validator
+from pydantic import model_validator, Field
 from whist_core.user.player import Player
 
 from whist_server.const import INITIAL_RATING
@@ -19,7 +19,8 @@ class UserInDb(Player):
     github_username: Optional[str] = None
 
     # pylint: disable=no-self-argument
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def validate_password_sso(cls, values):
         """
         Checks if the user is SSO or password based.

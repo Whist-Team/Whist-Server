@@ -100,7 +100,7 @@ class RoomDatabaseService:
         a general RoomNotUpdatedError if the room could not be saved.
         """
         query = {'_id': ObjectId(room.id)}
-        values = {'$set': room.dict()}
+        values = {'$set': room.model_dump()}
         result = cls._rooms.update_one(query, values)
         if result.matched_count != 1:
             raise RoomNotFoundError(room.id)

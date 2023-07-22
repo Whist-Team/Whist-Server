@@ -1,7 +1,7 @@
 """Room models"""
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from whist_core.game.hand import Hand
 from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.rubber import Rubber
@@ -27,6 +27,8 @@ class Room(BaseModel):
     id: Optional[PyObjectId] = Field(alias='_id')
     creator: Player
     table: Table = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # pylint: disable=too-many-arguments
     @classmethod

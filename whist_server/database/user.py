@@ -1,7 +1,7 @@
 """User models"""
 from typing import Any, Optional
 
-from pydantic import model_validator, Field
+from pydantic import model_validator, Field, ConfigDict
 from whist_core.user.player import Player
 
 from whist_server.const import INITIAL_RATING
@@ -17,6 +17,8 @@ class UserInDb(Player):
     hashed_password: Optional[bytes] = None
     github_id: Optional[str] = None
     github_username: Optional[str] = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # pylint: disable=no-self-argument
     @model_validator(mode="before")

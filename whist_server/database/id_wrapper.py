@@ -1,29 +1,28 @@
 """Id object for pydantic"""
+from typing import Any, Annotated, Union
+
 from bson import ObjectId
+from pydantic import PlainSerializer, AfterValidator, WithJsonSchema
 
 
-class PyObjectId(ObjectId):
+def validate_object_id(value: Any) -> ObjectId:
     """
-    Wraps the object id in oder to fit into pydantic's BaseModel
+    Validates an id for a pymongo object.
+    :param value: value to be validated
+    :return:
     """
-
-    @classmethod
-    def __get_validators__(cls):
-        """Returns the class' validators."""
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, value):
-        """
-        Validates a potential object id.
-        :param value: the object to validate
-        :return: a object id wrapped around the value
-        """
-        if not ObjectId.is_valid(value):
-            raise ValueError('Invalid object id')
+    if isinstance(value, ObjectId):
+        return value
+    if ObjectId.is_valid(value):
         return ObjectId(value)
+    raise ValueError("Invalid ObjectId")
 
-    @classmethod
-    def __modify_schema__(cls, field_schema):
-        """Changes the type to a string."""
-        field_schema.update(type='string')
+
+# This can be used as an ID in BaseModels that are fed to a pymongo instance.
+# https://stackoverflow.com/a/76722139/421615
+PyObjectId = Annotated[
+    Union[str, ObjectId],
+    AfterValidator(validate_object_id),
+    PlainSerializer(lambda x: str(x), return_type=str),
+    WithJsonSchema({"type": "string"}, mode="serialization"),
+]

@@ -41,7 +41,7 @@ class RoomDatabaseService:
         min_player = 4 if min_player is None else int(min_player)
         max_player = 4 if max_player is None else int(max_player)
         room = RoomInDb.create(room_name, creator, min_player, max_player)
-        return RoomInDb(**room.dict(), hashed_password=hashed_password)
+        return RoomInDb(**room.model_dump(), hashed_password=hashed_password)
 
     @classmethod
     def add(cls, room: RoomInDb) -> str:
@@ -54,7 +54,7 @@ class RoomDatabaseService:
             room: RoomInDb = cls.get_by_name(room.room_name)
             return str(room.id)
         except RoomNotFoundError:
-            room_id = cls._rooms.insert_one(room.dict(exclude={'id'}))
+            room_id = cls._rooms.insert_one(room.model_dump(exclude={'id'}))
             return str(room_id.inserted_id)
 
     @classmethod

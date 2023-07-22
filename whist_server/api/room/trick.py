@@ -96,4 +96,4 @@ def get_winner(room_id: str, user: Player = Security(get_current_user),
         winner = trick.winner
     except TrickNotDoneWarning:
         return {'status': 'The trick is not yet done, so there is no winner.'}
-    return winner
+    return winner.model_dump(mode='json')

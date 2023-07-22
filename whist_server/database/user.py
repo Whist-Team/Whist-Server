@@ -13,7 +13,7 @@ class UserInDb(Player):
     """
     User DO
     """
-    id: Optional[PyObjectId] = Field(alias='_id')
+    id: Optional[PyObjectId] = Field(alias='_id', default=None)
     hashed_password: Optional[bytes] = None
     github_id: Optional[str] = None
     github_username: Optional[str] = None

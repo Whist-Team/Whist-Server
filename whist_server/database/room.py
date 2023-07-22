@@ -24,7 +24,7 @@ class Room(BaseModel):
     players: list of user ids of player that joined the roo,.
     side_channel: Communication for all clients
     """
-    id: Optional[PyObjectId] = Field(alias='_id')
+    id: Optional[PyObjectId] = Field(alias='_id', default=None)
     creator: Player
     table: Table = None
 

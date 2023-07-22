@@ -23,6 +23,6 @@ def validate_object_id(value: Any) -> ObjectId:
 PyObjectId = Annotated[
     Union[str, ObjectId],
     AfterValidator(validate_object_id),
-    PlainSerializer(lambda x: str(x), return_type=str),
+    PlainSerializer(lambda x: str(x), return_type=str),  # pylint: disable=W0108
     WithJsonSchema({"type": "string"}, mode="serialization"),
 ]

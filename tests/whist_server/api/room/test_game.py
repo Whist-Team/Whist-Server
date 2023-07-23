@@ -4,6 +4,7 @@ from whist_core.game.errors import HandNotDoneError
 
 from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
 from whist_server import app
+from whist_server.services.error import RoomNotFoundError
 
 
 class GameTestCase(BaseCreateGameTestCase):
@@ -39,3 +40,9 @@ class GameTestCase(BaseCreateGameTestCase):
                                     headers=self.headers)
         self.room_mock.next_hand.assert_called_once()
         self.assertEqual(400, response.status_code)
+
+    def test_next_hand_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.post(url='/room/next_hand/999', headers=self.headers)
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)

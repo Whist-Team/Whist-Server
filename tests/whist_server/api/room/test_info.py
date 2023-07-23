@@ -45,6 +45,11 @@ class GameInfoTestCase(BaseCreateGameTestCase):
         response = self.client.get('/room/info/ids')
         self.assertEqual(401, response.status_code, msg=response.content)
 
+    def test_get_all_no_room(self):
+        self.room_service_mock.all = MagicMock(return_value=[])
+        response = self.client.get('/room/info/ids')
+        self.assertEqual(200, response.status_code, msg=response.content)
+
     def test_get_room_info(self):
         expected_info = RoomInfo(name='test', password=True, rubber_number=0,
                                  game_number=0, hand_number=0, trick_number=0, min_player=2,

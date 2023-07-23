@@ -37,10 +37,10 @@ class ActionGameTestCase(BaseCreateGameTestCase):
 
     def test_start_no_room(self):
         self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
-        response = self.client.post(url=f'/room/action/start/999', headers=self.headers,
+        response = self.client.post(url='/room/action/start/999', headers=self.headers,
                                     json={'matcher_type': 'robin'})
         self.room_mock.assert_not_called()
-        self.assertEqual(400, response.status_code, msg=response.content)
+        self.assertEqual(404, response.status_code, msg=response.content)
 
     def test_start_table_not_ready(self):
         self.room_mock.start = MagicMock(side_effect=TableNotReadyError)
@@ -64,6 +64,12 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.room_mock.ready_player.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
 
+    def test_ready_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.post(url='/room/action/ready/999', headers=self.headers)
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)
+
     def test_unready(self):
         response = self.client.post(url=f'/room/action/unready/{self.room_mock.id}',
                                     headers=self.headers)
@@ -77,16 +83,15 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.room_mock.unready_player.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
 
-    def test_unready_game_not_found(self):
-        self.room_mock.unready_player = MagicMock(side_effect=RoomNotFoundError)
-        response = self.client.post(url=f'/room/action/unready/{self.room_mock.id}',
-                                    headers=self.second_player)
-        self.room_mock.unready_player.assert_called_once()
-        self.assertEqual(404, response.status_code, msg=response.content)
-
     def test_unready_player_not_ready(self):
         self.room_mock.unready_player = MagicMock(side_effect=UserNotReadyError)
         response = self.client.post(url=f'/room/action/unready/{self.room_mock.id}',
                                     headers=self.second_player)
         self.room_mock.unready_player.assert_called_once()
         self.assertEqual(400, response.status_code, msg=response.content)
+
+    def test_ready_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.post(url='/room/action/unready/999', headers=self.headers)
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)

@@ -42,7 +42,7 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
         room: RoomInDb = room_service.get(room_id)
     except RoomNotFoundError as not_found_error:
         message = f'The room with id "{not_found_error}" was not found.'
-        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from not_found_error
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
     try:
         room.start(user)
@@ -76,8 +76,11 @@ def ready_player(room_id: str, user: Player = Security(get_current_user),
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
     """
-    room = room_service.get(room_id)
-
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
     try:
         room.ready_player(user)
         room_service.save(room)
@@ -101,7 +104,11 @@ def unready_player(room_id: str, user: Player = Security(get_current_user),
     Raises 404 exception if room_id is not found
     Raises 400 exception if player is not ready
     """
-    room = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
     try:
         room.unready_player(user)

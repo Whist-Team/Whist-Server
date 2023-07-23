@@ -9,6 +9,7 @@ from whist_server import app
 from whist_server.database import db
 from whist_server.database.error import PlayerNotJoinedError
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
+from whist_server.services.error import RoomNotFoundError
 
 
 class JoinGameTestCase(BaseCreateGameTestCase):
@@ -46,6 +47,13 @@ class JoinGameTestCase(BaseCreateGameTestCase):
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('already joined', response.json()['status'])
 
+    def test_join_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.post(url='/room/join/999', json={'password': 'abc'},
+                                    headers=self.headers)
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)
+
     def test_leave(self):
         headers = self.create_and_auth_user()
         self.password_service_mock.verify = MagicMock(return_value=True)
@@ -64,6 +72,12 @@ class JoinGameTestCase(BaseCreateGameTestCase):
                                     headers=headers)
         self.room_mock.leave.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
+
+    def test_leave_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.post(url='/room/leave/999', headers=self.headers)
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)
 
 
 class IntegrationTestJoinGame(TestCase):

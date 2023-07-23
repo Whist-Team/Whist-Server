@@ -12,8 +12,10 @@ from whist_core.game.warnings import TrickNotDoneWarning
 from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
+from whist_server.database.room import RoomInDb
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
+from whist_server.services.error import RoomNotFoundError
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import CardPlayedEvent, TrickDoneEvent
 
@@ -31,7 +33,11 @@ def hand(room_id: str, user: Player = Security(get_current_user),
     database.
     :return: UnorderedCardContainer containing all cards of the player
     """
-    room = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
     player = room.get_player(user)
     return player.hand
@@ -55,7 +61,12 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
     :param channel_service: Injection of the websocket channel manager.
     :return: the stack after card being played if successful. If not the players turn raises error.
     """
-    room = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
+
     trick = room.current_trick()
 
     try:
@@ -86,7 +97,12 @@ def get_winner(room_id: str, user: Player = Security(get_current_user),
     :return: The PlayerAtTable object of the winner. Raises Exception if the user has not joined
     the room yet. Replies with a warning if the trick has not be done.
     """
-    room = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
+
     if user not in room.players:
         message = 'You have not joined the table.'
         raise create_http_error(message, status.HTTP_403_FORBIDDEN)

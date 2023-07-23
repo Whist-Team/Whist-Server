@@ -35,6 +35,13 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.room_mock.start.assert_called_once()
         self.assertEqual(403, response.status_code, msg=response.content)
 
+    def test_start_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.post(url=f'/room/action/start/999', headers=self.headers,
+                                    json={'matcher_type': 'robin'})
+        self.room_mock.assert_not_called()
+        self.assertEqual(400, response.status_code, msg=response.content)
+
     def test_start_table_not_ready(self):
         self.room_mock.start = MagicMock(side_effect=TableNotReadyError)
         # Request to start table.

@@ -38,7 +38,11 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
     :return: dictionary containing the status of whether the table has been started or not.
     Raises 403 exception if the user has not the appropriate privileges.
     """
-    room: RoomInDb = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from not_found_error
 
     try:
         room.start(user)
@@ -64,7 +68,7 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
 def ready_player(room_id: str, user: Player = Security(get_current_user),
                  room_service=Depends(RoomDatabaseService)) -> dict:
     """
-    A player can mark theyself to be ready.
+    A player can mark themself to be ready.
     :param room_id: unique identifier of the room
     :param user: Required to identify the user.
     :param room_service: Injection of the room database service. Requires to interact with the

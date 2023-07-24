@@ -186,6 +186,20 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 toml = ["tomli"]
 
 [[package]]
+name = "deprecation"
+version = "2.1.0"
+description = "A library to handle automated deprecations"
+optional = false
+python-versions = "*"
+files = [
+    {file = "deprecation-2.1.0-py2.py3-none-any.whl", hash = "sha256:a10811591210e1fb0e768a8c25517cabeabcba6f0bf96564f8ff45189f90b14a"},
+    {file = "deprecation-2.1.0.tar.gz", hash = "sha256:72b3bde64e5d778694b0cf68178aed03d15e15477116add3fb773e581f9518ff"},
+]
+
+[package.dependencies]
+packaging = "*"
+
+[[package]]
 name = "dill"
 version = "0.3.6"
 description = "serialize all of python"
@@ -1400,17 +1414,18 @@ files = [
 
 [[package]]
 name = "whist-core"
-version = "0.8.0"
+version = "0.9.0"
 description = "Whist rules implementation"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "whist_core-0.8.0-py3-none-any.whl", hash = "sha256:9222768263f8aff12eb964550d3cfb4d7fd9eda3013f37ad6198c96cfb65a5ef"},
-    {file = "whist_core-0.8.0.tar.gz", hash = "sha256:5d3706f7d48467f2ae5f785148832d786546490908bd5e4653d084225edb785d"},
+    {file = "whist_core-0.9.0-py3-none-any.whl", hash = "sha256:80d0b183ac7b14edd80a88726be0884a31e62537a55159d5a5ed058362e094fb"},
+    {file = "whist_core-0.9.0.tar.gz", hash = "sha256:2468da88fde32b33c9123ada3ea56bc1d1b5c8dd50bfd6906ce00e2c3ec6818d"},
 ]
 
 [package.dependencies]
-pydantic = ">=1.10,<2.0"
+deprecation = ">=2.1.0,<3.0.0"
+pydantic = ">=1.10,<3.0"
 
 [[package]]
 name = "wrapt"
@@ -1499,4 +1514,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "ea144c1271f9088a5459b0c26d45f2a9d99819b4aa8358d9db5ee30c7b09b75b"
+content-hash = "7dae81272e95b7c15df0d0e07e2f2c3bd53709525fe8b79f43970125f1a17283"

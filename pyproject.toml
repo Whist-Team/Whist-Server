@@ -23,22 +23,25 @@ whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-whist-core = "^0.8"
-fastapi = { version = ">=0.96,<0.100", extras = ["all"] }
+fastapi = "^0.100"
 httpx = "^0.24"
-pydantic = "^1.10"
+pydantic = "^2.0"
 pymongo = "^4.3"
 PyJWT = "^2.7"
 splunk-sdk = "^1.7"
 bcrypt = "^4.0"
+whist-core = "^0.9"
+python-multipart = "^0.0.6"
+uvicorn = "^0.23"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.4"
 pytest-cov = "^4.1"
 pytest-asyncio = "^0.21"
 flake8 = "^6.1"
-flake8-docstrings = "^1.7.0"
+flake8-docstrings = "^1.7"
 pylint = "^2.17"
+python-dotenv = "^1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

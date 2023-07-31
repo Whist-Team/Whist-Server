@@ -70,7 +70,7 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
     except NotPlayersTurnError as turn_error:
         message = f'It is not {user.username}\'s turn'
         raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from turn_error
-    return trick.stack
+    return trick.stack.model_dump(mode='json')
 
 
 @router.get('/winner/{room_id}', status_code=200,
@@ -96,4 +96,4 @@ def get_winner(room_id: str, user: Player = Security(get_current_user),
         winner = trick.winner
     except TrickNotDoneWarning:
         return {'status': 'The trick is not yet done, so there is no winner.'}
-    return winner
+    return winner.model_dump(mode='json')

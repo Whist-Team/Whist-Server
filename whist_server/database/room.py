@@ -1,7 +1,7 @@
 """Room models"""
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from whist_core.game.hand import Hand
 from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.rubber import Rubber
@@ -24,9 +24,11 @@ class Room(BaseModel):
     players: list of user ids of player that joined the roo,.
     side_channel: Communication for all clients
     """
-    id: Optional[PyObjectId] = Field(alias='_id')
+    id: Optional[PyObjectId] = Field(alias='_id', default=None)
     creator: Player
     table: Table = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # pylint: disable=too-many-arguments
     @classmethod
@@ -162,7 +164,7 @@ class RoomInDb(Room):
     """
     room DO
     """
-    hashed_password: Optional[bytes]
+    hashed_password: Optional[bytes] = None
 
     def verify_password(self, password: Optional[str]):
         """

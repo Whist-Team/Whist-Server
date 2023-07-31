@@ -34,7 +34,7 @@ whist-core = "^0.9"
 python-multipart = "^0.0.6"
 uvicorn = "^0.23"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.4"
 pytest-cov = "^4.1"
 pytest-asyncio = "^0.21"

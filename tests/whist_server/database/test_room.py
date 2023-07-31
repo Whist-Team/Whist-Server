@@ -25,6 +25,10 @@ class RoomInDbTestCase(BasePlayerTestCase):
         self.second_player = Player(username='2', rating=1200)
         self.expected_players = [self.player, self.second_player]
 
+    def test_room_dumb(self):
+        model_dump = self.room.model_dump()
+        print(model_dump)
+
     def test_empty_matcher_form_dict(self):
         self.assertEqual(RoomInDb(**self.room.dict()), self.room)
 

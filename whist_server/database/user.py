@@ -1,7 +1,7 @@
 """User models"""
 from typing import Any, Optional
 
-from pydantic import Field, root_validator
+from pydantic import model_validator, Field, ConfigDict
 from whist_core.user.player import Player
 
 from whist_server.const import INITIAL_RATING
@@ -13,13 +13,16 @@ class UserInDb(Player):
     """
     User DO
     """
-    id: Optional[PyObjectId] = Field(alias='_id')
+    id: Optional[PyObjectId] = Field(alias='_id', default=None)
     hashed_password: Optional[bytes] = None
     github_id: Optional[str] = None
     github_username: Optional[str] = None
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     # pylint: disable=no-self-argument
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def validate_password_sso(cls, values):
         """
         Checks if the user is SSO or password based.

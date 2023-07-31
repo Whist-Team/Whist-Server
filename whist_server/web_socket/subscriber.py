@@ -23,5 +23,5 @@ class Subscriber:
         :param event: Any type of event.
         :return: None
         """
-        wrapped_event = {'name': event.name, 'event': event.dict()}
+        wrapped_event = {'name': event.name, 'event': event.model_dump(mode='json')}
         await self._connection.send_json(wrapped_event)

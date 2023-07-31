@@ -4,6 +4,7 @@ from whist_core.cards.card import Card, Suit, Rank
 from whist_core.cards.card_container import OrderedCardContainer
 from whist_core.cards.card_container import UnorderedCardContainer
 from whist_core.game.errors import NotPlayersTurnError, HandDoneError
+from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.warnings import TrickNotDoneWarning
 
 from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
@@ -48,11 +49,10 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_winner(self):
-        winner = PropertyMock(return_value=self.first_player_mock)
+        winner = PlayerAtTable(player=self.player_mock, hand=UnorderedCardContainer.empty(), team=0)
         type(self.trick_mock).winner = winner
         response = self.client.get(url=f'/room/trick/winner/{self.room_mock.id}',
                                    headers=self.headers)
-        winner.assert_called_once()
         self.assertEqual(200, response.status_code)
 
     def test_no_winner_yet(self):

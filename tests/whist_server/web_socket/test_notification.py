@@ -138,7 +138,7 @@ class NotificationTestCase(TestCase):
             hand = UnorderedCardContainer(**response.json())
             card = hand.cards[0]
             self.client.post(url=f'/room/trick/play_card/{self.room_id}',
-                             json=card.dict(),
+                             json=card.model_dump(mode='json'),
                              headers=self.token)
 
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:
@@ -182,7 +182,7 @@ class NotificationTestCase(TestCase):
             card = hand.cards[0]
             with patch('whist_core.game.trick.Trick.done', PropertyMock(return_value=True)):
                 self.client.post(url=f'/room/trick/play_card/{self.room_id}',
-                                 json=card.dict(),
+                                 json=card.model_dump(),
                                  headers=self.token)
 
         with self.client.websocket_connect(f'/room/{self.room_id}') as websocket:

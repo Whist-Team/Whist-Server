@@ -1,4 +1,5 @@
 """Room models"""
+from enum import Enum, auto
 from typing import Optional
 
 from pydantic import BaseModel, Field, ConfigDict
@@ -166,6 +167,13 @@ class RoomInDb(Room):
     """
     hashed_password: Optional[bytes] = None
 
+    @property
+    def has_password(self) -> bool:
+        """
+        Returns if the room is password protected.
+        """
+        return bool(self.hashed_password)
+
     def verify_password(self, password: Optional[str]):
         """
         Verifies the password for a specific user.
@@ -185,12 +193,21 @@ class RoomInDb(Room):
         return RoomInfo.from_room(self)
 
 
+class RoomPhase(Enum):
+    """
+    Describes the phase a room can be.
+    """
+    LOBBY = auto()
+    PLAYING = auto()
+
+
 class RoomInfo(BaseModel):
     """
     Meta info wrapper for rooms.
     """
     name: str
     password: bool
+    phase: RoomPhase
     rubber_number: int
     game_number: int
     hand_number: int
@@ -206,12 +223,14 @@ class RoomInfo(BaseModel):
         :param room: Meta data extracted from
         :return: RoomInfo
         """
-        password_protected = bool(room.hashed_password)
+        phase: RoomPhase = RoomPhase.PLAYING if room.table.started else RoomPhase.LOBBY
+        password_protected = room.has_password
         rubber_number = len(room.table.current_rubber.games) if room.table.started else 0
         trick_number = len(room.table.current_rubber.current_game().current_hand.tricks) if \
             room.table.started else 0
         return RoomInfo(name=room.room_name,
                         password=password_protected,
+                        phase=phase,
                         rubber_number=len(room.table.rubbers),
                         game_number=rubber_number,
                         hand_number=0,

@@ -1,14 +1,19 @@
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, PropertyMock
 
 import pytest
 from starlette.testclient import TestClient
+from whist_core.cards.card import Card, Suit, Rank
+from whist_core.cards.card_container import OrderedCardContainer
 
 from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
 from whist_server import app
+from whist_server.api.room.join import ReconnectArguments
 from whist_server.database import db
 from whist_server.database.error import PlayerNotJoinedError
+from whist_server.database.room import RoomInfo
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
+from whist_server.services.error import RoomNotFoundError
 
 
 class JoinGameTestCase(BaseCreateGameTestCase):
@@ -37,6 +42,43 @@ class JoinGameTestCase(BaseCreateGameTestCase):
         response = self.client.post(url=f'/room/join/{self.room_mock.id}',
                                     json={'password': 'abc'})
         self.assertEqual(401, response.status_code, msg=response.content)
+
+    def test_reconnect(self):
+        self.room_mock.has_password = True
+        self.room_mock.table.started = True
+        room_info = RoomInfo.from_room(self.room_mock)
+        self.room_service_mock.get_by_user_id = MagicMock(return_value=self.room_mock)
+        response = self.client.post(url='/room/reconnect/',
+                                    headers=self.headers)
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('joined', response.json()['status'])
+        self.assertEqual(room_info, RoomInfo(**response.json()['room_info']))
+        self.assertEqual(self.room_mock.id, response.json()['room_id'])
+
+    def test_reconnect_with_stack(self):
+        self.room_mock.has_password = True
+        self.room_mock.table.started = True
+        expected_stack = OrderedCardContainer.with_cards((Card(rank=Rank.A, suit=Suit.CLUBS)))
+        self.room_mock.current_trick = MagicMock(return_value=PropertyMock(stack=expected_stack))
+        room_info = RoomInfo.from_room(self.room_mock)
+        self.room_service_mock.get_by_user_id = MagicMock(return_value=self.room_mock)
+        response = self.client.post(url='/room/reconnect/', headers=self.headers,
+                                    json=ReconnectArguments(stack=True).dict())
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('joined', response.json()['status'])
+        self.assertEqual(room_info, RoomInfo(**response.json()['room_info']))
+        self.assertEqual(self.room_mock.id, response.json()['room_id'])
+        self.assertEqual(expected_stack, OrderedCardContainer(**response.json()['stack']))
+
+    def test_reconnect_not_joined(self):
+        self.room_mock.has_password = True
+        self.room_service_mock.get_by_user_id = MagicMock(side_effect=RoomNotFoundError())
+        response = self.client.post(url='/room/reconnect/',
+                                    headers=self.headers)
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('not joined', response.json()['status'])
+        self.assertNotIn('room_info', response.json().keys())
+        self.assertNotIn('room_id', response.json().keys())
 
     def test_host_join(self):
         self.room_mock.join = MagicMock(side_effect=PlayerAlreadyJoinedWarning)
@@ -93,3 +135,15 @@ class IntegrationTestJoinGame(TestCase):
                                     headers=headers_joiner, json={})
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('joined', response.json()['status'])
+
+    @pytest.mark.integtest
+    def test_rejoin(self):
+        headers_creator = self.create_and_auth_user('miles', 'abc')
+        data = {'room_name': 'test'}
+        response = self.client.post(url='/room/create', json=data, headers=headers_creator)
+        room_id = response.json()['room_id']
+        response = self.client.post(url='/room/reconnect/',
+                                    headers=headers_creator, json={})
+        self.assertEqual(200, response.status_code, msg=response.content)
+        self.assertEqual('joined', response.json()['status'])
+        self.assertEqual(room_id, response.json()['room_id'])

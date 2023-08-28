@@ -1,9 +1,9 @@
 """Collection of general room information getter."""
 from fastapi import APIRouter, Depends, Security, status
-from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
 from whist_server.database.room import RoomInDb, RoomInfo
+from whist_server.database.user import UserInDb
 from whist_server.services.authentication import get_current_user
 from whist_server.services.error import RoomNotFoundError
 from whist_server.services.room_db_service import RoomDatabaseService
@@ -13,7 +13,7 @@ router = APIRouter(prefix='/room')
 
 @router.get('/info/ids', status_code=200, response_model=dict[str, list[str]])
 def all_rooms(room_service=Depends(RoomDatabaseService),
-              _: Player = Security(get_current_user)) -> dict[str, list[str]]:
+              _: UserInDb = Security(get_current_user)) -> dict[str, list[str]]:
     """
     Returns all room id.
     :param room_service: Dependency injection of the room service
@@ -41,7 +41,7 @@ def room_info(room_id: str, room_service=Depends(RoomDatabaseService)) -> RoomIn
 
 @router.get('/info/id/{room_name}', status_code=200, response_model=dict[str, str])
 def room_id_from_name(room_name: str, room_service=Depends(RoomDatabaseService),
-                      user: Player = Security(get_current_user)) -> dict[str, str]:
+                      user: UserInDb = Security(get_current_user)) -> dict[str, str]:
     """
     Returns the room id for a given room name. Basically it transforms human-readable data to
     computer data.

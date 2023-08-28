@@ -8,6 +8,7 @@ from whist_core.user.player import Player
 
 from tests.whist_server.base_player_test_case import BasePlayerTestCase
 from whist_server.database import db
+from whist_server.database.user import UserInDb
 from whist_server.services.error import RoomNotFoundError, RoomNotUpdatedError
 from whist_server.services.room_db_service import RoomDatabaseService
 
@@ -115,3 +116,20 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         all_games = self.service.all()
         self.assertEqual(1, len(all_games))
         self.assertEqual(game_id, str(all_games[0].id))
+
+    def test_get_room_by_user(self):
+        user = UserInDb(hashed_password='abc', **self.player.dict())
+        room_id = self.service.add(self.room)
+        self.room.id = ObjectId(room_id)
+        with patch('whist_server.services.user_db_service.UserDatabaseService.get',
+                   return_value=user):
+            self.assertEqual(self.room, self.service.get_by_user_id('1'))
+
+    def test_get_room_by_user_not_joined(self):
+        user = UserInDb(username='fake', hashed_password='abc')
+        room_id = self.service.add(self.room)
+        self.room.id = ObjectId(room_id)
+        with self.assertRaises(RoomNotFoundError):
+            with patch('whist_server.services.user_db_service.UserDatabaseService.get',
+                       return_value=user):
+                self.service.get_by_user_id('fake')

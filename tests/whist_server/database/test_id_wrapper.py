@@ -1,21 +1,24 @@
-import unittest
-from unittest.mock import patch
-
+import pytest
 from bson import ObjectId
+from pydantic import TypeAdapter, ConfigDict
 
 from whist_server.database.id_wrapper import PyObjectId
 
 
-class PyObjectIdTestCase(unittest.TestCase):
-    @patch.object(ObjectId, 'is_valid')
-    def test_not_validate(self, is_valid_mock):
-        is_valid_mock.return_value = False
+@pytest.mark.parametrize("obj", ["64b7992ba8f08069073f1055", ObjectId("64b7992ba8f08069073f1055")])
+def test_pyobjectid_validation(obj):
+    ta = TypeAdapter(PyObjectId, config=ConfigDict(arbitrary_types_allowed=True))
+    ta.validate_python(obj)
 
-        ob_id = PyObjectId()
-        with self.assertRaises(ValueError):
-            PyObjectId.validate(ob_id)
 
-    def test_validate(self):
-        id_object = PyObjectId()
-        validated_object = PyObjectId.validate(id_object)
-        self.assertIsInstance(validated_object, ObjectId)
+@pytest.mark.parametrize("obj", ["64b7992ba8f08069073f105"])
+def test_pyobjectid_validation_invalid(obj):
+    ta = TypeAdapter(PyObjectId, config=ConfigDict(arbitrary_types_allowed=True))
+    with pytest.raises(ValueError):
+        ta.validate_python(obj)
+
+
+@pytest.mark.parametrize("obj", ["64b7992ba8f08069073f1055", ObjectId("64b7992ba8f08069073f1055")])
+def test_pyobjectid_serialization(obj):
+    ta = TypeAdapter(PyObjectId, config=ConfigDict(arbitrary_types_allowed=True))
+    ta.dump_json(obj)

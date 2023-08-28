@@ -5,7 +5,7 @@ from whist_core.user.player import Player
 
 from tests.whist_server.base_player_test_case import BasePlayerTestCase
 from whist_server.database.error import PlayerNotCreatorError, PlayerNotJoinedError
-from whist_server.database.room import RoomInDb, RoomInfo
+from whist_server.database.room import RoomInDb, RoomInfo, RoomPhase
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.password import PasswordService
 from whist_server.services.room_db_service import RoomDatabaseService
@@ -24,6 +24,10 @@ class RoomInDbTestCase(BasePlayerTestCase):
             min_player=2)
         self.second_player = Player(username='2', rating=1200)
         self.expected_players = [self.player, self.second_player]
+
+    def test_room_dumb(self):
+        model_dump = self.room.model_dump()
+        print(model_dump)
 
     def test_empty_matcher_form_dict(self):
         self.assertEqual(RoomInDb(**self.room.dict()), self.room)
@@ -82,7 +86,7 @@ class RoomInDbTestCase(BasePlayerTestCase):
 
     def test_room_info(self):
         room_info = self.room.get_info()
-        expected_info = RoomInfo(name='test', password=True, rubber_number=0,
+        expected_info = RoomInfo(name='test', password=True, phase=RoomPhase.LOBBY, rubber_number=0,
                                  game_number=0, hand_number=0, trick_number=0, min_player=2,
                                  max_player=2, players=[self.player])
         self.assertEqual(expected_info, room_info)
@@ -90,9 +94,9 @@ class RoomInDbTestCase(BasePlayerTestCase):
     def test_room_info_no_pwd(self):
         self.room.hashed_password = None
         room_info = self.room.get_info()
-        expected_info = RoomInfo(name='test', password=False, rubber_number=0,
-                                 game_number=0, hand_number=0, trick_number=0, min_player=2,
-                                 max_player=2, players=[self.player])
+        expected_info = RoomInfo(name='test', password=False, phase=RoomPhase.LOBBY,
+                                 rubber_number=0, game_number=0, hand_number=0, trick_number=0,
+                                 min_player=2, max_player=2, players=[self.player])
         self.assertEqual(expected_info, room_info)
 
     def test_start_early(self):

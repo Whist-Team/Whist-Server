@@ -2,11 +2,11 @@
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Security, status
 from whist_core.error.table_error import PlayerNotJoinedError, TableNotReadyError
-from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
 from whist_server.database.error import PlayerNotCreatorError
 from whist_server.database.room import RoomInDb
+from whist_server.database.user import UserInDb
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.error import RoomNotFoundError
@@ -22,7 +22,7 @@ router = APIRouter(prefix='/room')
 # pylint: disable=too-many-arguments
 @router.post('/action/start/{room_id}', status_code=200)
 def start_room(room_id: str, background_tasks: BackgroundTasks,
-               user: Player = Security(get_current_user),
+               user: UserInDb = Security(get_current_user),
                room_service=Depends(RoomDatabaseService),
                channel_service: ChannelService = Depends(ChannelService),
                splunk_service: SplunkService = Depends(SplunkService)) -> dict:
@@ -65,7 +65,7 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
 
 
 @router.post('/action/ready/{room_id}', status_code=200)
-def ready_player(room_id: str, user: Player = Security(get_current_user),
+def ready_player(room_id: str, user: UserInDb = Security(get_current_user),
                  room_service=Depends(RoomDatabaseService)) -> dict:
     """
     A player can mark themself to be ready.
@@ -91,7 +91,7 @@ def ready_player(room_id: str, user: Player = Security(get_current_user),
 
 
 @router.post('/action/unready/{room_id}', status_code=200)
-def unready_player(room_id: str, user: Player = Security(get_current_user),
+def unready_player(room_id: str, user: UserInDb = Security(get_current_user),
                    room_service=Depends(RoomDatabaseService)) -> dict:
     """
     A player can mark themself to be unready.

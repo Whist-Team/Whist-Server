@@ -9,10 +9,10 @@ from whist_core.cards.card_container import UnorderedCardContainer
 from whist_core.game.errors import NotPlayersTurnError
 from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.warnings import TrickNotDoneWarning
-from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
 from whist_server.database.room import RoomInDb
+from whist_server.database.user import UserInDb
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
 from whist_server.services.error import RoomNotFoundError
@@ -23,7 +23,7 @@ router = APIRouter(prefix='/room/trick')
 
 
 @router.get('/hand/{room_id}', status_code=200, response_model=UnorderedCardContainer)
-def hand(room_id: str, user: Player = Security(get_current_user),
+def hand(room_id: str, user: UserInDb = Security(get_current_user),
          room_service=Depends(RoomDatabaseService)) -> UnorderedCardContainer:
     """
     Returns the current hand of player.
@@ -47,7 +47,7 @@ def hand(room_id: str, user: Player = Security(get_current_user),
 # pylint: disable=too-many-arguments
 @router.post('/play_card/{room_id}', status_code=200, response_model=OrderedCardContainer)
 def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
-              user: Player = Security(get_current_user),
+              user: UserInDb = Security(get_current_user),
               room_service=Depends(RoomDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)) -> OrderedCardContainer:
     """
@@ -74,19 +74,19 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
         trick.play_card(player=player, card=card)
         room_service.save(room)
         background_tasks.add_task(channel_service.notify, room_id,
-                                  CardPlayedEvent(card=card, player=user))
+                                  CardPlayedEvent(card=card, player=user.to_player()))
         if trick.done:
             background_tasks.add_task(channel_service.notify, room_id,
                                       TrickDoneEvent(winner=trick.winner))
     except NotPlayersTurnError as turn_error:
         message = f'It is not {user.username}\'s turn'
         raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from turn_error
-    return trick.stack
+    return trick.stack.model_dump(mode='json')
 
 
 @router.get('/winner/{room_id}', status_code=200,
             response_model=Union[PlayerAtTable, dict[str, str]])
-def get_winner(room_id: str, user: Player = Security(get_current_user),
+def get_winner(room_id: str, user: UserInDb = Security(get_current_user),
                room_service=Depends(RoomDatabaseService)) -> Union[PlayerAtTable, dict[str, str]]:
     """
     Requests the winner of the current stack.
@@ -112,4 +112,4 @@ def get_winner(room_id: str, user: Player = Security(get_current_user),
         winner = trick.winner
     except TrickNotDoneWarning:
         return {'status': 'The trick is not yet done, so there is no winner.'}
-    return winner
+    return winner.model_dump(mode='json')

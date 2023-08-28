@@ -5,11 +5,11 @@ from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Security, status, Depends
 from pydantic import BaseModel
-from whist_core.user.player import Player
 
 from whist_server.api.util import create_http_error
 from whist_server.database.error import PlayerNotJoinedError
-from whist_server.database.room import RoomInDb
+from whist_server.database.room import RoomInDb, RoomInfo
+from whist_server.database.user import UserInDb
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
@@ -32,7 +32,7 @@ class JoinRoomArgs(BaseModel):
 # pylint: disable=too-many-arguments
 @router.post('/join/{room_id}', status_code=200)
 def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundTasks,
-              user: Player = Security(get_current_user),
+              user: UserInDb = Security(get_current_user),
               pwd_service=Depends(PasswordService), room_service=Depends(RoomDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)):
     """
@@ -61,7 +61,8 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
     try:
         room.join(user)
         room_service.save(room)
-        background_tasks.add_task(channel_service.notify, room_id, PlayerJoinedEvent(player=user))
+        background_tasks.add_task(channel_service.notify, room_id,
+                                  PlayerJoinedEvent(player=user.to_player()))
     except PlayerAlreadyJoinedWarning:
         return {'status': 'already joined'}
     return {'status': 'joined'}
@@ -71,7 +72,8 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
 # pylint: disable=too-many-arguments
 @router.post('/leave/{room_id}', status_code=200)
 def leave_game(room_id: str, background_tasks: BackgroundTasks,
-               user: Player = Security(get_current_user), room_service=Depends(RoomDatabaseService),
+               user: UserInDb = Security(get_current_user),
+               room_service=Depends(RoomDatabaseService),
                channel_service: ChannelService = Depends(ChannelService)):
     """
     User requests to leave a room.
@@ -92,7 +94,39 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     try:
         room.leave(user)
         room_service.save(room)
-        background_tasks.add_task(channel_service.notify, room_id, PlayerLeftEvent(player=user))
+        background_tasks.add_task(channel_service.notify, room_id,
+                                  PlayerLeftEvent(player=user.to_player()))
     except PlayerNotJoinedError as joined_error:
         raise create_http_error('Player not joined', status.HTTP_403_FORBIDDEN) from joined_error
     return {'status': 'left'}
+
+
+class ReconnectArguments(BaseModel):
+    """
+    Sets flags for extra response fields.
+    """
+    stack: bool = False
+
+
+@router.post('/reconnect/', status_code=200)
+def reconnect(args: ReconnectArguments = ReconnectArguments(stack=False),
+              user: UserInDb = Security(get_current_user),
+              room_service=Depends(RoomDatabaseService)):
+    """
+    Finds the room a player has joined.
+    :param args: Request extra fields.
+    :param user: requesting their room
+    :param room_service: Injection of the room database service. Requires to interact with the
+    database.
+    :return: dictionary containing the room id and the status either 'joined' or 'not joined'.
+    For the later no room id is sent.
+    """
+    try:
+        room = room_service.get_by_user_id(user.id)
+    except RoomNotFoundError:
+        return {'status': 'not joined'}
+    response = {'status': 'joined', 'room_id': str(room.id),
+                'room_info': RoomInfo.from_room(room)}
+    if args.stack:
+        response.update({'stack': room.current_trick().stack})
+    return response

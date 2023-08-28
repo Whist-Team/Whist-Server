@@ -91,6 +91,12 @@ class ActionGameTestCase(BaseCreateGameTestCase):
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_unready_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('998'))
+        response = self.client.post(url='/room/action/unready/998', headers=self.headers)
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)
+
+    def test_unready_no_room_save(self):
         self.room_service_mock.save = MagicMock(side_effect=RoomNotFoundError('999'))
         response = self.client.post(url='/room/action/unready/999', headers=self.headers)
         self.room_mock.assert_not_called()

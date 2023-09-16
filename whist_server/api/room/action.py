@@ -38,7 +38,11 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
     :return: dictionary containing the status of whether the table has been started or not.
     Raises 403 exception if the user has not the appropriate privileges.
     """
-    room: RoomInDb = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
     try:
         room.start(user)
@@ -64,7 +68,7 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
 def ready_player(room_id: str, user: UserInDb = Security(get_current_user),
                  room_service=Depends(RoomDatabaseService)) -> dict:
     """
-    A player can mark theyself to be ready.
+    A player can mark themself to be ready.
     :param room_id: unique identifier of the room
     :param user: Required to identify the user.
     :param room_service: Injection of the room database service. Requires to interact with the
@@ -72,8 +76,11 @@ def ready_player(room_id: str, user: UserInDb = Security(get_current_user),
     :return: dictionary containing the status of whether the action was successful.
     Raises 403 exception if the user has not be joined yet.
     """
-    room = room_service.get(room_id)
-
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
     try:
         room.ready_player(user)
         room_service.save(room)
@@ -97,7 +104,11 @@ def unready_player(room_id: str, user: UserInDb = Security(get_current_user),
     Raises 404 exception if room_id is not found
     Raises 400 exception if player is not ready
     """
-    room = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
     try:
         room.unready_player(user)

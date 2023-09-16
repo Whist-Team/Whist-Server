@@ -8,6 +8,7 @@ from whist_server.database.room import RoomInDb
 from whist_server.database.user import UserInDb
 from whist_server.services.authentication import get_current_user
 from whist_server.services.channel_service import ChannelService
+from whist_server.services.error import RoomNotFoundError
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import NextHandEvent, NextTrickEvent
 
@@ -29,7 +30,12 @@ def next_hand(room_id: str, background_tasks: BackgroundTasks,
     database.
     :return: Status: 'Success' if next hand is created else raises error.
     """
-    room: RoomInDb = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
+
     if user not in room.players:
         message = f'Player: {user} has not joined {room}, yet.'
         raise create_http_error(message, status.HTTP_403_FORBIDDEN)

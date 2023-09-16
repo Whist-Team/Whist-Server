@@ -18,7 +18,7 @@ def all_rooms(room_service=Depends(RoomDatabaseService),
     Returns all room id.
     :param room_service: Dependency injection of the room service
     :param _: not required for logic, but authentication
-    :return: a list of all room ids as strings.
+    :return: a list of all room ids as strings. Empty list if no rooms are found.
     """
     rooms = room_service.all()
     return {'rooms': [str(room.id) for room in rooms]}

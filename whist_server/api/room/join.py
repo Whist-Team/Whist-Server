@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from whist_server.api.util import create_http_error
 from whist_server.database.error import PlayerNotJoinedError
-from whist_server.database.room import RoomInfo
+from whist_server.database.room import RoomInDb, RoomInfo
 from whist_server.database.user import UserInDb
 from whist_server.database.warning import PlayerAlreadyJoinedWarning
 from whist_server.services.authentication import get_current_user
@@ -47,7 +47,12 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
     :param channel_service: Injection of the websocket channel manager.
     :return: the status of the join request. 'joined' for successful join
     """
-    room = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
+
     if room.hashed_password is not None and (
             request.password is None or not pwd_service.verify(request.password,
                                                                room.hashed_password)):
@@ -80,7 +85,11 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     :param channel_service: Injection of the websocket channel manager.
     :return: the status of the leave request. 'left' for successful join
     """
-    room = room_service.get(room_id)
+    try:
+        room: RoomInDb = room_service.get(room_id)
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
     try:
         room.leave(user)

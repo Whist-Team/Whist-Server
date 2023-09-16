@@ -9,6 +9,7 @@ from whist_core.game.warnings import TrickNotDoneWarning
 
 from tests.whist_server.api.room.base_created_case import BaseCreateGameTestCase
 from whist_server import app
+from whist_server.services.error import RoomNotFoundError
 
 
 class TrickTestCase(BaseCreateGameTestCase):
@@ -32,6 +33,12 @@ class TrickTestCase(BaseCreateGameTestCase):
                                    headers=self.headers)
         self.assertEqual(UnorderedCardContainer(**response.json()), self.hand)
 
+    def test_hand_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.get(url='/room/trick/hand/999', headers=self.headers)
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)
+
     def test_play_card(self):
         response = self.client.post(url=f'/room/trick/play_card/{self.room_mock.id}',
                                     headers=self.headers, json=self.first_card.dict())
@@ -39,6 +46,13 @@ class TrickTestCase(BaseCreateGameTestCase):
         self.room_service_mock.save.assert_called_once()
         response_stack = OrderedCardContainer(**response.json())
         self.assertEqual(self.stack, response_stack)
+
+    def test_play_card_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.post(url='/room/trick/play_card/999', headers=self.headers,
+                                    json=self.first_card.dict())
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)
 
     def test_not_players_turn(self):
         self.trick_mock.play_card = MagicMock(
@@ -68,6 +82,12 @@ class TrickTestCase(BaseCreateGameTestCase):
         response = self.client.get(url=f'/room/trick/winner/{self.room_mock.id}',
                                    headers=self.headers)
         self.assertEqual(403, response.status_code, msg=response.content)
+
+    def test_winner_no_room(self):
+        self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
+        response = self.client.get(url='/room/trick/winner/999', headers=self.headers)
+        self.room_mock.assert_not_called()
+        self.assertEqual(404, response.status_code, msg=response.content)
 
     def test_next_trick(self):
         response = self.client.post(url=f'/room/next_trick/{self.room_mock.id}',

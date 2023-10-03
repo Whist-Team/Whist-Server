@@ -62,15 +62,15 @@ class SplunkService:
                 host = os.environ['SPLUNK_HOST']
                 port = int(os.environ['SPLUNK_PORT'])
                 token = os.environ['SPLUNK_TOKEN']
-                cls._service = self._set_service()
+                cls._service = self._set_service(host=host, port=port, splunkToken=token))
             except KeyError:
                 print('Splunk parameter are not set.')
         return cls._instance
 
-    def _set_service(self):
+    def _set_service(self, host, port, splunkToken):
         if client is None:
             return None
-        return client.connect(host=host, port=port, splunkToken=token)
+        return client.connect(host=host, port=port, splunkToken=splunkToken)
 
     @property
     def available(self):

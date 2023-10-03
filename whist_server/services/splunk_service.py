@@ -46,9 +46,9 @@ class SplunkService:
     Service for Splunk Integration
     """
     try:
-        from splunklib import client
+        import splunklib
     except ImportError:
-        client = None
+        splunklib = None
 
     _instance = None
     _service = None
@@ -68,9 +68,9 @@ class SplunkService:
         return cls._instance
 
     def _set_service(self, host, port, splunkToken):
-        if client is None:
+        if splunklib is None:
             return None
-        return client.connect(host=host, port=port, splunkToken=splunkToken)
+        return splunklib.client.connect(host=host, port=port, splunkToken=splunkToken)
 
     @property
     def available(self):

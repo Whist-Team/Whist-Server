@@ -28,7 +28,7 @@ httpx = ">=0.24,<0.26"
 pydantic = "^2.1"
 pymongo = "^4.4"
 PyJWT = "^2.8"
-splunk-sdk = "^1.7"
+splunk-sdk = { version= "^1.7", python = "<3.12" }
 bcrypt = "^4.0"
 whist-core = "^0.9"
 python-multipart = "^0.0.6"

@@ -2,8 +2,6 @@
 import os
 from typing import Optional
 
-from splunklib import client
-
 
 class SplunkEvent:
     """
@@ -45,10 +43,15 @@ class SplunkEvent:
 
 class SplunkService:
     """
-    Service for Splunk Integration.
+    Service for Splunk Integration
     """
+    try:
+        from splunklib import client
+    except ImportError:
+        client = None
+
     _instance = None
-    _service: client.Service = None
+    _service = None
 
     def __new__(cls):
         """Creates a new instance of this service singleton."""

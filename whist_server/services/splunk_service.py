@@ -67,7 +67,7 @@ class SplunkService:
             except KeyError:
                 print('Splunk parameter are not set.')
         return cls._instance
-    
+
     @staticmethod
     def _set_service(host, port, token):
         if splunklib is None:

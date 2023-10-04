@@ -1,10 +1,11 @@
 import os
+import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
 from whist_server.services.splunk_service import SplunkEvent, SplunkService
 
-
+@unittest.skipIf(sys.version_info >= (3,12), 'Splunk not support for 3.12')
 class SplunkServiceTestCase(unittest.TestCase):
     @patch.dict(os.environ, {'SPLUNK_HOST': 'localhost', 'SPLUNK_PORT': '1234',
                              'SPLUNK_TOKEN': 'abc'})
@@ -35,3 +36,7 @@ class SplunkServiceTestCase(unittest.TestCase):
         SplunkService._service = None
         service = SplunkService()
         self.assertFalse(service.available)
+class SplunkNotSupportedTestCase(unittest.TestCase):
+    def test_no_service(self):
+        service = SplunkService()
+        self.assertIsNone(service._service)

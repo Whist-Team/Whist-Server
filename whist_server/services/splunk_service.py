@@ -2,6 +2,11 @@
 import os
 from typing import Optional
 
+try:
+    import splunklib
+except ImportError:
+    splunklib = None
+
 
 class SplunkEvent:
     """
@@ -45,10 +50,6 @@ class SplunkService:
     """
     Service for Splunk Integration
     """
-    try:
-        import splunklib
-    except ImportError:
-        splunklib = None
 
     _instance = None
     _service = None

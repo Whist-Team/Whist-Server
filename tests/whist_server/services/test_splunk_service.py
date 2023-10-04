@@ -36,3 +36,7 @@ class SplunkServiceTestCase(unittest.TestCase):
         SplunkService._service = None
         service = SplunkService()
         self.assertFalse(service.available)
+class SplunkNotSupportedTestCase(unittest.TestCase):
+    def test_no_service(self):
+        service = SplunkService()
+        self.assertIsNone(service._service)

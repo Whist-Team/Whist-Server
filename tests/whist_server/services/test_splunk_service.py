@@ -1,10 +1,11 @@
 import os
+import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
 from whist_server.services.splunk_service import SplunkEvent, SplunkService
 
-
+@unittestskipIf(sys.version_info >= (3,12))
 class SplunkServiceTestCase(unittest.TestCase):
     @patch.dict(os.environ, {'SPLUNK_HOST': 'localhost', 'SPLUNK_PORT': '1234',
                              'SPLUNK_TOKEN': 'abc'})

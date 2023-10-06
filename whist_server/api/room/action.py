@@ -40,11 +40,7 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
     """
     try:
         room: RoomInDb = room_service.get(room_id)
-    except RoomNotFoundError as not_found_error:
-        message = f'The room with id "{not_found_error}" was not found.'
-        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
-    try:
         room.start(user)
         room.current_rubber.current_game().next_hand()
         room_service.save(room)
@@ -54,6 +50,9 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
 
             splunk_service.write_event(event)
         background_tasks.add_task(channel_service.notify, room_id, RoomStartedEvent())
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
     except PlayerNotCreatorError as start_exception:
         message = 'Player has not administrator rights at this table.'
         raise create_http_error(message, status.HTTP_403_FORBIDDEN) from start_exception

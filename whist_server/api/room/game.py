@@ -1,5 +1,5 @@
 """Route of /room/game"""
-from fastapi import APIRouter, BackgroundTasks, Depends, Security, status
+from fastapi import BackgroundTasks, Depends, Security, status
 from whist_core.game.errors import HandNotDoneError, HandDoneError
 from whist_core.game.warnings import TrickNotDoneWarning
 
@@ -11,8 +11,6 @@ from whist_server.services.channel_service import ChannelService
 from whist_server.services.error import RoomNotFoundError
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import NextHandEvent, NextTrickEvent
-
-router = APIRouter(prefix='/room')
 
 
 @router.post('/next_hand/{room_id}', status_code=200)

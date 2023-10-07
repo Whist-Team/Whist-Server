@@ -1,6 +1,7 @@
 """Collection of general room information getter."""
-from fastapi import APIRouter, Depends, Security, status
+from fastapi import Depends, Security, status
 
+from whist_server.api.room import room_router
 from whist_server.api.util import create_http_error
 from whist_server.database.room import RoomInDb, RoomInfo
 from whist_server.database.user import UserInDb
@@ -8,10 +9,8 @@ from whist_server.services.authentication import get_current_user
 from whist_server.services.error import RoomNotFoundError
 from whist_server.services.room_db_service import RoomDatabaseService
 
-router = APIRouter(prefix='/room')
 
-
-@router.get('/info/ids', status_code=200, response_model=dict[str, list[str]])
+@room_router.get('/info/ids', status_code=200, response_model=dict[str, list[str]])
 def all_rooms(room_service=Depends(RoomDatabaseService),
               _: UserInDb = Security(get_current_user)) -> dict[str, list[str]]:
     """
@@ -24,7 +23,7 @@ def all_rooms(room_service=Depends(RoomDatabaseService),
     return {'rooms': [str(room.id) for room in rooms]}
 
 
-@router.get('/info/{room_id}', response_model=RoomInfo)
+@room_router.get('/info/{room_id}', response_model=RoomInfo)
 def room_info(room_id: str, room_service=Depends(RoomDatabaseService)) -> RoomInfo:
     """
     :param room_id:
@@ -39,7 +38,7 @@ def room_info(room_id: str, room_service=Depends(RoomDatabaseService)) -> RoomIn
     return room.get_info()
 
 
-@router.get('/info/id/{room_name}', status_code=200, response_model=dict[str, str])
+@room_router.get('/info/id/{room_name}', status_code=200, response_model=dict[str, str])
 def room_id_from_name(room_name: str, room_service=Depends(RoomDatabaseService),
                       user: UserInDb = Security(get_current_user)) -> dict[str, str]:
     """

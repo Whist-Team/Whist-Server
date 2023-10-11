@@ -1,9 +1,8 @@
 """Route to interaction with a table."""
 
-from fastapi import BackgroundTasks, Depends, Security, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Security, status
 from whist_core.error.table_error import PlayerNotJoinedError, TableNotReadyError
 
-from whist_server.api.room import room_router
 from whist_server.api.util import create_http_error
 from whist_server.database.error import PlayerNotCreatorError
 from whist_server.database.room import RoomInDb
@@ -16,10 +15,12 @@ from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.services.splunk_service import SplunkService, SplunkEvent
 from whist_server.web_socket.events.event import RoomStartedEvent
 
+action_router = APIRouter(prefix='/action')
+
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@room_router.post('/action/start/{room_id}', status_code=200)
+@action_router.post('/start/{room_id}', status_code=200)
 def start_room(room_id: str, background_tasks: BackgroundTasks,
                user: UserInDb = Security(get_current_user),
                room_service=Depends(RoomDatabaseService),
@@ -63,7 +64,7 @@ def start_room(room_id: str, background_tasks: BackgroundTasks,
     return {'status': 'started'}
 
 
-@room_router.post('/action/ready/{room_id}', status_code=200)
+@action_router.post('/ready/{room_id}', status_code=200)
 def ready_player(room_id: str, user: UserInDb = Security(get_current_user),
                  room_service=Depends(RoomDatabaseService)) -> dict:
     """
@@ -89,7 +90,7 @@ def ready_player(room_id: str, user: UserInDb = Security(get_current_user),
     return {'status': f'{user.username} is ready'}
 
 
-@room_router.post('/action/unready/{room_id}', status_code=200)
+@action_router.post('/unready/{room_id}', status_code=200)
 def unready_player(room_id: str, user: UserInDb = Security(get_current_user),
                    room_service=Depends(RoomDatabaseService)) -> dict:
     """

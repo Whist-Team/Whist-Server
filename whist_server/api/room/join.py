@@ -3,10 +3,9 @@ Route to join a room.
 """
 from typing import Optional
 
-from fastapi import BackgroundTasks, Security, status, Depends
+from fastapi import APIRouter, BackgroundTasks, Security, status, Depends
 from pydantic import BaseModel
 
-from whist_server.api.room import room_router
 from whist_server.api.util import create_http_error
 from whist_server.database.error import PlayerNotJoinedError
 from whist_server.database.room import RoomInDb, RoomInfo
@@ -19,6 +18,8 @@ from whist_server.services.password import PasswordService
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import PlayerJoinedEvent, PlayerLeftEvent
 
+join_router = APIRouter()
+
 
 class JoinRoomArgs(BaseModel):
     """
@@ -29,7 +30,7 @@ class JoinRoomArgs(BaseModel):
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@room_router.post('/join/{room_id}', status_code=200)
+@join_router.post('/join/{room_id}', status_code=200)
 def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundTasks,
               user: UserInDb = Security(get_current_user),
               pwd_service=Depends(PasswordService), room_service=Depends(RoomDatabaseService),
@@ -69,7 +70,7 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@room_router.post('/leave/{room_id}', status_code=200)
+@join_router.post('/leave/{room_id}', status_code=200)
 def leave_game(room_id: str, background_tasks: BackgroundTasks,
                user: UserInDb = Security(get_current_user),
                room_service=Depends(RoomDatabaseService),
@@ -107,7 +108,7 @@ class ReconnectArguments(BaseModel):
     stack: bool = False
 
 
-@room_router.post('/reconnect/', status_code=200)
+@join_router.post('/reconnect/', status_code=200)
 def reconnect(args: ReconnectArguments = ReconnectArguments(stack=False),
               user: UserInDb = Security(get_current_user),
               room_service=Depends(RoomDatabaseService)):

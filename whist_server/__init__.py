@@ -7,7 +7,6 @@ from whist_server.api import api
 from whist_server.api.oauth2.github import router as github
 from whist_server.api.ranking.leaderboard import router as leaderboard
 from whist_server.api.room import room_router
-from whist_server.api.room.trick import trick_router
 from whist_server.api.user import auth
 from whist_server.api.user.create import router as user_creation
 from whist_server.api.user.info import router as user_info
@@ -21,8 +20,6 @@ app = FastAPI()
 app.include_router(api.router)
 app.include_router(github)
 app.include_router(room_router)
-app.include_router(room_router)
-app.include_router(trick_router)
 app.include_router(leaderboard)
 app.include_router(user_creation)
 app.include_router(user_info)

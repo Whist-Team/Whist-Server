@@ -10,7 +10,6 @@ from whist_core.game.errors import NotPlayersTurnError
 from whist_core.game.player_at_table import PlayerAtTable
 from whist_core.game.warnings import TrickNotDoneWarning
 
-from whist_server.api.room import room_router
 from whist_server.api.util import create_http_error
 from whist_server.database.room import RoomInDb
 from whist_server.database.user import UserInDb
@@ -20,7 +19,7 @@ from whist_server.services.error import RoomNotFoundError
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import CardPlayedEvent, TrickDoneEvent
 
-trick_router = APIRouter(prefix=room_router.prefix + '/trick')
+trick_router = APIRouter(prefix='/trick')
 
 
 @trick_router.get('/hand/{room_id}', status_code=200, response_model=UnorderedCardContainer)
@@ -86,7 +85,7 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
 
 
 @trick_router.get('/winner/{room_id}', status_code=200,
-            response_model=Union[PlayerAtTable, dict[str, str]])
+                  response_model=Union[PlayerAtTable, dict[str, str]])
 def get_winner(room_id: str, user: UserInDb = Security(get_current_user),
                room_service=Depends(RoomDatabaseService)) -> Union[PlayerAtTable, dict[str, str]]:
     """

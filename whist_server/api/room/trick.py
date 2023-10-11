@@ -36,8 +36,8 @@ def hand(room_id: str, user: UserInDb = Security(get_current_user),
     try:
         room: RoomInDb = room_service.get(room_id)
     except RoomNotFoundError as not_found_error:
-        message = f'The room with id "{not_found_error}" was not found.'
-        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
+        raise create_http_error(f'The room with id "{not_found_error}" was not found.',
+                                status.HTTP_404_NOT_FOUND) from not_found_error
 
     player = room.get_player(user)
     return player.hand
@@ -63,13 +63,9 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
     """
     try:
         room: RoomInDb = room_service.get(room_id)
-    except RoomNotFoundError as not_found_error:
-        message = f'The room with id "{not_found_error}" was not found.'
-        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
-    trick = room.current_trick()
+        trick = room.current_trick()
 
-    try:
         player = room.get_player(user)
         trick.play_card(player=player, card=card)
         room_service.save(room)
@@ -81,9 +77,14 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
     except NotPlayersTurnError as turn_error:
         message = f'It is not {user.username}\'s turn'
         raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from turn_error
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
+
     return trick.stack.model_dump(mode='json')
 
 
+# pylint: disable=duplicate-code
 @router.get('/winner/{room_id}', status_code=200,
             response_model=Union[PlayerAtTable, dict[str, str]])
 def get_winner(room_id: str, user: UserInDb = Security(get_current_user),

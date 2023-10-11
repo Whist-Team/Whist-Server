@@ -6,8 +6,12 @@ from starlette.middleware.cors import CORSMiddleware
 from whist_server.api import api
 from whist_server.api.oauth2.github import router as github
 from whist_server.api.ranking.leaderboard import router as leaderboard
-from whist_server.api.room import room_router
-from whist_server.api.room.trick import trick_router
+from whist_server.api.room.action import router as game_action
+from whist_server.api.room.create import router as game_creation
+from whist_server.api.room.game import router as game_room
+from whist_server.api.room.info import router as game_info
+from whist_server.api.room.join import router as game_join
+from whist_server.api.room.trick import router as game_trick
 from whist_server.api.user import auth
 from whist_server.api.user.create import router as user_creation
 from whist_server.api.user.info import router as user_info
@@ -20,9 +24,12 @@ __version__ = '0.7.0'
 app = FastAPI()
 app.include_router(api.router)
 app.include_router(github)
-app.include_router(room_router)
-app.include_router(room_router)
-app.include_router(trick_router)
+app.include_router(game_action)
+app.include_router(game_creation)
+app.include_router(game_room)
+app.include_router(game_info)
+app.include_router(game_join)
+app.include_router(game_trick)
 app.include_router(leaderboard)
 app.include_router(user_creation)
 app.include_router(user_info)

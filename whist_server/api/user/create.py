@@ -10,7 +10,7 @@ from whist_server.services.password import PasswordService
 from whist_server.services.splunk_service import SplunkService, SplunkEvent
 from whist_server.services.user_db_service import UserDatabaseService
 
-router = APIRouter(prefix='/user')
+create_router = APIRouter()
 
 
 class CreateUserArgs(BaseModel):
@@ -21,7 +21,7 @@ class CreateUserArgs(BaseModel):
     password: str
 
 
-@router.post('/create')
+@create_router.post('/create')
 def create_user(request: CreateUserArgs, pwd_service=Depends(PasswordService),
                 user_db_service=Depends(UserDatabaseService),
                 splunk_service: SplunkService = Depends(SplunkService)):

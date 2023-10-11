@@ -84,7 +84,7 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
     return trick.stack.model_dump(mode='json')
 
 
-# plyint: disable=duplicate-code
+# pylint: disable=duplicate-code
 @router.get('/winner/{room_id}', status_code=200,
             response_model=Union[PlayerAtTable, dict[str, str]])
 def get_winner(room_id: str, user: UserInDb = Security(get_current_user),

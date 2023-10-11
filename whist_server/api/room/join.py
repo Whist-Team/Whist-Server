@@ -50,8 +50,8 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
     try:
         room: RoomInDb = room_service.get(room_id)
     except RoomNotFoundError as not_found_error:
-        message = f'The room with id "{not_found_error}" was not found.'
-        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
+        raise create_http_error(f'The room with id "{not_found_error}" was not found.',
+                                status.HTTP_404_NOT_FOUND) from not_found_error
 
     if room.hashed_password is not None and (
             request.password is None or not pwd_service.verify(request.password,
@@ -87,17 +87,16 @@ def leave_game(room_id: str, background_tasks: BackgroundTasks,
     """
     try:
         room: RoomInDb = room_service.get(room_id)
-    except RoomNotFoundError as not_found_error:
-        message = f'The room with id "{not_found_error}" was not found.'
-        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
-    try:
         room.leave(user)
         room_service.save(room)
         background_tasks.add_task(channel_service.notify, room_id,
                                   PlayerLeftEvent(player=user.to_player()))
     except PlayerNotJoinedError as joined_error:
         raise create_http_error('Player not joined', status.HTTP_403_FORBIDDEN) from joined_error
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
     return {'status': 'left'}
 
 

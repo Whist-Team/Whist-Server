@@ -14,6 +14,7 @@ from whist_server.web_socket.events.event import NextHandEvent, NextTrickEvent
 
 game_router = APIRouter(prefix='/game')
 
+
 # pylint: disable=duplicate-code
 @game_router.post('/next_hand/{room_id}', status_code=200)
 def next_hand(room_id: str, background_tasks: BackgroundTasks,

@@ -76,15 +76,14 @@ def ready_player(room_id: str, user: UserInDb = Security(get_current_user),
     """
     try:
         room: RoomInDb = room_service.get(room_id)
-    except RoomNotFoundError as not_found_error:
-        message = f'The room with id "{not_found_error}" was not found.'
-        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
-    try:
         room.ready_player(user)
         room_service.save(room)
     except PlayerNotJoinedError as ready_error:
         message = 'Player has not joined the table yet.'
         raise create_http_error(message, status.HTTP_403_FORBIDDEN) from ready_error
+    except RoomNotFoundError as not_found_error:
+        message = f'The room with id "{not_found_error}" was not found.'
+        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
     return {'status': f'{user.username} is ready'}
 
 
@@ -104,11 +103,7 @@ def unready_player(room_id: str, user: UserInDb = Security(get_current_user),
     """
     try:
         room: RoomInDb = room_service.get(room_id)
-    except RoomNotFoundError as not_found_error:
-        message = f'The room with id "{not_found_error}" was not found.'
-        raise create_http_error(message, status.HTTP_404_NOT_FOUND) from not_found_error
 
-    try:
         room.unready_player(user)
         room_service.save(room)
     except PlayerNotJoinedError as join_error:
@@ -120,4 +115,5 @@ def unready_player(room_id: str, user: UserInDb = Security(get_current_user),
     except UserNotReadyError as ready_error:
         message = 'Player not ready'
         raise create_http_error(message, status.HTTP_400_BAD_REQUEST) from ready_error
+
     return {'status': f'{user.username} is unready'}

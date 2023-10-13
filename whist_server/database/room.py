@@ -198,7 +198,21 @@ class RoomPhase(Enum):
     Describes the phase a room can be.
     """
     LOBBY = auto()
+    READY_TO_START = ()
     PLAYING = auto()
+
+    @staticmethod
+    def get_phase(room: RoomInDb) -> 'RoomPhase':
+        """
+        Sets the room phase depending on the table state.
+        :param room: DB object of room.
+        :return: RoomPhase
+        """
+        if room.table.started:
+            return RoomPhase.PLAYING
+        if room.table.ready:
+            return RoomPhase.READY_TO_START
+        return RoomPhase.LOBBY
 
 
 class RoomInfo(BaseModel):
@@ -223,7 +237,7 @@ class RoomInfo(BaseModel):
         :param room: Meta data extracted from
         :return: RoomInfo
         """
-        phase: RoomPhase = RoomPhase.PLAYING if room.table.started else RoomPhase.LOBBY
+        phase: RoomPhase = RoomPhase.get_phase(room)
         password_protected = room.has_password
         rubber_number = len(room.table.current_rubber.games) if room.table.started else 0
         trick_number = len(room.table.current_rubber.current_game().current_hand.tricks) if \

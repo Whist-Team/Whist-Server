@@ -19,10 +19,10 @@ from whist_server.services.error import RoomNotFoundError
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import CardPlayedEvent, TrickDoneEvent
 
-router = APIRouter(prefix='/room/trick')
+trick_router = APIRouter(prefix='/trick')
 
 
-@router.get('/hand/{room_id}', status_code=200, response_model=UnorderedCardContainer)
+@trick_router.get('/hand/{room_id}', status_code=200, response_model=UnorderedCardContainer)
 def hand(room_id: str, user: UserInDb = Security(get_current_user),
          room_service=Depends(RoomDatabaseService)) -> UnorderedCardContainer:
     """
@@ -45,7 +45,7 @@ def hand(room_id: str, user: UserInDb = Security(get_current_user),
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@router.post('/play_card/{room_id}', status_code=200, response_model=OrderedCardContainer)
+@trick_router.post('/play_card/{room_id}', status_code=200, response_model=OrderedCardContainer)
 def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
               user: UserInDb = Security(get_current_user),
               room_service=Depends(RoomDatabaseService),
@@ -85,8 +85,8 @@ def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
 
 
 # pylint: disable=duplicate-code
-@router.get('/winner/{room_id}', status_code=200,
-            response_model=Union[PlayerAtTable, dict[str, str]])
+@trick_router.get('/winner/{room_id}', status_code=200,
+                  response_model=Union[PlayerAtTable, dict[str, str]])
 def get_winner(room_id: str, user: UserInDb = Security(get_current_user),
                room_service=Depends(RoomDatabaseService)) -> Union[PlayerAtTable, dict[str, str]]:
     """

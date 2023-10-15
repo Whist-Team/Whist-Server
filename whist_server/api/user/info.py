@@ -5,10 +5,10 @@ from whist_core.user.player import Player
 from whist_server.database.user import UserInDb
 from whist_server.services.authentication import get_current_user
 
-router = APIRouter(prefix='/user')
+info_router = APIRouter()
 
 
-@router.get('/info')
+@info_router.get('/info')
 def user_info(user: UserInDb = Security(get_current_user)) -> Player:
     """
     Returns the user information of the current user.

@@ -14,7 +14,7 @@ from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.services.splunk_service import SplunkEvent, SplunkService
 from whist_server.web_socket.side_channel import SideChannel
 
-router = APIRouter(prefix='/room')
+create_router = APIRouter()
 
 
 class CreateRoomArgs(BaseModel):
@@ -29,7 +29,7 @@ class CreateRoomArgs(BaseModel):
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@router.post('/create', status_code=200)
+@create_router.post('/create', status_code=200)
 def create_game(request: CreateRoomArgs, user: UserInDb = Security(get_current_user),
                 room_service=Depends(RoomDatabaseService), pwd_service=Depends(PasswordService),
                 channel_service: ChannelService = Depends(ChannelService),

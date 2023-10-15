@@ -18,7 +18,7 @@ from whist_server.services.password import PasswordService
 from whist_server.services.room_db_service import RoomDatabaseService
 from whist_server.web_socket.events.event import PlayerJoinedEvent, PlayerLeftEvent
 
-router = APIRouter(prefix='/room')
+join_router = APIRouter()
 
 
 class JoinRoomArgs(BaseModel):
@@ -30,7 +30,7 @@ class JoinRoomArgs(BaseModel):
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@router.post('/join/{room_id}', status_code=200)
+@join_router.post('/join/{room_id}', status_code=200)
 def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundTasks,
               user: UserInDb = Security(get_current_user),
               pwd_service=Depends(PasswordService), room_service=Depends(RoomDatabaseService),
@@ -70,7 +70,7 @@ def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundT
 
 # Most of them are injections.
 # pylint: disable=too-many-arguments
-@router.post('/leave/{room_id}', status_code=200)
+@join_router.post('/leave/{room_id}', status_code=200)
 def leave_game(room_id: str, background_tasks: BackgroundTasks,
                user: UserInDb = Security(get_current_user),
                room_service=Depends(RoomDatabaseService),
@@ -107,7 +107,7 @@ class ReconnectArguments(BaseModel):
     stack: bool = False
 
 
-@router.post('/reconnect/', status_code=200)
+@join_router.post('/reconnect/', status_code=200)
 def reconnect(args: ReconnectArguments = ReconnectArguments(stack=False),
               user: UserInDb = Security(get_current_user),
               room_service=Depends(RoomDatabaseService)):

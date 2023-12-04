@@ -37,7 +37,7 @@ uvicorn = ">=0.23,<0.25"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4"
 pytest-cov = "^4.1"
-pytest-asyncio = ">=0.21,<0.23"
+pytest-asyncio = ">=0.21,<0.24"
 flake8 = "^6.1"
 flake8-docstrings = "^1.7"
 pylint = "^3.0"

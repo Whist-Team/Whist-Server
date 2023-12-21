@@ -24,7 +24,7 @@ whist-server = "whist_server.cli:main"
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = ">=0.101,<0.106"
-httpx = ">=0.24,<0.26"
+httpx = ">=0.24,<0.27"
 pydantic = "^2.1"
 pymongo = "^4.4"
 PyJWT = "^2.8"

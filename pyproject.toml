@@ -23,9 +23,9 @@ whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.101"
+fastapi = "^0.109"
 httpx = "^0.26"
-pydantic = "^2.5"
+pydantic = "^2.6"
 pymongo = "^4.6"
 PyJWT = "^2.8"
 splunk-sdk = "^1.7"

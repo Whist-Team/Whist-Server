@@ -23,7 +23,7 @@ whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.101"
+fastapi = ">=0.101,<0.110"
 httpx = "^0.26"
 pydantic = "^2.5"
 pymongo = "^4.6"

@@ -1,3 +1,4 @@
+import unittest
 from unittest.mock import MagicMock, PropertyMock
 
 from whist_core.cards.card_container import UnorderedCardContainer
@@ -106,3 +107,17 @@ class RoomInDbTestCase(BasePlayerTestCase):
         room.ready_player(self.player)
         room.ready_player(self.second_player)
         self.assertTrue(room.start(self.player))
+
+
+class RoomPhaseTestCase(unittest.TestCase):
+    def test_get_phase_ready(self):
+        room_mock = MagicMock(table=PropertyMock(started=False, ready=True))
+        self.assertEqual(RoomPhase.READY_TO_START, RoomPhase.get_phase(room_mock))
+
+    def test_get_playing(self):
+        room_mock = MagicMock(table=PropertyMock(started=True, ready=True))
+        self.assertEqual(RoomPhase.PLAYING, RoomPhase.get_phase(room_mock))
+
+    def test_get_lobby(self):
+        room_mock = MagicMock(table=PropertyMock(started=False, ready=False))
+        self.assertEqual(RoomPhase.LOBBY, RoomPhase.get_phase(room_mock))

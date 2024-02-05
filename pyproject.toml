@@ -31,7 +31,7 @@ PyJWT = "^2.8"
 splunk-sdk = "^1.7"
 bcrypt = "^4.1"
 whist-core = "^0.9"
-python-multipart = "^0.0.6"
+python-multipart = ">=0.0.6,<0.0.8"
 uvicorn = "^0.27"
 
 [tool.poetry.group.dev.dependencies]

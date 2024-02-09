@@ -68,7 +68,7 @@ If you want to use Splunk you require an environment variable with the authentic
 `SPLUNK_TOKEN` and you have to start the server with optional arguments `--splunk_host` and 
 `--splunk-port`.
 
-Splunk support s currently disabled.
+Splunk support is currently disabled.
 
 ---
 

@@ -65,7 +65,7 @@ class SplunkService:
                 token = os.environ['SPLUNK_TOKEN']
                 cls._service = cls._set_service(host=host, port=port, token=token)
             except KeyError:
-                print('Splunk parameter are not set.')
+                print('Splunk parameters are not set.')
         return cls._instance
 
     @staticmethod
@@ -88,5 +88,7 @@ class SplunkService:
         :param event: to be forwarded
         :return: None
         """
+        if not cls.available:
+            return
         index = cls._service.indexes['whist_monitor']
         index.submit(event=event.event, source=event.source, sourcetype=event.source_type)

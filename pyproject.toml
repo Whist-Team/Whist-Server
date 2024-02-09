@@ -28,7 +28,7 @@ httpx = "^0.26"
 pydantic = "^2.6"
 pymongo = "^4.6"
 PyJWT = "^2.8"
-splunk-sdk = { version = "^1.7", python = "<3.12" } # splunk not supported with python 3.12
+# splunk-sdk = "^1.7" # splunk not supported with python 3.12+
 bcrypt = "^4.1"
 whist-core = "^0.9"
 python-multipart = "^0.0.6"
@@ -37,7 +37,7 @@ uvicorn = "^0.27"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4,<8.0" # keeping this below v8 because of incompatibilities with pytest-asyncio
 pytest-cov = "^4.1"
-pytest-asyncio = "^0.23"
+pytest-asyncio = "^0.23" # waiting for pytest-asyncio 0.23.5
 flake8 = "^7.0"
 flake8-docstrings = "^1.7"
 pylint = "^3.0"

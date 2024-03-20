@@ -32,7 +32,7 @@ PyJWT = "^2.8"
 bcrypt = "^4.1"
 whist-core = "^0.9"
 python-multipart = "^0.0.9"
-uvicorn = "^0.28"
+uvicorn = ">=0.28,<0.30"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"

@@ -24,6 +24,12 @@ jobs:
         with:
           package: whist_server
           token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload to codecoverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
+          token:  ${{ secrets.CODECOV_TOKEN }}
 
   integrationtest:
     strategy:

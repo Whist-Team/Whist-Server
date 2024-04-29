@@ -20,11 +20,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 'Unittest with pytest & coverage'
-        uses: Whist-Team/actions/test-cov@Segelzwerg-patch-1-2
+        uses: Whist-Team/actions/test-cov@dependabot/github_actions/test-cov/codecov/codecov-action-4
         with:
           package: whist_server
           token: ${{ secrets.CODECOV_TOKEN }}
-    
 
   integrationtest:
     strategy:

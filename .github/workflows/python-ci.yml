@@ -12,17 +12,21 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ '3.9', '3.10', '3.11', '3.12' ]
-        include:
-          - test-type: ''
-          - test-type: integtest
+        test-strategy: [ 'unit', 'integration' ]
+        exclude:
+          - test-strategy: 'unit'
             mongodb-version: '4.4'
-          - test-type: integtest
+          - test-strategy: 'unit'
             mongodb-version: '5.0'
-          - test-type: integtest
+          - test-strategy: 'unit'
             mongodb-version: '6.0'
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Test Strategy
+        if: ${{ matrix.test-strategy == 'integration'
+        run: echo 'TESTTYPE=integtest' >> "$GITHUB_ENV"
+      
       - uses: Whist-Team/actions/setup-poetry@v2
         with:
           python-version: ${{ matrix.python-version }}
@@ -34,7 +38,7 @@ jobs:
 
       - name: 'pytest & coverage'
         shell: bash
-        run: 'poetry run python -m pytest -m ${{ matrix.test-type }} --cov=whist_server --cov-report=xml --cov-config=.coveragerc'
+        run: 'poetry run python -m pytest -m ${{ env.TESTTYPE }} --cov=whist_server --cov-report=xml --cov-config=.coveragerc'
       - name: Upload to codecoverage
         uses: codecov/codecov-action@v4
         with:

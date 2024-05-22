@@ -12,8 +12,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ '3.9', '3.10', '3.11', '3.12' ]
-        test-type: [ '' ]
         include:
+          - test-type: ''
           - test-type: integtest
             mongodb-version: '4.4'
           - test-type: integtest

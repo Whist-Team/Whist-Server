@@ -13,6 +13,7 @@ jobs:
         os: [ ubuntu-latest ]
         python-version: [ '3.9', '3.10', '3.11', '3.12' ]
         test-strategy: [ 'unit', 'integration' ]
+        mongodb-version: [ '4.4', '5.0', '6.0' ]
         exclude:
           - test-strategy: 'unit'
             mongodb-version: '4.4'

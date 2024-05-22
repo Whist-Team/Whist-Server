@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Test Strategy
-        if: ${{ matrix.test-strategy == 'integration'
+        if: ${{ matrix.test-strategy == 'integration' }}
         run: echo 'TESTTYPE=integtest' >> "$GITHUB_ENV"
       
       - uses: Whist-Team/actions/setup-poetry@v2

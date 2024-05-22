@@ -12,42 +12,34 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ '3.9', '3.10', '3.11', '3.12' ]
+        test-type: [ '' ]
+        include:
+          - test-type: integtest
+            mongodb-version: '4.4'
+          - test-type: integtest
+            mongodb-version: '5.0'
+          - test-type: integtest
+            mongodb-version: '6.0'
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: Whist-Team/actions/setup-poetry@v2
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: 'Unittest with pytest & coverage'
-        uses: Whist-Team/actions/test-cov@v2
-        with:
-          package: whist_server
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-  integrationtest:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        python-version: [ '3.9', '3.10', '3.11' ]
-        mongodb-version: [ '4.4', '5.0', '6.0' ]
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: Whist-Team/actions/setup-poetry@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - name: Start MongoDB
+        if: ${{ matrix.mongodb-version }}
         uses: supercharge/mongodb-github-action@v1
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
-      - name: Integrationtest with pytest
-        uses: Whist-Team/actions/test-cov@v2
+      - name: 'pytest & coverage'
+        shell: bash
+        run: 'poetry run python -m pytest -m ${{ matrix.test-type }} --cov=whist_server --cov-report=xml --cov-config=.coveragerc'
+      - name: Upload to codecoverage
+        uses: codecov/codecov-action@v4
         with:
-          package: whist_server
+          file: ./coverage.xml
+          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
-          test-type: integtest
 
         

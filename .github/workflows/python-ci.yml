@@ -20,7 +20,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 'unit test with pytest'
-        shell: bash
         run: 'poetry run python -m pytest -m "not integtest"'
 
   integrationtest:
@@ -42,5 +41,4 @@ jobs:
           mongodb-version: ${{ matrix.mongodb-version }}
 
       - name: 'integration test with pytest'
-        shell: bash
         run: 'poetry run python -m pytest -m "integtest"'

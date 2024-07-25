@@ -23,25 +23,25 @@ whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = ">=0.110,<0.112"
+fastapi = "^0.111"
 httpx = "^0.27"
-pydantic = "^2.6"
-pymongo = "^4.6"
+pydantic = "^2.8"
+pymongo = "^4.7"
 PyJWT = "^2.8"
-# splunk-sdk = "^1.7" # splunk not supported with python 3.12+
-bcrypt = "^4.1"
+splunk-sdk = "^2.0"
+bcrypt = "^4.2"
 whist-core = "^0.9"
 python-multipart = "^0.0.9"
-uvicorn = ">=0.28,<0.31"
+uvicorn = "^0.30"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.0"
-pytest-asyncio = "^0.23.5"
-flake8 = "^7.0"
+pytest = "^8.3"
+pytest-asyncio = "^0.23.5" # .5 because that version is the first to have compat with pytest 8
+flake8 = "^7.1"
 flake8-docstrings = "^1.7"
-pylint = "^3.0"
+pylint = "^3.2"
 python-dotenv = "^1.0"
-setuptools = ">=69.2,<71.0"
+setuptools = "^71.1"
 wheel = "^0.43"
 
 [build-system]

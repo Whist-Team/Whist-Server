@@ -19,11 +19,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: 'Unittest with pytest & coverage'
-        uses: Whist-Team/actions/test-cov@v2
-        with:
-          package: whist_server
-          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: 'unit test with pytest'
+        shell: bash
+        run: 'poetry run python -m pytest -m "not integtest"'
 
   integrationtest:
     strategy:
@@ -43,11 +41,6 @@ jobs:
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
-      - name: Integrationtest with pytest
-        uses: Whist-Team/actions/test-cov@v2
-        with:
-          package: whist_server
-          token: ${{ secrets.CODECOV_TOKEN }}
-          test-type: integtest
-
-        
+      - name: 'integration test with pytest'
+        shell: bash
+        run: 'poetry run python -m pytest -m "integtest"'

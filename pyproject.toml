@@ -32,7 +32,7 @@ whist-core = "^0.9"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3"
-pytest-asyncio = "^0.23.5" # .5 because that version is the first to have compat with pytest 8
+pytest-asyncio = ">=0.23.5,<0.25.0" # .5 because that version is the first to have compat with pytest 8
 flake8 = "^7.1"
 flake8-docstrings = "^1.7"
 pylint = "^3.2"

@@ -37,7 +37,7 @@ flake8 = "^7.1"
 flake8-docstrings = "^1.7"
 pylint = "^3.2"
 python-dotenv = "^1.0"
-setuptools = ">=72.1,<75.0"
+setuptools = ">=72.1,<76.0"
 wheel = ">=0.43,<0.45"
 
 [build-system]

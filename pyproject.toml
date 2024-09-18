@@ -23,7 +23,7 @@ whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = { version = ">=0.112,<0.115", extras = ["standard"] }
+fastapi = { version = ">=0.112,<0.116", extras = ["standard"] }
 pymongo = "^4.7"
 PyJWT = "^2.9"
 splunk-sdk = "^2.0"

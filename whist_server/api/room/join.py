@@ -31,7 +31,7 @@ class JoinRoomArgs(BaseModel):
 # Most of them are injections.
 # pylint: disable=too-many-arguments
 @join_router.post('/join/{room_id}', status_code=200)
-def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundTasks,
+def join_game(room_id: str, request: JoinRoomArgs, background_tasks: BackgroundTasks, *,
               user: UserInDb = Security(get_current_user),
               pwd_service=Depends(PasswordService), room_service=Depends(RoomDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)):

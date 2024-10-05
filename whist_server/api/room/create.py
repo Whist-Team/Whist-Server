@@ -30,7 +30,7 @@ class CreateRoomArgs(BaseModel):
 # Most of them are injections.
 # pylint: disable=too-many-arguments
 @create_router.post('/create', status_code=200)
-def create_game(request: CreateRoomArgs, user: UserInDb = Security(get_current_user),
+def create_game(request: CreateRoomArgs, *, user: UserInDb = Security(get_current_user),
                 room_service=Depends(RoomDatabaseService), pwd_service=Depends(PasswordService),
                 channel_service: ChannelService = Depends(ChannelService),
                 splunk_service: SplunkService = Depends(SplunkService)):

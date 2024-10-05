@@ -46,7 +46,7 @@ def hand(room_id: str, user: UserInDb = Security(get_current_user),
 # Most of them are injections.
 # pylint: disable=too-many-arguments
 @trick_router.post('/play_card/{room_id}', status_code=200, response_model=OrderedCardContainer)
-def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks,
+def play_card(room_id: str, card: Card, background_tasks: BackgroundTasks, *,
               user: UserInDb = Security(get_current_user),
               room_service=Depends(RoomDatabaseService),
               channel_service: ChannelService = Depends(ChannelService)) -> OrderedCardContainer:

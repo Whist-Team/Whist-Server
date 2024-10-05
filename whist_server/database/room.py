@@ -34,7 +34,7 @@ class Room(BaseModel):
     # pylint: disable=too-many-arguments
     @classmethod
     def create(cls, room_name: str, creator: Player,
-               min_player: int, max_player: int, matcher: Optional[Matcher] = None) -> 'Room':
+               min_player: int, max_player: int, *, matcher: Optional[Matcher] = None) -> 'Room':
         """
         Factory method to create a Room object.
         :param room_name: name of the session

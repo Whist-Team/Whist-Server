@@ -21,7 +21,7 @@ action_router = APIRouter(prefix='/action')
 # Most of them are injections.
 # pylint: disable=too-many-arguments
 @action_router.post('/start/{room_id}', status_code=200)
-def start_room(room_id: str, background_tasks: BackgroundTasks,
+def start_room(room_id: str, background_tasks: BackgroundTasks, *,
                user: UserInDb = Security(get_current_user),
                room_service=Depends(RoomDatabaseService),
                channel_service: ChannelService = Depends(ChannelService),

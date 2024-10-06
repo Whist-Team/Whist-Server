@@ -28,7 +28,8 @@ class RoomDatabaseService:
 
     # pylint: disable=too-many-arguments
     @classmethod
-    def create_with_pwd(cls, room_name: str, creator: Player, hashed_password: Optional[str] = None,
+    def create_with_pwd(cls, room_name: str, creator: Player, *,
+                        hashed_password: Optional[str] = None,
                         min_player: Optional[int] = None,
                         max_player: Optional[int] = None) -> RoomInDb:
         """

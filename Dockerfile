@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.10 as build
+FROM python:3.12 AS build
 WORKDIR /app
 ENV LANG=C.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -11,7 +11,7 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY . .
 RUN poetry build
 
-FROM python:3.10-slim
+FROM python:3.12-slim
 WORKDIR /app
 ENV LANG=C.UTF-8 \
     PYTHONUNBUFFERED=1

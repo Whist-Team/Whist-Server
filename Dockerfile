@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.10 as build
+FROM python:3.12 as build
 WORKDIR /app
 ENV LANG=C.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \

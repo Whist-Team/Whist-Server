@@ -198,7 +198,7 @@ class RoomPhase(Enum):
     Describes the phase a room can be.
     """
     LOBBY = auto()
-    READY_TO_START = ()
+    READY_TO_START = auto()
     PLAYING = auto()
 
     @staticmethod

@@ -38,7 +38,7 @@ flake8-docstrings = "^1.7"
 pylint = "^3.2"
 python-dotenv = "^1.0"
 setuptools = ">=72.1,<76.0"
-wheel = ">=0.43,<0.45"
+wheel = ">=0.43,<0.46"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

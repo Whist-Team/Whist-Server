@@ -1541,18 +1541,21 @@ files = [
 
 [[package]]
 name = "wheel"
-version = "0.45.1"
-description = "A built-package format for Python"
+version = "0.46.0"
+description = "Command line tool for manipulating wheel files"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "wheel-0.45.1-py3-none-any.whl", hash = "sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248"},
-    {file = "wheel-0.45.1.tar.gz", hash = "sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729"},
+    {file = "wheel-0.46.0-py3-none-any.whl", hash = "sha256:8c1909305dc5a40979693cece1ec872eed10cc49af2038201213461b0688b7b4"},
+    {file = "wheel-0.46.0.tar.gz", hash = "sha256:bd9fadc35ff6a3624bdd00bc78437bcded40e2edc1fbb29076308de503fe9a4b"},
 ]
 
+[package.dependencies]
+packaging = ">=24.0"
+
 [package.extras]
-test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
+test = ["pytest (>=6.0.0)", "setuptools (>=77)"]
 
 [[package]]
 name = "whist-core"
@@ -1573,4 +1576,4 @@ pydantic = ">=2.6,<3.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "69f277f8f5b8bfbea87519f96046a3583530856c846ea17aab45bd6c6e7cd93a"
+content-hash = "80cf9580ccf4fe02ecc4a6f483b03147b6ab41798abeace0c451b2f494d259d9"

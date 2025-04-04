@@ -1,47 +1,54 @@
-[tool.poetry]
+[project]
 name = "whist-server"
 # remember to also update the version in __init__.py!
 version = "0.8.0"
 description = "Whist server implementation"
-authors = ["Whist-Team"]
+authors = [{ name = "Whist-Team" }]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/Whist-Team/Whist-Server"
-repository = "https://github.com/Whist-Team/Whist-Server"
-#documentation = "https://whist-server.readthedocs.io"
 keywords = ["game", "server", "whist"]
 classifiers = [
     "Operating System :: OS Independent"
 ]
 include = ["static"]
+requires-python = ">=3.10,<4.0"
+dynamic = ["dependencies"]
 
-[tool.poetry.urls]
-"Bug Tracker" = "https://github.com/Whist-Team/Whist-Server/issues"
+[project.urls]
+homepage = "https://github.com/Whist-Team/Whist-Server"
+source = "https://github.com/Whist-Team/Whist-Server"
+#documentation = "https://whist-server.readthedocs.io"
+issues = "https://github.com/Whist-Team/Whist-Server/issues"
 
 [tool.poetry.plugins.console_scripts]
 whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-fastapi = { version = ">=0.112,<0.116", extras = ["standard"] }
-pymongo = "^4.7"
-PyJWT = "^2.9"
-splunk-sdk = "^2.0"
-bcrypt = "^4.2"
+fastapi = { version = "^0.115", extras = ["standard"] }
+pymongo = "^4.11"
+PyJWT = "^2.10"
+splunk-sdk = "^2.1"
+bcrypt = "^4.3"
 whist-core = "^0.9"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3"
-pytest-asyncio = ">=0.23.5,<0.27.0" # .5 because that version is the first to have compat with pytest 8
-flake8 = "^7.1"
+pytest-asyncio = "^0.26"
+flake8 = "^7.2"
 flake8-docstrings = "^1.7"
-pylint = "^3.2"
-python-dotenv = "^1.0"
-setuptools = ">=72.1,<79.0"
-wheel = ">=0.43,<0.47"
+python-dotenv = "^1.1"
+pylint = "^3.3"
+setuptools = "^78.1"
+wheel = "^0.45"
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.9"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]

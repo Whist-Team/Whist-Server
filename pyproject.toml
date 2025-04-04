@@ -20,7 +20,7 @@ source = "https://github.com/Whist-Team/Whist-Server"
 #documentation = "https://whist-server.readthedocs.io"
 issues = "https://github.com/Whist-Team/Whist-Server/issues"
 
-[tool.poetry.plugins.console_scripts]
+[project.scripts]
 whist-server = "whist_server.cli:main"
 
 [tool.poetry.dependencies]

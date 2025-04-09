@@ -50,7 +50,6 @@ class NotificationTestCase(TestCase):
             event = PlayerJoinedEvent(**notification['event'])
             self.assertIsInstance(event, PlayerJoinedEvent)
 
-    @pytest.mark.skip(reason="broken")
     @pytest.mark.integtest
     def test_join_notification_no_game(self):
         with self.client.websocket_connect('/room/' + '1' * 24) as websocket:
@@ -58,7 +57,6 @@ class NotificationTestCase(TestCase):
             response = websocket.receive()
             self.assertEqual('Room not found', response['reason'])
 
-    @pytest.mark.skip(reason="broken")
     @pytest.mark.integtest
     def test_join_notification_not_joined(self):
         headers = self.create_and_auth_user('nico', 'abc')

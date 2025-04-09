@@ -27,7 +27,7 @@ class NotificationTestCase(TestCase):
         db.room.drop()
         self.client = TestClient(app)
         self.headers_user1 = self.create_and_auth_user('ws_user', '123')
-        self.headers_user2 = self.create_and_auth_user('miles', 'abc')
+        self.headers_user2 = self.create_and_auth_user('user2', 'abc')
         data = {'room_name': 'test', 'password': 'abc', 'min_player': 1}
         response = self.client.post(url='/room/create', json=data, headers=self.headers_user1).raise_for_status()
         self.room_id = response.json()['room_id']

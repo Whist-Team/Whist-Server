@@ -1,5 +1,5 @@
 """Token authentication"""
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, UTC
 from typing import Optional
 
 from fastapi import Depends
@@ -18,16 +18,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/user/auth')
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """
-    Creates an access token for an user.
+    Creates an access token for a user.
     :param data: Expects a dictionary with key 'sub' and a username as value.
     :param expires_delta: The amount of time until this token shall expire.
     :return: token as a str
     """
     to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+    expires_delta = expires_delta or timedelta(minutes=15)
+    expire = datetime.now(UTC) + expires_delta
     to_encode.update({"exp": expire})
     encoded_jwt = encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt

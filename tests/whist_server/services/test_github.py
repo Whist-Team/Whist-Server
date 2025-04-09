@@ -18,7 +18,7 @@ def setup_env(monkeypatch):
     monkeypatch.setenv('GITHUB_REDIRECT_URL', REDIRECT_URL)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_token(setup_env):
     service = GitHubAPIService()
     expected_token = 'fgh'
@@ -32,7 +32,7 @@ async def test_token(setup_env):
     route.assert_called_once_with('https://github.com/login/oauth/access_token', json=expected_data)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_device_token(setup_env):
     service = GitHubAPIService()
     expected_token = 'fgh'
@@ -48,7 +48,7 @@ async def test_device_token(setup_env):
                                   json=expected_data)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_device_token_error(setup_env):
     service = GitHubAPIService()
     expected_data = {'client_id': CLIENT_ID, 'device_code': CODE,
@@ -64,7 +64,7 @@ async def test_device_token_error(setup_env):
                                   url='https://github.com/login/oauth/access_token',
                                   json=expected_data)
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_username():
     service = GitHubAPIService()
     expected_username = 'fgh'
@@ -77,7 +77,7 @@ async def test_username():
     route.assert_called_once_with('https://api.github.com/user',
                                   headers={'Authorization': f'token {token}'})
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_username():
     service = GitHubAPIService()
     expected_id = 'fgh'

@@ -41,9 +41,9 @@ whist-core = "^0.9"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3"
-pytest-asyncio = "^0.26"
 flake8 = "^7.2"
 flake8-docstrings = "^1.7"
+httpx = "^0.28"
 python-dotenv = "^1.1"
 pylint = "^3.3"
 setuptools = "^78.1"
@@ -57,7 +57,6 @@ requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
 markers = [
     "integtest: Integrationtest use 'pytest -m integtest'"
 ]

@@ -1,5 +1,5 @@
 """Token authentication"""
-from datetime import timedelta, datetime, UTC
+from datetime import timedelta, datetime, timezone
 from typing import Optional
 
 from fastapi import Depends
@@ -25,7 +25,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     """
     to_encode = data.copy()
     expires_delta = expires_delta or timedelta(minutes=15)
-    expire = datetime.now(UTC) + expires_delta
+    expire = datetime.now(timezone.utc) + expires_delta
     to_encode.update({"exp": expire})
     encoded_jwt = encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt

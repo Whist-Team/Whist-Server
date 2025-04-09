@@ -41,7 +41,7 @@ class TrickTestCase(BaseCreateGameTestCase):
 
     def test_play_card(self):
         response = self.client.post(url=f'/room/trick/play_card/{self.room_mock.id}',
-                                    headers=self.headers, json=self.first_card.dict())
+                                    headers=self.headers, json=self.first_card.model_dump())
         self.assertEqual(200, response.status_code, msg=response.content)
         self.room_service_mock.save.assert_called_once()
         response_stack = OrderedCardContainer(**response.json())
@@ -50,7 +50,7 @@ class TrickTestCase(BaseCreateGameTestCase):
     def test_play_card_no_room(self):
         self.room_service_mock.get = MagicMock(side_effect=RoomNotFoundError('999'))
         response = self.client.post(url='/room/trick/play_card/999', headers=self.headers,
-                                    json=self.first_card.dict())
+                                    json=self.first_card.model_dump())
         self.room_mock.assert_not_called()
         self.assertEqual(404, response.status_code, msg=response.content)
 
@@ -59,7 +59,7 @@ class TrickTestCase(BaseCreateGameTestCase):
             side_effect=NotPlayersTurnError(player=MagicMock(),
                                             turn_player=MagicMock()))
         response = self.client.post(url=f'/room/trick/play_card/{self.room_mock.id}',
-                                    headers=self.headers, json=self.first_card.dict())
+                                    headers=self.headers, json=self.first_card.model_dump())
         self.assertEqual(400, response.status_code, msg=response.content)
 
     def test_winner(self):

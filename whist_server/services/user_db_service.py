@@ -30,7 +30,7 @@ class UserDatabaseService:
         try:
             _ = cls.get_by_username(user.username)
         except UserNotFoundError:
-            user_id = cls._users.insert_one(user.dict(exclude={'id'}))
+            user_id = cls._users.insert_one(user.model_dump(exclude={'id'}))
             return str(user_id.inserted_id)
 
         raise UserExistsError(f'User with username: "{user.username}" already exists.')

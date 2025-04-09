@@ -31,7 +31,7 @@ class RoomInDbTestCase(BasePlayerTestCase):
         print(model_dump)
 
     def test_empty_matcher_form_dict(self):
-        self.assertEqual(RoomInDb(**self.room.dict()), self.room)
+        self.assertEqual(RoomInDb(**self.room.model_dump()), self.room)
 
     def test_verify_pwd(self):
         self.assertTrue(self.room.verify_password('abc'))

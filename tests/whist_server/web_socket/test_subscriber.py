@@ -15,4 +15,4 @@ class SubscriberTestCase(TestCase):
         event = Event()
         asyncio.run(self.subscriber.send(event))
         self.connection_mock.send_json.assert_called_with(
-            {'name': event.name, 'event': event.dict()})
+            {'name': event.name, 'event': event.model_dump()})

@@ -111,7 +111,7 @@ class NotificationTestCase(TestCase):
             call_post()
             thread_not.join(30)
             self.assertFalse(thread_not.is_alive(), msg='Thread should been done by now')
-            event = RoomStartedEvent()
+            event = RoomStartedEvent(**notification[0]['event'])
             self.assertIsInstance(event, RoomStartedEvent)
 
     @pytest.mark.integtest

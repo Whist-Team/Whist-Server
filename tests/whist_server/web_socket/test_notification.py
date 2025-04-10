@@ -1,3 +1,4 @@
+import contextlib
 from unittest import TestCase
 from unittest.mock import patch, PropertyMock
 
@@ -23,17 +24,17 @@ class NotificationTestCase(TestCase):
         return {'Authorization': f'Bearer {token}'}
 
     def setUp(self):
-        db.user.drop()
-        db.room.drop()
-        self.client = TestClient(app)
-        self.headers_user1 = self.create_and_auth_user('ws_user', '123')
-        self.headers_user2 = self.create_and_auth_user('user2', 'abc')
-        data = {'room_name': 'test', 'password': 'abc', 'min_player': 1}
-        response = self.client.post(url='/room/create', json=data, headers=self.headers_user1).raise_for_status()
-        self.room_id = response.json()['room_id']
-
-    def tearDown(self):
-        db.room.drop()
+        with contextlib.ExitStack() as stack:
+            db.user.drop()
+            db.room.drop()
+            stack.callback(db.room.drop)
+            self.client = stack.enter_context(TestClient(app))
+            self.headers_user1 = self.create_and_auth_user('ws_user', '123')
+            self.headers_user2 = self.create_and_auth_user('user2', 'abc')
+            data = {'room_name': 'test', 'password': 'abc', 'min_player': 1}
+            response = self.client.post(url='/room/create', json=data, headers=self.headers_user1).raise_for_status()
+            self.room_id = response.json()['room_id']
+            self.addCleanup(stack.pop_all().close)
 
     @pytest.mark.integtest
     def test_join_notification(self):

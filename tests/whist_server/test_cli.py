@@ -13,22 +13,22 @@ from whist_server.cli import main
 
 @pytest.mark.integtest
 class CliTestCase(TestCase):
-    @patch('sys.argv', ['--admin_name=root', '--admin_pwd=password', 'localhost', '8080'])
+    @patch('sys.argv', ['--admin_name=root', '--admin_pwd=password', 'localhost', '55368'])
     def test_cli_1(self):
         thread_start = Process(target=main, daemon=True)
         thread_start.start()
         sleep(2)
-        response = httpx.get('http://localhost:8080')
+        response = httpx.get('http://localhost:55368')
         thread_start.terminate()
         self.assertEqual(200, response.status_code)
 
     @skipIf(importlib.util.find_spec("splunklib") is None, 'Splunk not installed')
     @patch.dict(os.environ, {'SPLUNK_HOST': 'localhost', 'SPLUNK_PORT': '1234', 'SPLUNK_TOKEN': 'abc'})
-    @patch('sys.argv', ['--admin_name=root', '--admin_pwd=password', 'localhost', '8080'])
+    @patch('sys.argv', ['--admin_name=root', '--admin_pwd=password', 'localhost', '55368'])
     def test_cli_2(self):
         thread_start = Process(target=main, daemon=True)
         thread_start.start()
         sleep(2)
-        response = httpx.get('http://localhost:8080')
+        response = httpx.get('http://localhost:55368')
         thread_start.terminate()
         self.assertEqual(200, response.status_code)

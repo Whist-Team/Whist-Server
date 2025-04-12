@@ -17,7 +17,7 @@ class CliTestCase(TestCase):
     def test_cli_1(self):
         thread_start = Process(target=main, daemon=True)
         thread_start.start()
-        sleep(1)
+        sleep(2)
         response = httpx.get('http://localhost:8080')
         thread_start.terminate()
         self.assertEqual(200, response.status_code)
@@ -28,7 +28,7 @@ class CliTestCase(TestCase):
     def test_cli_2(self):
         thread_start = Process(target=main, daemon=True)
         thread_start.start()
-        sleep(1)
+        sleep(2)
         response = httpx.get('http://localhost:8080')
         thread_start.terminate()
         self.assertEqual(200, response.status_code)

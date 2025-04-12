@@ -29,8 +29,18 @@ class SideChannel:
     async def notify(self, event: Event) -> None:
         """
         Sends one event to all client that have subscribed.
+        Will remove subscribers that have disconnected.
         :param event: Event to be sent to all clients.
         :return: None
         """
+        to_remove = []
         for subscriber in self.subscriber:
-            await subscriber.send(event)
+            # noinspection PyBroadException
+            # pylint: disable=bare-except
+            try:
+                await subscriber.send(event)
+            except:  # noqa: E722
+                to_remove.append(subscriber)
+
+        for subscriber in to_remove:
+            self.remove(subscriber)

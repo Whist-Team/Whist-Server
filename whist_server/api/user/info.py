@@ -14,4 +14,4 @@ def user_info(user: UserInDb = Security(get_current_user)) -> Player:
     Returns the user information of the current user.
     :param user: the currently logged in user.
     """
-    return user
+    return user.to_player()

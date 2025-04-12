@@ -63,7 +63,7 @@ class JoinGameTestCase(BaseCreateGameTestCase):
         room_info = RoomInfo.from_room(self.room_mock)
         self.room_service_mock.get_by_user_id = MagicMock(return_value=self.room_mock)
         response = self.client.post(url='/room/reconnect/', headers=self.headers,
-                                    json=ReconnectArguments(stack=True).dict())
+                                    json=ReconnectArguments(stack=True).model_dump())
         self.assertEqual(200, response.status_code, msg=response.content)
         self.assertEqual('joined', response.json()['status'])
         self.assertEqual(room_info, RoomInfo(**response.json()['room_info']))

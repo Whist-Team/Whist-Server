@@ -54,4 +54,4 @@ class UserInDb(Player):
         Converts the DO to DAO.
         :return: User with no password saved in object.
         """
-        return Player(**self.dict())
+        return Player(**self.model_dump())

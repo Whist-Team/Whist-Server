@@ -118,7 +118,7 @@ class RoomDdServiceTestCase(BasePlayerTestCase):
         self.assertEqual(game_id, str(all_games[0].id))
 
     def test_get_room_by_user(self):
-        user = UserInDb(hashed_password='abc', **self.player.dict())
+        user = UserInDb(hashed_password='abc', **self.player.model_dump())
         room_id = self.service.add(self.room)
         self.room.id = ObjectId(room_id)
         with patch('whist_server.services.user_db_service.UserDatabaseService.get',

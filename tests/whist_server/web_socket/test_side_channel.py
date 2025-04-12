@@ -21,7 +21,7 @@ class TestCase(TestCase):
         self.side_channel.attach(self.subscriber)
         asyncio.run(self.side_channel.notify(self.event))
         self.connection_mock.send_json.assert_called_with(
-            {'name': self.event.name, 'event': self.event.dict()})
+            {'name': self.event.name, 'event': self.event.model_dump()})
 
     def test_send_not_joined(self):
         asyncio.run(self.side_channel.notify(self.event))

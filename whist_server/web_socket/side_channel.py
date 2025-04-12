@@ -39,7 +39,7 @@ class SideChannel:
             # pylint: disable=bare-except
             try:
                 await subscriber.send(event)
-            except:
+            except:  # noqa: E722
                 to_remove.append(subscriber)
 
         for subscriber in to_remove:

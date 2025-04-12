@@ -14,7 +14,7 @@ class IndexTestCase(unittest.TestCase):
         """
         Test the index route returns the game whist.
         """
-        whist_core_version =  importlib.metadata.version('whist-core')
+        whist_core_version = importlib.metadata.version('whist-core')
         whist_server_version = importlib.metadata.version('whist-server')
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)

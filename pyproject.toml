@@ -46,7 +46,7 @@ flake8-docstrings = "^1.7"
 httpx = "^0.28"
 python-dotenv = "^1.1"
 pylint = "^3.3"
-setuptools = "^80.4"
+setuptools = "^80.7"
 wheel = "^0.45"
 
 [tool.poetry.requires-plugins]

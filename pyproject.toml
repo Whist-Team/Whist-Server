@@ -41,7 +41,7 @@ whist-core = "^0.9"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4"
-flake8 = "^7.2"
+flake8 = "^7.3"
 flake8-docstrings = "^1.7"
 httpx = "^0.28"
 python-dotenv = "^1.1"

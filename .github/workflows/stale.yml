@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Close Stale PRs
-        uses: actions/stale@v9
+        uses: actions/stale@v10
         with:
           days-before-issue-close: -1
           days-before-stale: 30

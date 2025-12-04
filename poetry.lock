@@ -265,14 +265,14 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "fastapi"
-version = "0.122.0"
+version = "0.123.7"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "fastapi-0.122.0-py3-none-any.whl", hash = "sha256:a456e8915dfc6c8914a50d9651133bd47ec96d331c5b44600baa635538a30d67"},
-    {file = "fastapi-0.122.0.tar.gz", hash = "sha256:cd9b5352031f93773228af8b4c443eedc2ac2aa74b27780387b853c3726fb94b"},
+    {file = "fastapi-0.123.7-py3-none-any.whl", hash = "sha256:31116d87ce36b66c3e853f8c0ba7c3e4b57c148abb0e72547e25257526cd2cc5"},
+    {file = "fastapi-0.123.7.tar.gz", hash = "sha256:d401701383afcf59bd859ead4fadd9e5aab5f783884d6a3ebe296012fdd53ab2"},
 ]
 
 [package.dependencies]
@@ -1889,4 +1889,4 @@ pydantic = ">=2.6,<3.0"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "69d4f509b407bc7a283685a5e3778b189093ae4047cc4c7fe4318d9f2f842cf0"
+content-hash = "1a19fb11c529e3b4338def48668b6f0a8cf2dab43c794bac899b1520ed3b4a35"

@@ -32,7 +32,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-fastapi = { version = "^0.124", extras = ["standard"] }
+fastapi = { version = "^0.127", extras = ["standard"] }
 pymongo = "^4.15"
 PyJWT = "^2.10"
 splunk-sdk = "^2.1"

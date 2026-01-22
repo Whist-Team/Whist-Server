@@ -47,7 +47,7 @@ httpx = "^0.28"
 python-dotenv = "^1.2"
 pylint = "^4.0"
 setuptools = "^80.9"
-wheel = "^0.45"
+wheel = "^0.46"
 
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.9"

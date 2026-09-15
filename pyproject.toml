@@ -34,7 +34,7 @@ include = [
 [tool.poetry.dependencies]
 fastapi = { version = "^0.141", extras = ["standard"] }
 pymongo = "^4.18"
-PyJWT = "^2.13"
+PyJWT = "^2.14"
 splunk-sdk = "^2.1"
 bcrypt = "^5.0"
 whist-core = "^0.9"

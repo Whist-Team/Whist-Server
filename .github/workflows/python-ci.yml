@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        python-version: [ '3.10', '3.11', '3.12', '3.13' ]
+        python-version: [ '3.11', '3.12', '3.13', '3.14', '3.15']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -26,8 +26,8 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        python-version: [ '3.10', '3.11', '3.12', '3.13' ]
-        mongodb-version: [ '6.0', '7.0', '8.0' ]
+        python-version: [ '3.11', '3.12', '3.13', '3.14', '3.15']
+        mongodb-version: [ '7.0', '8.0', '8.3', '9.0' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
